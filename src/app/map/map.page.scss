@@ -1,0 +1,98 @@
+ion-toolbar {
+  --background: #004aad;
+  height: 80px;
+  width: 100%;
+}
+
+// ion-content, #map {
+//     height: 100%;
+//     width: 100%;
+//     margin: 0;
+//     padding: 0;
+//   }
+  
+//   #map {
+  
+//     width: 100vw;
+//     height: 100vh;
+  
+//  }
+ 
+//   .map-container {
+//     width: 100%;
+//     height: 100%;
+//   }
+
+//   .mapboxgl-canvas {
+//     width: 800px;  /* Adjusted width */
+//     height: 600px; /* Adjusted height */
+// }
+.main-content {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 20px;
+  left: 20px;
+  width: auto;
+  height: auto;
+  z-index: 99;
+}
+
+.jurisdiction {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 650px; /* Adjust as needed */
+  left: 20px; /* Adjust as needed */
+  width: auto;
+  padding: 10px;
+  //border-radius: 8px;
+  z-index: 99; /* Ensure it's above the map */
+}
+
+.jurisdiction ion-select, ion-item {
+    --background: #ffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    //border-radius: 15px;
+    // margin: 20px 0;
+    // padding: 0 auto;
+  --box-shadow: 0 40px 80px rgba(167, 159, 159, 0.2);
+
+}
+
+.jurisdiction ion-label {
+    --color: #000000;
+}
+
+.segment-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  --box-shadow: 0 40px 80px rgba(167, 159, 159, 0.2);
+}
+.custom-segment {
+  --background-focused: #00229f;
+  --background: hsl(0, 0%, 95%);
+  --color: #000000;
+  width: 90%;
+  position: relative;
+  justify-content: center;
+  border-radius: 50px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+ion-segment-button#duration {
+  --color: #050505;
+  font-weight: bold;
+  --color-checked: white;
+  --background-checked: #006aed;
+}
+
+.custom-segment ion-segment-button.ion-activated {
+  background-color: var(--background-checked);
+  color: var(--color-checked);
+}

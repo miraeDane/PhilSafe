@@ -1,0 +1,553 @@
+<ion-content>
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/tabs"></ion-back-button>
+      </ion-buttons>
+      <ion-title>Create Report</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-label
+    class="title-info"
+    style="
+      display: flex;
+      justify-content: center;
+      padding: 25px;
+      font-size: 20px;
+    "
+    >INCIDENT REPORT FORM</ion-label
+  >
+
+  <div class="segment-container">
+    <ion-segment
+      [(ngModel)]="selectedSegment"
+      (ionChange)="segmentChanged($event)"
+      class="custom-segment"
+    >
+      <ion-segment-button value="segment1" class="segment-button">
+        <ion-label>Item A</ion-label>
+        <ion-label style="font-size: 7px">Reporting Person</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="segment2" class="segment-button">
+        <ion-label>Item B</ion-label>
+        <ion-label style="font-size: 7px">Suspect Data</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="segment3" class="segment-button">
+        <ion-label>Item C</ion-label>
+        <ion-label style="font-size: 7px">Victim Data</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="segment4" class="segment-button">
+        <ion-label>Item D</ion-label>
+        <ion-label style="font-size: 7px">Narrative</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <div *ngIf="selectedSegment === 'segment1'" class="segment-content">
+    <div class="item-a">
+      <ion-list class="incident">
+        <ion-item class="incident-item">
+          <ion-select
+            class="incident-select"
+            placeholder="Type of incident"
+            interface="popover"
+          >
+            <ion-select-option>Murder</ion-select-option>
+            <ion-select-option>Theft</ion-select-option>
+            <ion-select-option>Rape</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
+
+      <div class="anonymous-person-info">
+        <ion-label class="title-info-personal">PERSONAL INFORMATION</ion-label>
+        <ion-button class="anonymous" size="small">
+          Anonymous Report
+        </ion-button>
+      </div>
+      <ion-list class="info">
+        <ion-item>
+          <ion-input id="fname" placeholder="First Name"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="mname" placeholder="Middle Name"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="lname" placeholder="Last Name"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="citizenship" placeholder="Citizenship"> </ion-input>
+        </ion-item>
+        <div class="detail-select">
+          <ion-item class="dob">
+            <ion-icon name="calendar" color="black"></ion-icon>
+            <ion-input
+              placeholder="Date of Birth"
+              value="{{ dateOfBirth | date: 'dd.MM.yyyy' }}"
+              id="date"
+              class="ion-text-end"
+            ></ion-input>
+            <ion-popover trigger="date" size="cover">
+              <ng-template>
+                <ion-datetime
+                  presentation="date"
+                  [(ngModel)]="dateOfBirth"
+                  locale="sl-SI"
+                ></ion-datetime>
+              </ng-template>
+            </ion-popover>
+          </ion-item>
+
+          <ion-item>
+            <ion-select id="gender" placeholder="Gender">
+              <ion-select-option>Male</ion-select-option>
+              <ion-select-option>Female</ion-select-option>
+              <ion-select-option>Prefer not to say</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+        <ion-label class="title-info">ADDRESS</ion-label>
+
+        <ion-item>
+          <ion-input
+            id="currAddress"
+            placeholder="Current Address (House Number/Street)"
+          >
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="village" placeholder="Village/Sitio"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="barangay" placeholder="Barangay"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="city" placeholder="Town/City"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="province" placeholder="Province"> </ion-input>
+        </ion-item>
+
+        <ion-label class="title-info">CONTACT DETAILS</ion-label>
+
+        <ion-item>
+          <ion-input placeholder="Home Phone"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="mobileNum" placeholder="Mobile Number"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="email" placeholder="Email"> </ion-input>
+        </ion-item>
+
+        <ion-label class="title-info">WORK DETAILS</ion-label>
+
+        <ion-item>
+          <ion-input id="education" placeholder="Highest Education Attainment">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="occupation" placeholder="Occupation"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="workAddress" placeholder="Work Address"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="officeNum" placeholder="Office Number"> </ion-input>
+        </ion-item>
+
+        <ion-label class="title-info">ID DETAILS</ion-label>
+
+        <ion-item>
+          <ion-input id="idType" placeholder="ID Presented"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="idNum" placeholder="ID Number"> </ion-input>
+        </ion-item>
+      </ion-list>
+
+      <div class="next-container">
+        <ion-button class="next" (click)="goToNextSegment('segment2')"
+          >Next</ion-button
+        >
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="selectedSegment === 'segment2'" class="segment-content">
+    <div class="item-b">
+      <div class="checkbox-container">
+        <ion-checkbox labelPlacement="end"></ion-checkbox>
+        <ion-label class="checkbox-label"
+          >Click here if there is no suspect involved or identified and
+          thereafter proceed to item “C”</ion-label
+        >
+      </div>
+
+      <div class="anonymous-person-info">
+        <ion-label class="title-info-personal">PERSONAL INFORMATION</ion-label>
+      </div>
+      <ion-list class="info">
+        <ion-item>
+          <ion-input id="fname" placeholder="First Name"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="mname" placeholder="Middle Name"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="lname" placeholder="Last Name"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="citizenship" placeholder="Citizenship"> </ion-input>
+        </ion-item>
+        <div class="detail-select">
+          <ion-item class="dob">
+            <ion-icon name="calendar" color="black"></ion-icon>
+            <ion-input
+              placeholder="Date of Birth"
+              value="{{ dateOfBirth | date: 'dd.MM.yyyy' }}"
+              id="date"
+              class="ion-text-end"
+            ></ion-input>
+            <ion-popover trigger="date" size="cover">
+              <ng-template>
+                <ion-datetime
+                  presentation="date"
+                  [(ngModel)]="dateOfBirth"
+                  locale="sl-SI"
+                ></ion-datetime>
+              </ng-template>
+            </ion-popover>
+          </ion-item>
+
+          <ion-item>
+            <ion-select id="gender" placeholder="Gender">
+              <ion-select-option>Male</ion-select-option>
+              <ion-select-option>Female</ion-select-option>
+              <ion-select-option>Prefer not to say</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+        <ion-label class="title-info">ADDRESS</ion-label>
+
+        <ion-item>
+          <ion-input
+            id="currAddress"
+            placeholder="Current Address (House Number/Street)"
+          >
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="village" placeholder="Village/Sitio"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="barangay" placeholder="Barangay"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="city" placeholder="Town/City"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="province" placeholder="Province"> </ion-input>
+        </ion-item>
+
+        <ion-label class="title-info">CONTACT DETAILS</ion-label>
+
+        <ion-item>
+          <ion-input placeholder="Home Phone"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="mobileNum" placeholder="Mobile Number"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="email" placeholder="Email"> </ion-input>
+        </ion-item>
+
+        <ion-label class="title-info">WORK DETAILS</ion-label>
+
+        <ion-item>
+          <ion-input id="education" placeholder="Highest Education Attainment">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="occupation" placeholder="Occupation"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="workAddress" placeholder="Work Address"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="officeNum" placeholder="Office Number"> </ion-input>
+        </ion-item>
+
+        <ion-label class="title-info">DESCRIPTION</ion-label>
+
+        <ion-item>
+          <ion-input id="height" placeholder="Height"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="weight" placeholder="Weight"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="eyecolor" placeholder="Color of Eyes"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="eyedescription" placeholder="Description of eyes">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="haircolor" placeholder="Color of hair"> </ion-input>
+        </ion-item>
+
+        <div class="influence-under">
+          <ion-label
+            class="checkbox-label"
+            style="font-size: 15px; text-align: start"
+            >Under the influence?</ion-label
+          >
+          <ion-checkbox id="drugs" labelPlacement="end"></ion-checkbox>
+          <ion-label class="checkbox-label">Drugs</ion-label>
+          <ion-checkbox id="liquor" labelPlacement="end"></ion-checkbox>
+          <ion-label class="checkbox-label">Liquor</ion-label>
+          <ion-checkbox id="na" labelPlacement="end"></ion-checkbox>
+          <ion-label class="checkbox-label">NA</ion-label>
+        </div>
+
+        <ion-item class="sus-narrative">
+          <ion-textarea rows="15"
+            id="suspect-narrative" class="suspect-textarea"
+            placeholder="Other distinguishing features (describe in detail clothes, vehicle, sunglasses, weapon/s, scars and other data or activity of the suspect/s which were observed by the reporting person and/or witness/es to identify the suspect/s. These are important and may become evidence to identify, and link to the crime, the suspect/s) "
+          >
+          </ion-textarea>
+        </ion-item>
+
+
+      </ion-list>
+        
+        <ion-button class="add-btn"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add suspect</ion-button>
+      
+      <div class="next-container">
+        <ion-button class="next" (click)="goToNextSegment('segment3')"
+          >Next</ion-button
+        >
+      </div>
+    </div>
+  </div>
+
+
+
+  <div *ngIf="selectedSegment === 'segment3'" class="segment-content">
+    <div class="item-b">
+      <div class="checkbox-container">
+        <ion-checkbox labelPlacement="end"></ion-checkbox>
+        <ion-label class="checkbox-label"
+          >Check here if the reporter is also a victim and thereafter proceed to item “D” </ion-label
+        >
+      </div>
+
+      <div class="anonymous-person-info">
+        <ion-label class="title-info-personal">PERSONAL INFORMATION</ion-label>
+      </div>
+      <ion-list class="info">
+        <ion-item>
+          <ion-input id="fname" placeholder="First Name"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="mname" placeholder="Middle Name"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="lname" placeholder="Last Name"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="citizenship" placeholder="Citizenship"> </ion-input>
+        </ion-item>
+        <div class="detail-select">
+          <ion-item class="dob">
+            <ion-icon name="calendar" color="black"></ion-icon>
+            <ion-input
+              placeholder="Date of Birth"
+              value="{{ dateOfBirth | date: 'dd.MM.yyyy' }}"
+              id="date"
+              class="ion-text-end"
+            ></ion-input>
+            <ion-popover trigger="date" size="cover">
+              <ng-template>
+                <ion-datetime
+                  presentation="date"
+                  [(ngModel)]="dateOfBirth"
+                  locale="sl-SI"
+                ></ion-datetime>
+              </ng-template>
+            </ion-popover>
+          </ion-item>
+
+          <ion-item>
+            <ion-select id="gender" placeholder="Gender">
+              <ion-select-option>Male</ion-select-option>
+              <ion-select-option>Female</ion-select-option>
+              <ion-select-option>Prefer not to say</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </div>
+
+        <ion-label class="title-info">ADDRESS</ion-label>
+
+        <ion-item>
+          <ion-input
+            id="currAddress"
+            placeholder="Current Address (House Number/Street)"
+          >
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="village" placeholder="Village/Sitio"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="barangay" placeholder="Barangay"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="city" placeholder="Town/City"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="province" placeholder="Province"> </ion-input>
+        </ion-item>
+
+        <ion-label class="title-info">CONTACT DETAILS</ion-label>
+
+        <ion-item>
+          <ion-input placeholder="Home Phone"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="mobileNum" placeholder="Mobile Number"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="email" placeholder="Email"> </ion-input>
+        </ion-item>
+
+        <ion-label class="title-info">WORK DETAILS</ion-label>
+
+        <ion-item>
+          <ion-input id="education" placeholder="Highest Education Attainment">
+          </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="occupation" placeholder="Occupation"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="workAddress" placeholder="Work Address"> </ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input id="officeNum" placeholder="Office Number"> </ion-input>
+        </ion-item>
+
+      </ion-list>
+    </div>
+        
+        <ion-button class="add-btn"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add victim</ion-button>
+      
+      <div class="next-container">
+        <ion-button class="next" (click)="goToNextSegment('segment4')"
+          >Next</ion-button
+        >
+      </div>
+    </div>
+
+
+
+
+  <div *ngIf="selectedSegment === 'segment4'" class="segment-content">
+    
+    <ion-list class="info">
+
+      <ion-label class="title-info">INCIDENT DETAILS</ion-label>
+
+      <ion-item class="incident-date" style="width: 200px;">
+        <ion-icon name="calendar" color="black"></ion-icon>
+        <ion-input
+          placeholder="Date of Incident"
+          value="{{ dateOfBirth | date: 'dd.MM.yyyy' }}"
+          id="date"
+          class="ion-text-end"
+        ></ion-input>
+        <ion-popover trigger="date" size="cover">
+          <ng-template>
+            <ion-datetime
+              presentation="date"
+              [(ngModel)]="dateOfBirth"
+              locale="sl-SI"
+            ></ion-datetime>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="incident-time" placeholder="Time"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="incident-place" placeholder="Place of incident"> </ion-input>
+      </ion-item>
+
+      <ion-button class="add-btn"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add witness</ion-button>
+
+      <ion-item class="narrative">
+        <ion-textarea rows="15"
+          id="narrative" class="textarea"
+          placeholder="Enter in detail the narrative of the incident or event, answering the WHO, WHAT, WHEN, WHERE, WHY and HOW."
+        >
+        </ion-textarea>
+      </ion-item>
+      
+
+    </ion-list>
+    <div class="next-container">
+      <ion-button style="--background: blue;">Save</ion-button>
+      <ion-button class="next" style="width: 200px; font-size: small;" 
+        >Proceed to payment</ion-button
+      >
+    </div>
+  </div>
+   
+</ion-content>

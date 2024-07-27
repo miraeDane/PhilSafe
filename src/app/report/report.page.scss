@@ -1,0 +1,223 @@
+ion-toolbar {
+    --background: #004AAD;
+    height: 80px;
+    width: 100%;
+
+  }
+ion-title {
+    color: #ffff;
+    text-align: left;
+}
+
+.segment-container {
+    display: flex;
+    justify-content: center; 
+    margin: 0 auto;
+    height: auto; 
+    padding: 20px 0;
+
+  }
+
+.custom-segment {
+    --background: #ffffff; 
+    --indicator-color: #000000; 
+    --button-background: transparent; 
+    width: 95%;
+  
+    display: flex;
+    justify-content: space-around;
+
+    border-radius: 10px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+  }
+  
+  .segment-button {
+    --color: #000000; 
+    --background: transparent; 
+    //--indicator-color: #004AAD; 
+  
+    border-radius: 10px; 
+    --background-checked: #004AAD;
+    --color-checked: white;
+    text-align: center;
+  }
+
+  ion-segment, ion-label {
+    margin:0 auto;
+  }
+  
+  .segment-button.ion-activated {
+    --color: #ffffff;
+    //background-color: #004AAD; 
+    font-weight: bold;
+    background-color: var(--background-checked);
+    color: var(--color-checked);
+  }
+  
+  .segment-content {
+    color: #ffffff; 
+    background-color: #ffffff;
+    padding: 5px;
+    margin-top: 10px;
+    //box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  }
+
+  .segment-content ion-list {
+    background-color: #ffffff;
+  }
+
+  .segment-content ion-input {
+    --background: #ffffff;
+  }
+
+  .segment-content ion-item {
+    color: #000000; 
+    --background: #ffffff;
+    border-radius: 50px;
+    border: solid 0.3px #b4b1b1;
+    
+  }
+
+  .info ion-item {
+    margin: 15px;
+
+  }
+
+  .item-a {
+    background-color: #ffff;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: auto;
+    margin: 0 auto;
+
+  }
+
+  ion-select {
+    --background: #ffffff;
+    --color: #000000;
+    
+  }
+
+  .incident-item {
+    width: 200px;
+  }
+
+  ion-select-option {
+    --background: #ffffff;
+    color: #000000;
+    width: 50px;
+  }
+
+  .title-info-personal {
+    font-size: 15px;
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 10px;
+    margin-left: 10px;
+  
+  }
+  .title-info {
+    font-size: 15px;
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 10px;
+    margin-left: 10px;
+  }
+
+ .next, .anonymous, ion-button {
+    --background: #d80000;
+    --color: #ffffff;
+    --border-width: 20px;
+    --border-radius: 50px;
+  }
+
+  .next-container {
+    display: flex;
+    justify-content: flex-end; /* Aligns items to the right */
+    align-items: flex-end; /* Aligns items to the bottom */
+    padding: 20px; /* Optional: Add padding for spacing */
+  }
+  
+  .next {
+    width: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .anonymous {
+    width: 150px;
+    height: 22px;
+    font-size: 10px;
+  }
+
+  .anonymous-person-info, .detail-select {
+    display: flex;
+    justify-content: space-between;
+  
+  }
+
+   .influence-under {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 2px;
+   }
+  // .detail-select {
+  //   display: flex;
+  //   justify-content: space-between;
+  // }
+
+  .dob{
+    width: 180px;
+  }
+
+  .checkbox-contatiner {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0 auto;
+  }  
+  ion-checkbox {
+    --checkbox-background: #ffff;
+    --border-color: #838181;
+    margin: 2px;
+  }
+
+   .checkbox-label  {
+    font-size: 13px;
+    color:#000000;
+    //padding-left: 17px;
+    text-align: start;
+  }
+  
+  ion-textarea {
+
+    --height: 350px;
+    // --padding-start: 16px; /* Adjust padding to suit your design */
+    // --padding-end: 16px; /* Adjust padding to suit your design */
+    // --padding-top: 8px; /* Adjust padding to suit your design */
+    // --padding-bottom: 8px; /* Adjust padding to suit your design */
+    // --placeholder-color: #888; /* Optional: Adjust placeholder color */
+    
+  }
+
+  .suspect-textarea, 
+  .sus-narrative {
+    height: 350px;
+  }
+
+
+  .add-btn {
+    --background: #909193;
+    width: 150px;
+    height: 30px;
+    font-size: 11px;
+  }
+
+
+  

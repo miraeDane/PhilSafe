@@ -1,0 +1,308 @@
+ion-toolbar#top-toolbar {
+  --background: #004AAD;
+  height: 150px;
+  width: 100%;
+  border-bottom-right-radius: 50px;
+  border-bottom-left-radius: 50px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px; 
+  position: relative;
+  z-index: 10;
+}
+
+
+.top-items {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+  position: relative;
+  padding: 5px;
+  
+
+}
+
+.logo {
+
+  width: 80;
+  height: 90px;
+}
+
+ion-menu-button {
+  height: 80px; /* Increase height */
+  width: 90px;  /* Increase width */
+  border-radius: 50%; /* Make it circular */
+  border: #004AAD solid 5px; /* Border styling */
+}
+
+
+.bell {
+
+  width: 40px;
+  height: 50px;
+}
+
+.segment-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  --box-shadow: 0 40px 80px rgba(167, 159, 159, 0.2);
+}
+.custom-segment {
+  --background-focused: #CB2601;
+  --background: hsl(0, 0%, 95%);
+  --color: #000000;
+  width: 90%;
+  position: relative;
+  justify-content: center;
+  border-radius: 50px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+}
+
+ion-segment-button#duration {
+  
+  --color: #050505;
+  font-weight: bold;
+  --color-checked: white;
+  --background-checked: #CB2601;
+}
+
+.custom-segment ion-segment-button.ion-activated {
+  background-color: var(--background-checked);
+  color: var(--color-checked);
+}
+
+ion-segment.label {
+  color: #0000;
+}
+
+.solved {
+  color: #000;  
+  margin-top: 20px;
+  
+}
+
+ion-label#solvedTitle {
+  color: #000; 
+  text-align: center;
+  font-weight: bold;
+  display: block;
+  border-bottom: 0.3px solid #c7c4c4;
+  width: 90%; 
+  margin: 0 auto; 
+  padding-bottom: 5px; 
+
+}
+
+.numbers {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+}
+
+ion-label#solvedNum {
+  color: #004AAD;
+  font-size: 50px;
+  text-align: left;
+  margin-left: 25px;
+  font-weight: bold;
+  display: block;
+  
+}
+
+ion-label#solvedNumNation {
+  color: #CB2601;
+  font-size: 20px;
+  text-align: right;
+  margin-right: 25px;
+  font-weight: bold;
+  display: block;
+  margin-top: 50px;
+}
+
+.location {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+}
+
+ion-label#province {
+  color: #a0a5ac;
+  font-size: 18px;
+  text-align: left;
+  margin-left: 25px;
+  display: block;
+  padding-bottom: 35px;
+}
+
+ion-label#nation {
+  color: #a0a5ac;
+  font-size: 18px;
+  text-align: right;
+  margin-right: 25px;
+  display: block;
+  padding-bottom: 15px;
+}
+
+
+.articles {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 25px;
+
+}
+
+
+ion-label#safetyTitle {
+  background-color: #004AAD;
+  color:#fff;
+  font-size: 20px;
+  font-weight: bold;
+  display: block;
+  text-align: center;
+  border-radius: 50px;
+  width: 90%;
+  height: 120%; 
+  margin: 0 auto; 
+}
+
+.scroll-container {
+  display: flex;
+  justify-content: flex-start;
+  overflow-x: auto;
+  white-space: wrap;
+  padding: auto;
+  height: calc(60vh - 50px); 
+  //overflow-y: auto;
+  padding-bottom: 10px;
+}
+
+ion-card#card {
+  flex: 0 0 auto;
+  background:#ffff;
+  width: 280px; 
+  height: 450px;
+  margin-right: 10px;
+  border-radius:50px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+ion-card-title#card-title{
+  font-size: 15px;
+  font-weight: bold;
+  color:#007bffd0;
+  text-align: center;
+
+}
+
+ion-card-header#card-header{
+  margin: 0;
+  padding: 5px;
+}
+
+ion-card-content#card-content {
+  background: #dbf4ff93;
+  color: #0000008c;
+  //font-size: 18px;
+  text-align: justify;
+  //top: 2px;
+  margin: 10px;
+  height: 130px;
+  border-bottom-right-radius: 50px;
+  border-bottom-left-radius: 50px;
+  
+}  
+
+ion-card-content,p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+          line-clamp: 3; 
+  -webkit-box-orient: vertical;
+}
+
+.card-img {
+  height: 250px;
+  width: 450px;
+  border-bottom-right-radius: 30px;
+  border-bottom-left-radius: 30px;
+}
+
+
+ion-menu {
+  --background: white; /* Set the background color to white */
+}
+
+.side-menu-toolbar {
+  --background: #004AAD;
+  color: #ffffff;
+  height: 50px;
+  width: 100%;
+}
+
+.profile-container {
+  display: flex;
+  align-items: center;
+  padding: 20px; /* Add some padding */
+}
+
+.profile-img {
+  height: 90px; /* Set the height of the profile image */
+  width: 100px; /* Set the width of the profile image */
+  border-radius: 50%; /* Make it circular */
+  margin-right: 10px; /* Space between image and name */
+}
+
+.profile-name {
+  font-weight: bold; /* Make the profile name bold */
+  font-size: 20px; /* Adjust font size */
+  color: #000000;
+}
+
+.side-menu-list {
+  background-color: #ffffff;
+ 
+}
+
+.side-menu-item {
+  --background: #ffffff;
+  color: #000000;
+  padding: 15px;
+}
+
+.side-menu-item ion-label {
+  color: #000000;
+  padding-left: 15px;
+}
+
+ion-item.side-menu-item:hover {
+  --background: #004AAD; /* Change background color on hover */
+  color: #e6f1ff; /* Change text color on hover */
+}
+
+.side-menu-item:hover ion-label {
+  
+  color: #e6f1ff; /* Change text color on hover */
+}
+
+/* Optional: Adding a transition effect for smooth color change */
+ion-item.side-menu-item {
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.logout {
+  --background: #004AAD;
+  color: #fff;
+  border-radius: 50%;
+  margin-left: 50px;
+ 
+}
+

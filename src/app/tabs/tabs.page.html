@@ -1,0 +1,32 @@
+<ion-tabs>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="home">
+      <!-- <ion-icon name="home"></ion-icon> -->
+      <!-- <img src="assets/home.svg"> -->
+      <ion-icon src="assets/home.svg"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="inbox">
+      <!-- <ion-icon name="mail"></ion-icon> -->
+      <ion-icon src="assets/inbox.svg"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button></ion-tab-button>
+
+    <ion-tab-button tab="map">
+      <!-- <ion-icon name="globe"></ion-icon>   -->
+      <ion-icon src="assets/world.svg"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="article">
+      <!-- <ion-icon name="book"></ion-icon> -->
+      <ion-icon src="assets/article.svg"></ion-icon>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>
+
+<ion-fab vertical="bottom" horizontal="center" slot="fixed">
+  <ion-fab-button id="report" (click)="navigateToReport()">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

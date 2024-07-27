@@ -1,0 +1,55 @@
+
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/tabs"></ion-back-button>
+      </ion-buttons>
+      <ion-title>Crime Map</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+
+  <ion-content>
+    <div id="main-content" class="main-content">
+      <div class="segment-container">
+        <ion-segment value="custom" class="custom-segment">
+          <ion-segment-button id="duration" value="recent">
+            <ion-label>Recent</ion-label>
+          </ion-segment-button>
+          <ion-segment-button id="duration" value="segment">
+            <ion-label>Previous</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
+      </div>
+
+      <div class="jurisdiction">
+        <ion-item>
+          <ion-label>Region</ion-label>
+          <ion-select [(ngModel)]="selectedRegion" (ionChange)="onRegionChange($event)">
+            <ion-select-option *ngFor="let region of regions" [value]="region.id">{{ region.name }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Province</ion-label>
+          <ion-select [(ngModel)]="selectedProvince" (ionChange)="onProvinceChange($event)" [disabled]="!selectedRegion">
+            <ion-select-option *ngFor="let province of provinces" [value]="province.id">{{ province.name }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>City</ion-label>
+          <ion-select [(ngModel)]="selectedCity" (ionChange)="onCityChange($event)" [disabled]="!selectedProvince">
+            <ion-select-option *ngFor="let city of cities" [value]="city.id">{{ city.name }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      
+      </div>
+      <div class="crime-level"></div>
+      <div class="mapboxgl-canvas-container">
+        <div class="mapboxgl-canvas" id="map" ></div>
+      </div>
+</ion-content>
+
+

@@ -1,0 +1,75 @@
+:host {
+    background-color: white; 
+    display: block; 
+    height: 100%; /* Ensure it covers the full height */
+}
+
+ion-tab-bar {
+    // --background: #f4f4f4;
+    // box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+    // bottom: 20px;
+    // position: relative;
+    // border-radius: 16px;
+    // width: 92%;
+    // border-top: none;
+    // margin: 0 auto;0
+    // height: 55px;
+    
+    --background: #ffffff;
+    border: solid 0.5px;
+    border-top-right-radius: 33px;
+    border-top-left-radius: 33px;
+    --box-shadow: 0 5px rgba(255, 255, 255, 0.3);
+
+  }
+  
+  ion-tab-button {
+    
+    --color: #d4d4d4;
+    --color-selected: #004AAD;
+    --padding-bottom: 8px;
+    --padding-top: 8px;
+   
+  
+    &::before {
+      background-color: transparent;
+      display: block;
+      content: "";
+      margin: 0 auto;
+      width: 20px;
+      height: 2px;
+    }
+  
+    &.tab-selected::before {
+      background-color: #004AAD;
+    }
+  }
+
+// ion-tab-button#report {
+//     background-color: #71abf7;
+//     border: #004AAD solid 5px;
+//     border-radius: 80px;
+//     --color: #ffffff;
+//     margin-bottom: 15px;
+// }
+  
+ion-fab-button#report {
+    background-color: #71abf7; /* Background color of the button */
+    border: #004AAD solid 5px; /* Border color and thickness */
+    border-radius: 50%; /* Make it circular */
+    width: 60px; /* Set a fixed width */
+    height: 60px; /* Set a fixed height */
+    display: flex; /* Use flexbox to center the icon */
+    justify-content: center; /* Center the icon horizontally */
+    align-items: center; /* Center the icon vertically */
+    margin-bottom: 15px; /* Space below the button */
+    position: relative; /* Position relative for any absolute children */
+    z-index: 5; /* Ensure it appears above other elements */
+}
+
+ion-fab-button#report ion-icon {
+    font-size: 30px; /* Adjust icon size as needed */
+    color: #ffffff; /* Icon color */
+}
+
+  
