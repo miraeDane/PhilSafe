@@ -1,0 +1,35 @@
+<ion-content class="custom-background">
+
+  <div class="wrapper">
+    <div class="logo">
+      <img src="assets/PhilSafe Logo.png">
+    </div>
+
+    <div class="login-input">
+      <ion-list class="info">
+
+        <ion-item>
+          <ion-input id="username" placeholder="Username">
+           </ion-input>
+           <ion-icon name="person" slot="start"></ion-icon> 
+           <ion-icon></ion-icon>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input id="pass" placeholder="Password">
+            </ion-input>
+            <ion-icon src="assets/lock.svg" slot="start"></ion-icon>
+            <ion-icon name="eye" slot="end"></ion-icon>
+        </ion-item>
+
+       
+          <ion-label>Forgot Password? <a>Click here</a> </ion-label>
+      
+        <div class="next-container">
+          <ion-button class="confirm" routerLink="/home">Sign in</ion-button
+          >
+          </div>
+      </ion-list>
+    </div>
+  </div>
+</ion-content>

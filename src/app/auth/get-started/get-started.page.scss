@@ -1,0 +1,22 @@
+
+ion-content {
+  --background: url("./assets/bacgkround.svg") no-repeat fixed center / cover;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
+    height: 100%; 
+  }
+
+.custom-logo {
+    width: 200px;
+    height: 200px;
+}
+
+.get-started-1 {
+    color: #9b9393;
+}
+

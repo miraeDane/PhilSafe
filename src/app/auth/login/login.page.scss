@@ -1,0 +1,75 @@
+ion-content {
+    --background: url("../assets/bacgkround.svg") no-repeat fixed center / cover;
+  }
+
+ 
+img {
+    width: 300px;
+    height: 300px;
+    margin-top: 90px;
+  }
+
+  .logo {
+    display: flex;
+    justify-content: center;
+
+  }
+  .wrapper {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-left: 15px;
+    margin-right: 15px;
+    width: auto;
+    height: auto;
+  }
+
+  .wrapper ion-input {
+
+    --background: #ffffff;
+  }
+
+  .wrapper ion-list {
+    background: #ffffff00;
+    
+  }
+
+  ion-item {
+    color: #000000;
+    --background: #ffffff;
+    border-radius: 50px;
+    border: solid 0.3px #b4b1b1;
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .wrapper ion-item {
+    margin-bottom: 15px;
+    margin-top: 25px;
+  }
+
+  ion-icon {
+    color: #b4b1b1;
+    padding: auto;
+  }
+
+  ion-label {
+    color: #000000
+  }
+
+  ion-button {
+    --background: #004aad;
+    --color: #ffffff;
+    --border-width: auto;
+    --border-radius: 50px;
+    min-width: -webkit-fill-available;
+    
+  }
+  
+  .next-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  
+  }

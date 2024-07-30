@@ -1,0 +1,46 @@
+<ion-content class="custom-background">
+
+  <div class="segment-container">
+    <ion-segment class="custom-segment" [(ngModel)]="selectedSegment" (ionChange)="onSegmentChange($event)">
+      <ion-segment-button value="register" id="register-as"
+      [style.backgroundColor]="selectedSegment === 'register' ? 'active-color' : ''">
+        Victim
+      </ion-segment-button >
+      <ion-segment-button value="witness" id="register-as"
+      [style.backgroundColor]="selectedSegment === 'witness' ? 'active-color' : ''">
+        Witness
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+
+  <div class="container">
+    <ion-list class="info">
+      <ion-item>
+        <ion-input id="fname" placeholder="First Name"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="mname" placeholder="Middle Name"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="lname" placeholder="Last Name"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="contact_num" placeholder="Contact Number"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input type="email" id="email" placeholder="Email Address"></ion-input>
+      </ion-item>
+      
+      <div class="next-container">
+        <ion-button class="confirm">Send Code</ion-button
+        >
+        </div>
+    </ion-list>
+    
+  </div>
+</ion-content>
