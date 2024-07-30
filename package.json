@@ -26,10 +26,10 @@
     "cordova-sqlite-storage": "^6.1.0",
     "ion-tab-bar-middle-fab": "^0.0.2",
     "ionicons": "^7.0.0",
-    
     "localforage-cordovasqlitedriver": "^1.8.0",
     "mapbox-gl": "^3.5.2",
     "rxjs": "~7.8.0",
+    "swiper": "^11.1.8",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"
   },

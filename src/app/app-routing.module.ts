@@ -4,8 +4,28 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'tabs', // Redirect to TabsPage
+    redirectTo: 'get-started', 
     pathMatch: 'full',
+  },
+  {
+    path: 'get-started',
+    loadChildren: () => import('./auth/get-started/get-started.module').then( m => m.GetStartedPageModule)
+  },
+  {
+    path: 'login',
+    loadChildren: () => import('./auth/login/login.module').then( m => m.LoginPageModule)
+  },
+  {
+    path: 'report-as',
+    loadChildren: () => import('./auth/get-started/report-as/report-as.module').then( m => m.ReportAsPageModule)
+  },
+  {
+    path: 'register',
+    loadChildren: () => import('./auth/register/register.module').then( m => m.RegisterPageModule)
+  },
+  {
+    path: 'witness',
+    loadChildren: () => import('./auth/witness/witness.module').then( m => m.WitnessPageModule)
   },
   {
     path: 'tabs',
@@ -60,6 +80,8 @@ const routes: Routes = [
     loadChildren: () =>
       import('./article/article.module').then((m) => m.ArticlePageModule),
   },
+  
+ 
 ];
 
 @NgModule({
