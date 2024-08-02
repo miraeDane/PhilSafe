@@ -1,0 +1,28 @@
+export interface DescriptionRequest {
+    alias: string | null;
+    ethnicity: string | null;
+    isBalikBayan: boolean | null;
+    isTourist: boolean | null;
+    otherMark: string | null;
+    distinguishingMark: string | null;
+    hairColor: string | null;
+    eyeColor: string | null;
+    alcohol: boolean | null;
+    drug: boolean | null;
+    height: number | null;
+    weight: number | null;
+    personId: number | null;
+    occupationId: number | null;
+    witnessId: number | null;
+    victimId: number | null;
+    suspectId: number | null;
+    locationId: number | null;
+    egoId: number | null;
+    datetimeCreated: string | null;
+    lastModified: string | null;
+    createdBy: string | null;
+    modifiedBy: string | null;
+    datetimeLastSeen: string | null;
+    placeLastSeen: string | null;
+    bloodType: string | null;
+}
