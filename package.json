@@ -22,8 +22,12 @@
     "@angular/platform-browser-dynamic": "^18.0.0",
     "@angular/router": "^18.0.0",
     "@capacitor-community/sqlite": "^6.0.1",
+<<<<<<< HEAD
     "@ionic/angular": "^8.0.0",
     "angular-progress-bar": "^1.0.11",
+=======
+    "@ionic/angular": "^8.2.6",
+>>>>>>> d7d8b6686ddc5eb1b328055e36d2bf6a73887a07
     "cordova-sqlite-storage": "^6.1.0",
     "ion-tab-bar-middle-fab": "^0.0.2",
     "ionicons": "^7.0.0",
