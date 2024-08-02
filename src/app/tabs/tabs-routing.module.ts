@@ -9,35 +9,13 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'home', // Redirect to home tab
+        redirectTo: 'home', 
         pathMatch: 'full'
       },
+
       {
-        path: 'home', // Home tab
-        loadChildren: () => import('../home/home.module').then(m => m.HomePageModule),
-        // children: [
-        //   {
-        //     path: 'edit-profile',
-        //     loadChildren: () =>
-        //       import('../home/edit-profile/edit-profile.module').then(
-        //         (m) => m.EditProfilePageModule
-        //       ),
-        //   },
-        //   {
-        //     path: 'my-reports',
-        //     loadChildren: () =>
-        //       import('../home/my-reports/my-reports.module').then(
-        //         (m) => m.MyReportsPageModule
-        //       ),
-        //   },
-        //   {
-        //     path: 'settings',
-        //     loadChildren: () =>
-        //       import('../home/settings/settings.module').then(
-        //         (m) => m.SettingsPageModule
-        //       ),
-        //   },
-        // ],
+        path: 'home', 
+        loadChildren: () => import('../home/home.module').then(m => m.HomePageModule),      
       },
       {
         path: 'inbox',
@@ -54,6 +32,18 @@ const routes: Routes = [
       {
         path: 'article',
         loadChildren: () => import('../article/article.module').then(m => m.ArticlePageModule)
+      },
+      {
+        path: 'myreports',
+        loadChildren: () => import('../myreports/myreports.module').then( m => m.MyreportsPageModule)
+      },
+      {
+        path: 'incident-details/:id',
+        loadChildren: () => import('../myreports/incident-details/incident-details.module').then( m => m.IncidentDetailsPageModule)
+      },
+      {
+        path: 'notification',
+        loadChildren: () => import('../notification/notification.module').then( m => m.NotificationPageModule)
       },
     ]
   }

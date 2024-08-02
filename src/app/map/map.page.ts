@@ -2,7 +2,9 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import * as mapboxgl from 'mapbox-gl';
-
+import { Platform } from '@ionic/angular';
+import { map } from 'rxjs/operators';
+import * as L from 'leaflet';
 // declare const mapboxgl: any;
 
 @Component({
@@ -21,27 +23,37 @@ export class MapPage implements OnInit {
   selectedProvince: any;
   selectedCity: any;
   selectedMunicipality: any;
+  map!: L.Map;
 
-  constructor(private http: HttpClient) { }
+
+  constructor(private http: HttpClient, public plt: Platform) { }
 
  
-  map: mapboxgl.Map | undefined;
-
+  
   ngOnInit() {
-    (mapboxgl as any).accessToken = environment.mapboxKey;
-    this.map = new mapboxgl.Map({
-        container: 'map', 
-        //style: 'mapbox://styles/mapbox/streets-v12',
-        center: [123.880283, 10.324278], 
-        zoom: 10 // starting zoom
+    // (mapboxgl as any).accessToken = environment.mapboxKey;
+    // this.map = new mapboxgl.Map({
+    //     container: 'map', 
+    //     //style: 'mapbox://styles/mapbox/streets-v12',
+    //     center: [123.880283, 10.324278], 
+    //     zoom: 10 // starting zoom
   
-    });
+    // });
   
-    this.map.resize();
-    this.map.addControl(new mapboxgl.FullscreenControl());
+    // this.map.resize();
+    // this.map.addControl(new mapboxgl.FullscreenControl());
 
+    this.map = L.map('map', {
+      center: [123.880283, 10.324278], 
+      zoom: 20,
+      renderer: L.canvas()
+    });
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(this.map)
   }
-  
+
+
 
   
 

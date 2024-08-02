@@ -1,0 +1,131 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/report"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Add Witness</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="segment-content">
+    <div class="anonymous-person-info">
+      <ion-label class="title-info-personal">PERSONAL INFORMATION</ion-label>
+    </div>
+    <ion-list lines="none">
+      <ion-item>
+        <ion-input id="fname" placeholder="First Name"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="mname" placeholder="Middle Name"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="lname" placeholder="Last Name"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="citizenship" placeholder="Citizenship"> </ion-input>
+      </ion-item>
+      <div class="detail-select">
+        <ion-item class="dob">
+          <ion-icon name="calendar" color="black"></ion-icon>
+          <ion-input
+            placeholder="Date of Birth"
+            value="{{ dateOfBirth | date: 'dd.MM.yyyy' }}"
+            id="date"
+            class="ion-text-end"
+          ></ion-input>
+          <ion-popover trigger="date" size="cover">
+            <ng-template>
+              <ion-datetime
+                presentation="date"
+                [(ngModel)]="dateOfBirth"
+                locale="sl-SI"
+              ></ion-datetime>
+            </ng-template>
+          </ion-popover>
+        </ion-item>
+
+        <ion-item>
+          <ion-select id="gender" placeholder="Gender">
+            <ion-select-option>Male</ion-select-option>
+            <ion-select-option>Female</ion-select-option>
+            <ion-select-option>Prefer not to say</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </div>
+
+      <ion-label class="title-info">ADDRESS</ion-label>
+
+      <ion-item>
+        <ion-input
+          id="currAddress"
+          placeholder="Current Address (House Number/Street)"
+        >
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="village" placeholder="Village/Sitio"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="barangay" placeholder="Barangay"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="city" placeholder="Town/City"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="province" placeholder="Province"> </ion-input>
+      </ion-item>
+
+      <ion-label class="title-info">CONTACT DETAILS</ion-label>
+
+      <ion-item>
+        <ion-input placeholder="Home Phone"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="mobileNum" placeholder="Mobile Number"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="email" placeholder="Email"> </ion-input>
+      </ion-item>
+
+      <ion-label class="title-info">WORK DETAILS</ion-label>
+
+      <ion-item>
+        <ion-input id="education" placeholder="Highest Education Attainment">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="occupation" placeholder="Occupation"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="workAddress" placeholder="Work Address"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input id="officeNum" placeholder="Office Number"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-select id="gender" placeholder="Add Testimony">
+          <ion-select-option>Narrative</ion-select-option>
+          <ion-select-option>Audio</ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
+  </div>
+  <div class="next-container">
+    <ion-button style="--background: blue; color: #ffffff;">Add Witness</ion-button>
+  </div>
+ 
+</ion-content>

@@ -10,11 +10,12 @@ ion-title {
 }
 
 .segment-container {
-    display: flex;
+    //display: flex;
     justify-content: center; 
     margin: 0 auto;
     height: auto; 
-    padding: 20px 0;
+    padding: 10px 0;
+    width: auto;
 
   }
 
@@ -25,7 +26,7 @@ ion-title {
     width: 95%;
   
     display: flex;
-    justify-content: space-around;
+    // justify-content: space-around;
 
     border-radius: 10px; 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -69,14 +70,22 @@ ion-title {
 
   .segment-content ion-input {
     --background: #ffffff;
+    color: #000000;
+    border-radius: 50px;
+    --border: solid 0px #d1d1d1;
+
+  }
+
+  input:focus{
+    outline:none;
   }
 
   .segment-content ion-item {
     color: #000000; 
     --background: #ffffff;
     border-radius: 50px;
-    border: solid 0.3px #b4b1b1;
-    
+    border: solid 0.1px #b4b1b1;
+   
   }
 
   .info ion-item {
@@ -198,11 +207,7 @@ ion-title {
   ion-textarea {
 
     --height: 350px;
-    // --padding-start: 16px; /* Adjust padding to suit your design */
-    // --padding-end: 16px; /* Adjust padding to suit your design */
-    // --padding-top: 8px; /* Adjust padding to suit your design */
-    // --padding-bottom: 8px; /* Adjust padding to suit your design */
-    // --placeholder-color: #888; /* Optional: Adjust placeholder color */
+
     
   }
 
@@ -219,5 +224,48 @@ ion-title {
     font-size: 11px;
   }
 
-
+  label {
+    background-color: #ffffff;
+    color: #000000;
+    margin-top: 7px;
+    
+  }
   
+  .uploadfile {
+  
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    margin-left: 10px;
+  }
+
+  .upload-icon {
+    margin: 5px;
+    width: 25px;
+    height: 20px;
+    
+  }
+
+  .icon-label {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border-radius: 3px;
+    border: solid #acacacf1 0.2px;
+    font-family: sans-serif;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    width:auto;
+  }
+
+  .max-size {
+    color:#909193;
+    font-size: 15px;
+  }
+
+  .add-items {
+    display: flex;
+    flex-direction: column;
+  }

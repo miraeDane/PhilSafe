@@ -1,16 +1,16 @@
 ion-toolbar#top-toolbar {
   --background: #004AAD;
-  height: 150px;
+  height: 130px;
   width: 100%;
-  border-bottom-right-radius: 50px;
-  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 63px;
+  border-bottom-left-radius: 63px;
 
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 16px; 
-  position: relative;
-  z-index: 10;
+  // justify-content: space-between;
+  // align-items: center;
+  // padding: 0 16px; 
+  // position: relative;
+  // z-index: 10;
 }
 
 
@@ -32,17 +32,46 @@ ion-toolbar#top-toolbar {
 }
 
 ion-menu-button {
-  height: 80px; /* Increase height */
-  width: 90px;  /* Increase width */
-  border-radius: 50%; /* Make it circular */
-  border: #004AAD solid 5px; /* Border styling */
+  height: 80px;
+  width: 90px; 
+  border-radius: 50%; 
+  //border: #004AAD solid 5px; 
 }
 
+.user {
+  // width: auto;
+  // height: auto;
+  //margin: 10px;
+}
+
+.menu{
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 60px;
+  margin-left: 5px;
+}
+
+.menu-icon{
+  margin-right: 10px;
+}
+
+.burger-icon{
+  margin-right: 50px;
+}
 
 .bell {
+  width: 80px;
+  height: 80px;
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-left: 5px;
+}
 
+.bell-icon {
   width: 40px;
-  height: 50px;
+  height: 40px;
 }
 
 .segment-container {
@@ -238,7 +267,7 @@ ion-card-content,p {
 
 
 ion-menu {
-  --background: white; /* Set the background color to white */
+  --background: white; 
 }
 
 .side-menu-toolbar {
@@ -248,23 +277,68 @@ ion-menu {
   width: 100%;
 }
 
+.side-avatar {
+  width: 140px;
+  height: 150px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+
+}
+
+.user{
+  
+  width: 50px;
+  height: 50px;
+  margin-left: 20px;
+}
+
+.user-home-avatar {
+  border: solid #ffffff 0.4;
+}
+
+.user-home-button {
+
+  margin-bottom: 40px;
+}
+
+
+
 .profile-container {
   display: flex;
-  align-items: center;
-  padding: 20px; /* Add some padding */
+    padding: 10px;
+    align-content: center;
+    justify-content: center;
 }
 
 .profile-img {
-  height: 90px; /* Set the height of the profile image */
-  width: 100px; /* Set the width of the profile image */
-  border-radius: 50%; /* Make it circular */
-  margin-right: 10px; /* Space between image and name */
+  height: 90px; 
+  width: 100px; 
+  border-radius: 50%; 
+  margin-right: 10px; 
 }
 
 .profile-name {
-  font-weight: bold; /* Make the profile name bold */
-  font-size: 20px; /* Adjust font size */
-  color: #000000;
+  font-weight: bold;
+    font-size: 15px;
+    color: #000000;
+    margin-bottom: 15px;
+    align-items: center;
+    display: flex;
+    text-align: center;
+}
+
+.email{
+  font-weight: 5px;
+  color:#a0a5ac;
+  text-align: center;
+}
+
+.user-details {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .side-menu-list {
@@ -281,28 +355,35 @@ ion-menu {
 .side-menu-item ion-label {
   color: #000000;
   padding-left: 15px;
+  font-weight: 20px;
 }
 
 ion-item.side-menu-item:hover {
-  --background: #004AAD; /* Change background color on hover */
-  color: #e6f1ff; /* Change text color on hover */
+  --background: #bbbdbf; 
+  color: #000000; 
 }
 
 .side-menu-item:hover ion-label {
   
-  color: #e6f1ff; /* Change text color on hover */
+  color: #080808; 
 }
 
-/* Optional: Adding a transition effect for smooth color change */
 ion-item.side-menu-item {
   transition: background-color 0.3s, color 0.3s;
 }
 
-.logout {
-  --background: #004AAD;
-  color: #fff;
-  border-radius: 50%;
-  margin-left: 50px;
+.logout { 
+  color: #000000;
  
+}
+
+.small-img {
+  width: 20px;
+  height: 20px
+}
+
+.medium-img {
+  width: 100px;
+  height: 100px;
 }
 

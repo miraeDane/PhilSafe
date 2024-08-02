@@ -11,10 +11,7 @@ const routes: Routes = [
     path: 'edit-profile',
     loadChildren: () => import('./edit-profile/edit-profile.module').then( m => m.EditProfilePageModule)
   },
-  {
-    path: 'my-reports',
-    loadChildren: () => import('./my-reports/my-reports.module').then( m => m.MyReportsPageModule)
-  },
+
   {
     path: 'settings',
     loadChildren: () => import('./settings/settings.module').then( m => m.SettingsPageModule)

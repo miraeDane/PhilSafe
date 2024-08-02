@@ -24,7 +24,7 @@
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
-
+@import "~leaflet/dist/leaflet.css";
 /**
  * Ionic Dark Mode
  * -----------------------------------------------------
@@ -38,6 +38,9 @@
 
 /* styles.css or styles.scss */
 @import url('https://fonts.googleapis.com/css?family=Inter&display=swap');
+
+
+
 
 html, body, ion-content {
     --background: #ffff;
@@ -66,3 +69,4 @@ ion-app {
     width: 100%;
     height: 100%;
   }
+

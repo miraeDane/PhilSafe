@@ -46,7 +46,7 @@
 
   <div *ngIf="selectedSegment === 'segment1'" class="segment-content">
     <div class="item-a">
-      <ion-list class="incident">
+      <ion-list class="incident" lines="none">
         <ion-item class="incident-item">
           <ion-select
             class="incident-select"
@@ -66,8 +66,8 @@
           Anonymous Report
         </ion-button>
       </div>
-      <ion-list class="info">
-        <ion-item>
+      <ion-list class="info" lines="none">
+        <ion-item >
           <ion-input id="fname" placeholder="First Name"> </ion-input>
         </ion-item>
 
@@ -181,6 +181,16 @@
         </ion-item>
       </ion-list>
 
+      <div id="uploadfile" class="uploadfile">
+       <ion-label class="title-info">Upload your valid ID</ion-label>
+          <input type="file" class="file" id="actual-btn" hidden/>
+          <div class="icon-label">
+            <ion-icon src="assets/upload.svg" class="upload-icon"></ion-icon>
+            <label for="actual-btn">Upload file/s</label>
+          </div>  
+          <p class="max-size">Maximum size up to 2GB</p>
+      </div>
+
       <div class="next-container">
         <ion-button class="next" (click)="goToNextSegment('segment2')"
           >Next</ion-button
@@ -202,7 +212,7 @@
       <div class="anonymous-person-info">
         <ion-label class="title-info-personal">PERSONAL INFORMATION</ion-label>
       </div>
-      <ion-list class="info">
+      <ion-list class="info" lines="none">
         <ion-item>
           <ion-input id="fname" placeholder="First Name"> </ion-input>
         </ion-item>
@@ -354,7 +364,7 @@
 
       </ion-list>
         
-        <ion-button class="add-btn"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add suspect</ion-button>
+        <ion-button class="add-btn" routerLink="/add-suspect"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add suspect</ion-button>
       
       <div class="next-container">
         <ion-button class="next" (click)="goToNextSegment('segment3')"
@@ -378,7 +388,7 @@
       <div class="anonymous-person-info">
         <ion-label class="title-info-personal">PERSONAL INFORMATION</ion-label>
       </div>
-      <ion-list class="info">
+      <ion-list class="info" lines="none">
         <ion-item>
           <ion-input id="fname" placeholder="First Name"> </ion-input>
         </ion-item>
@@ -499,7 +509,7 @@
 
   <div *ngIf="selectedSegment === 'segment4'" class="segment-content">
     
-    <ion-list class="info">
+    <ion-list class="info" lines="none">
 
       <ion-label class="title-info">INCIDENT DETAILS</ion-label>
 
@@ -530,7 +540,7 @@
         <ion-input id="incident-place" placeholder="Place of incident"> </ion-input>
       </ion-item>
 
-      <ion-button class="add-btn"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add witness</ion-button>
+      
 
       <ion-item class="narrative">
         <ion-textarea rows="15"
@@ -539,6 +549,11 @@
         >
         </ion-textarea>
       </ion-item>
+      <div class="add-items">
+        <ion-button class="add-btn" routerLink="/add-witness"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add witness</ion-button>
+      
+       <ion-button class="add-btn" routerLink="/add-evidence"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add Evidence</ion-button>
+      </div>
       
 
     </ion-list>

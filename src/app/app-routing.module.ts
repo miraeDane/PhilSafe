@@ -30,35 +30,12 @@ const routes: Routes = [
   {
     path: 'tabs',
     loadChildren: () =>
-      import('./tabs/tabs.module').then((m) => m.TabsPageModule), // Ensure this path is correct
+      import('./tabs/tabs.module').then((m) => m.TabsPageModule), 
   },
   {
     path: 'home',
     loadChildren: () =>
       import('./home/home.module').then((m) => m.HomePageModule),
-    // children: [
-    //   {
-    //     path: 'edit-profile',
-    //     loadChildren: () =>
-    //       import('./home/edit-profile/edit-profile.module').then(
-    //         (m) => m.EditProfilePageModule
-    //       ),
-    //   },
-    //   {
-    //     path: 'my-reports',
-    //     loadChildren: () =>
-    //       import('./home/my-reports/my-reports.module').then(
-    //         (m) => m.MyReportsPageModule
-    //       ),
-    //   },
-    //   {
-    //     path: 'settings',
-    //     loadChildren: () =>
-    //       import('./home/settings/settings.module').then(
-    //         (m) => m.SettingsPageModule
-    //       ),
-    //   },
-    // ],
   },
 
   {
@@ -80,8 +57,50 @@ const routes: Routes = [
     loadChildren: () =>
       import('./article/article.module').then((m) => m.ArticlePageModule),
   },
-  
+
  
+  {
+    path: 'myreports',
+    loadChildren: () => import('./myreports/myreports.module').then( m => m.MyreportsPageModule)
+  },
+  {
+    path: 'notification',
+    loadChildren: () => import('./notification/notification.module').then( m => m.NotificationPageModule)
+  },
+  
+  {
+    path: 'incident-details/:id',
+    loadChildren: () => import('./myreports/incident-details/incident-details.module').then( m => m.IncidentDetailsPageModule)
+  },
+  {
+    path: 'carousel',
+    loadChildren: () => import('./auth/get-started/carousel/carousel.module').then(m => m.CarouselPageModule)
+  },
+  {
+    path: 'w-details',
+    loadChildren: () => import('./myreports/incident-details/w-details/w-details.module').then( m => m.WDetailsPageModule)
+  },
+  {
+    path: 'e-details',
+    loadChildren: () => import('./myreports/incident-details/e-details/e-details.module').then( m => m.EDetailsPageModule)
+  },
+  {
+    path: 's-details',
+    loadChildren: () => import('./myreports/incident-details/s-details/s-details.module').then( m => m.SDetailsPageModule)
+  },
+  {
+    path: 'add-evidence',
+    loadChildren: () => import('./report/add-evidence/add-evidence.module').then( m => m.AddEvidencePageModule)
+  },
+  {
+    path: 'add-suspect',
+    loadChildren: () => import('./report/add-suspect/add-suspect.module').then( m => m.AddSuspectPageModule)
+  },
+  {
+    path: 'add-witness',
+    loadChildren: () => import('./report/add-witness/add-witness.module').then( m => m.AddWitnessPageModule)
+  },
+  
 ];
 
 @NgModule({

@@ -4,6 +4,11 @@ ion-toolbar {
   width: 100%;
 }
 
+// .mapboxgl-canvas {
+//   width:auto;
+//   height:auto;
+// }
+
 // ion-content, #map {
 //     height: 100%;
 //     width: 100%;
@@ -11,12 +16,15 @@ ion-toolbar {
 //     padding: 0;
 //   }
   
-//   #map {
-  
-//     width: 100vw;
-//     height: 100vh;
-  
-//  }
+  #map {
+
+    position: absolute; /* or relative */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
  
 //   .map-container {
 //     width: 100%;
@@ -27,25 +35,24 @@ ion-toolbar {
 //     width: 800px;  /* Adjusted width */
 //     height: 600px; /* Adjusted height */
 // }
+
 .main-content {
-  position: absolute;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   top: 20px;
-  left: 20px;
   width: auto;
   height: auto;
   z-index: 99;
 }
 
 .jurisdiction {
-  position: absolute;
+  position: sticky;
   display: flex;
   justify-content: center;
   align-items: center;
   top: 650px; /* Adjust as needed */
-  left: 20px; /* Adjust as needed */
   width: auto;
   padding: 10px;
   //border-radius: 8px;

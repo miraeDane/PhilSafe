@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/report"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Add Evidence</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="segment-content">
+    <ion-list lines="none">
+      <ion-item>
+        <ion-input id="e-description" placeholder="Evidence/s' Description"> </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input id="location-collected" placeholder="Location Collected"> </ion-input>
+      </ion-item>
+      <div id="uploadfile" class="uploadfile">
+        <ion-label class="title-info">Upload the evidences</ion-label>
+           <input type="file" class="file" id="actual-btn" hidden/>
+           <div class="icon-label">
+             <ion-icon src="assets/upload.svg" class="upload-icon"></ion-icon>
+             <label for="actual-btn">Upload file/s</label>
+           </div>  
+           <p class="max-size">Maximum size up to 2GB</p>
+       </div>
+    </ion-list>
+  </div>
+  <div class="next-container">
+    <ion-button style="--background: blue; color: #ffffff;">Add Evidence</ion-button>
+  </div>
+ 
+</ion-content>

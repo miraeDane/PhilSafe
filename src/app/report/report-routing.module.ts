@@ -11,7 +11,19 @@ const routes: Routes = [
   {
     path: ':segment',
     component: ReportPage
+  },  {
+    path: 'add-witness',
+    loadChildren: () => import('./add-witness/add-witness.module').then( m => m.AddWitnessPageModule)
+  },
+  {
+    path: 'add-evidence',
+    loadChildren: () => import('./add-evidence/add-evidence.module').then( m => m.AddEvidencePageModule)
+  },
+  {
+    path: 'add-suspect',
+    loadChildren: () => import('./add-suspect/add-suspect.module').then( m => m.AddSuspectPageModule)
   }
+
 ];
 
 @NgModule({
