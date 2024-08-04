@@ -6,4 +6,5 @@ export interface AccountRequestDto {
     homeAddressId: number;
     workAddressId: number;
     personId: number;
+    profilePic: File | null;
 }

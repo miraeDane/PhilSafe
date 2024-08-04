@@ -11,4 +11,5 @@ export interface Account {
     last_name: string;
     sex: string;
     birth_date: string;
+    profile_pic_url : string;
 }

@@ -10,4 +10,5 @@ export interface ReportDto {
     blotter_num: string;
     subcategory_name: string | null;
     category_name: string | null;
+    e_signature: string; 
 }

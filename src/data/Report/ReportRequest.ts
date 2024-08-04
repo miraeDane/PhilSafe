@@ -7,4 +7,6 @@ export interface ReportRequest {
     crimeId: number | null;
     reportedDate: string;
     blotterNum: string;
+    hasAccount: boolean; 
+    eSignature: File; 
 }
