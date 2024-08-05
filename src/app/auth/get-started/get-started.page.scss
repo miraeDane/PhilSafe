@@ -8,7 +8,7 @@ ion-content {
     flex-direction: column;
     justify-content: center; 
     align-items: center;
-    height: 100%; 
+    //height: 100%; 
   }
 
 .custom-logo {
@@ -18,5 +18,37 @@ ion-content {
 
 .get-started-1 {
     color: #9b9393;
+    margin-top: 150px;
+
+}
+
+.upper-slogan{
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  margin-top: 250px;
+
+}
+
+.lower-slogan{
+  margin: 20px;
+  width: 200px;
+  text-align: center;
+}
+
+.report{
+  font-weight: bold;
+  margin-right: 15px;
+  color: #004AAD;
+}
+
+.build{
+  font-weight: bold;
+  color: #CB2601;
+
+}
+
+.voice{
+  color: #9b9393;
 }
 

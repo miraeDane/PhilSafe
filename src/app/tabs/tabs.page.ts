@@ -13,7 +13,7 @@ export class TabsPage implements OnInit {
   ngOnInit() {
   }
   navigateToReport() {
-    this.router.navigate(['tabs/report']); 
+    this.router.navigate(['/report-as']); 
   }
 
 }

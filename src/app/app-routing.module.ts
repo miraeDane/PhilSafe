@@ -100,6 +100,10 @@ const routes: Routes = [
     path: 'add-witness',
     loadChildren: () => import('./report/add-witness/add-witness.module').then( m => m.AddWitnessPageModule)
   },
+  {
+    path: 'create-account',
+    loadChildren: () => import('./auth/create-account/create-account.module').then(m => m.CreateAccountPageModule)
+  }
   
 ];
 

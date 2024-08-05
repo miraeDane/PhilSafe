@@ -59,7 +59,7 @@ export class CarouselPage implements OnInit  {
     if (this.currentSlideIndex < this.slidesContent.length - 1) {
       this.currentSlideIndex++;
     } else {
-      this.router.navigate(['../../../report-as']);
+      this.router.navigate(['../../create-account']);
     }
   }
 
