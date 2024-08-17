@@ -1,0 +1,34 @@
+[
+    {
+        "crime_id": 1,
+        "crime_name": "Murder"
+    },
+    {
+        "crime_id": 2,
+        "crime_name": "Homicide"
+    },
+    {
+        "crime_id": 3,
+        "crime_name": "Physical Injury"
+    },
+    {
+        "crime_id": 4,
+        "crime_name": "Rape"
+    },
+    {
+        "crime_id": 5,
+        "crime_name": "Robbery"
+    },
+    {
+        "crime_id": 6,
+        "crime_name": "Theft"
+    },
+    {
+        "crime_id": 7,
+        "crime_name": "Carnapping"
+    },
+    {
+        "crime_id": 8,
+        "crime_name": "Cattle Rustling"
+    }
+]

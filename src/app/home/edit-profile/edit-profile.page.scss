@@ -1,0 +1,171 @@
+ion-toolbar {
+  --background: linear-gradient(to right, #004AAD, #009FFD);
+  height: 200px;
+  width: 100%;
+  position: relative;
+  z-index: -3; 
+}
+
+ion-title {
+  color: #ffff;
+  text-align: left;
+}
+
+.avatar-prof {
+  width: 140px;
+  height: 140px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  z-index: 10; 
+  position: absolute; 
+  border: solid #ffffff 5px;
+}
+
+.top-details {
+  display: flex;
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center; 
+  margin-top: 50px; 
+  z-index: 2;
+}
+
+.name, .email {
+  color: #000000; 
+  text-align: center;
+  z-index: 2; 
+}
+
+.name {
+  font-weight: bold;
+}
+
+
+.segment-content {
+    color: #ffffff; 
+    background-color: #ffffff;
+    height: auto;
+    padding: 20px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    //box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  }
+
+  .segment-content ion-list {
+    background-color: #ffffff;
+  }
+
+  .segment-content ion-input {
+    --background: #ffffff;
+    color: #000000;
+    border-radius: 50px;
+    --border: solid 0px #d1d1d1;
+
+  }
+
+  input:focus{
+    outline:none;
+  }
+
+  .segment-content ion-item {
+    color: #000000; 
+    --background: #ffffff;
+    border-radius: 50px;
+    border: solid 0.1px #b4b1b1;
+   
+  }
+
+  .info ion-item {
+    margin: 15px;
+
+  }
+
+  .title-info {
+    font-size: 15px;
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 10px;
+    margin-left: 10px;
+  }
+   .edit ion-button {
+    --background: #004AAD;
+    --color: #ffffff;
+    padding: 0 auto;
+    --border-radius: 50px; 
+  }
+
+  .segment-content ion-button {
+    --background: #004AAD;
+    --color: #ffffff;
+    padding: 0 auto;
+    --border-radius: 50px;
+    --width: 70px;
+  }
+
+ 
+
+  .edit {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    width: auto;
+  }
+
+  .save {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+  }
+
+  .checkbox-contatiner {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 15px;
+  }
+  ion-checkbox {
+    --checkbox-background: #ffff;
+    --border-color: #838181;
+    margin: 15px;
+    margin-right: 5px;
+  }
+  
+  .checkbox-label {
+    font-size: 13px;
+    color: #000000;
+    //padding-left: 17px;
+    text-align: start;
+  }
+
+
+  .profile-pic {
+    display: flex;
+    z-index: 100;
+    //margin-left: 250px;
+    top: -90px;
+    position: relative;
+    justify-content: center;
+  }
+
+
+  .upload-button {
+    width: 5px;
+    height: 5px;
+  }
+
+  .profile-pic ion-button {
+    --background: #009FFD;
+    --color: #000000;
+    --border-radius: 60px;
+    font-size: 20px;
+    font-weight: bold;
+    position: relative;
+    z-index: 200;
+    justify-content: center;
+    margin-left: 80px;
+    margin-top: 10px;
+  }
+

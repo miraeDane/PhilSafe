@@ -1,17 +1,15 @@
 ion-toolbar#top-toolbar {
-  --background: #004AAD;
+  --background: linear-gradient(to right, #004AAD, #009FFD);
   height: 130px;
   width: 100%;
   border-bottom-right-radius: 63px;
   border-bottom-left-radius: 63px;
 
   display: flex;
-  // justify-content: space-between;
-  // align-items: center;
-  // padding: 0 16px; 
-  // position: relative;
-  // z-index: 10;
+
 }
+
+
 
 
 .top-items {
@@ -189,8 +187,9 @@ ion-label#nation {
 }
 
 
+
 ion-label#safetyTitle {
-  background-color: #004AAD;
+ background-color: #004AAD ;
   color:#fff;
   font-size: 20px;
   font-weight: bold;

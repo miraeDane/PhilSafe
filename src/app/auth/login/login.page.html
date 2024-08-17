@@ -1,38 +1,69 @@
 <ion-content class="custom-background">
-
   <div class="wrapper">
     <div class="logo">
       <img src="assets/PhilSafe Logo.png">
     </div>
 
+
+    <div class="loginpage">
+
+       <ion-label class="title-info">LOG IN WITH</ion-label>>
+    <ion-segment [(ngModel)]="SignInType" value="Email" class="loginSegment">
+      <ion-segment-button value="Email" class="segment-button">
+        Email
+      </ion-segment-button>
+      <ion-segment-button value="Contact_Number" class="segment-button">
+        Contact Num
+      </ion-segment-button>
+    </ion-segment>
+
     <div class="login-input">
       <ion-list class="info" lines="none">
 
-        <ion-item>
-          <ion-input id="username" placeholder="Username">
-           </ion-input>
-           <ion-icon name="person" slot="start"></ion-icon> 
-           <ion-icon></ion-icon>
-        </ion-item>
-  
-        <ion-item>
-          <ion-input id="pass" placeholder="Password">
-            </ion-input>
+        <div *ngIf="SignInType === 'Email'">
+          <ion-item>
+            <ion-input [(ngModel)]="email" id="username" placeholder="Email"></ion-input>
+            <ion-icon name="person" slot="start"></ion-icon>
+            <ion-icon slot="end"></ion-icon>
+          </ion-item>
+          
+          <ion-item>
+            <ion-input type="password" [(ngModel)]="password" id="pass" placeholder="Password"></ion-input>
             <ion-icon src="assets/lock.svg" slot="start"></ion-icon>
             <ion-icon name="eye" slot="end"></ion-icon>
-        </ion-item>
+          </ion-item>
+        </div>
+        
+        <div *ngIf="SignInType === 'Contact_Number'">
+          <ion-item >
+            <ion-input [(ngModel)]="contactNumString" id="contactNum" placeholder="Contact Number"></ion-input>
+            <ion-icon name="call" slot="start"></ion-icon>
+            <ion-icon slot="end"></ion-icon>
+          </ion-item>
 
-       
-          <ion-label class="forgot-pwd">Forgot Password? <a>Click here</a> </ion-label>
+          <ion-item>
+            <ion-input type="password" [(ngModel)]="password" id="pass" placeholder="Password"></ion-input>
+          <ion-icon src="assets/lock.svg" slot="start"></ion-icon>
+          <ion-icon name="eye" slot="end"></ion-icon>
+          </ion-item>
+        </div>
+
       
+        <ion-label class="forgot-pwd">Forgot Password? <a>Click here</a></ion-label>
+
         <div class="next-container">
-          <ion-button class="confirm" routerLink="/tabs">Sign in</ion-button>
-          </div>
-          <div class="sign-up-here">
-            <ion-label class="sign-up">Don't have an account?</ion-label>
-            <a class="sign-up-link" routerLink="/create-account">Sign up today!</a>
-          </div>
+          <!-- <ion-button class="confirm" (click)="login()">Sign in</ion-button> -->
+          <ion-button class="confirm" routerLink="/tabs/home">Sign in</ion-button>
+        </div>
+        
+        <div class="sign-up-here">
+          <ion-label class="sign-up">Don't have an account?</ion-label>
+          <a class="sign-up-link" routerLink="/create-account">Sign up today!</a>
+        </div>
       </ion-list>
     </div>
   </div>
+    </div>
+
+   
 </ion-content>

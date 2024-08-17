@@ -44,7 +44,7 @@ const routes: Routes = [
       import('./inbox/inbox.module').then((m) => m.InboxPageModule),
   },
   {
-    path: 'report',
+    path: 'report/:segment',
     loadChildren: () =>
       import('./report/report.module').then((m) => m.ReportPageModule),
   },
@@ -103,7 +103,15 @@ const routes: Routes = [
   {
     path: 'create-account',
     loadChildren: () => import('./auth/create-account/create-account.module').then(m => m.CreateAccountPageModule)
+  },
+  {
+    path: 'account-registration',
+    loadChildren: () => import('./auth/account-registration/account-registration.module').then(m => m.AccountRegistrationPageModule)
   }
+  // {
+  //   path: 'report/:segment',
+  //   loadChildren: () => import('./report/report.module').then(m => m.ReportPageModule)
+  // },
   
 ];
 

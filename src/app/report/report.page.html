@@ -25,41 +25,43 @@
       (ionChange)="segmentChanged($event)"
       class="custom-segment"
     >
-      <ion-segment-button value="segment1" class="segment-button">
+      <ion-segment-button value="1" class="segment-button">
         <ion-label>Item A</ion-label>
         <ion-label style="font-size: 7px">Reporting Person</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="segment2" class="segment-button">
+      <ion-segment-button value="2" class="segment-button">
         <ion-label>Item B</ion-label>
         <ion-label style="font-size: 7px">Suspect Data</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="segment3" class="segment-button">
+      <ion-segment-button value="3" class="segment-button">
         <ion-label>Item C</ion-label>
         <ion-label style="font-size: 7px">Victim Data</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="segment4" class="segment-button">
+      <ion-segment-button value="4" class="segment-button">
         <ion-label>Item D</ion-label>
         <ion-label style="font-size: 7px">Narrative</ion-label>
       </ion-segment-button>
     </ion-segment>
   </div>
 
-  <div *ngIf="selectedSegment === 'segment1'" class="segment-content">
+  <div *ngIf="selectedSegment === '1'" class="segment-content">
     <div class="item-a">
       <ion-list class="incident" lines="none">
         <ion-item class="incident-item">
           <ion-select
-            class="incident-select"
+          [(ngModel)]="selectedCrime"
+            class="custom-select"
             placeholder="Type of incident"
             interface="popover"
+            (ionChange)="onCrimeChange($event)"
           >
-            <ion-select-option>Murder</ion-select-option>
-            <ion-select-option>Theft</ion-select-option>
-            <ion-select-option>Rape</ion-select-option>
+          <ion-select-option disabled>INDEX CRIMES</ion-select-option>
+            <ion-select-option *ngFor="let crime of indexCrimes">{{ crime.crime_name }}</ion-select-option>
+            <ion-select-option disabled>NON-INDEX CRIMES</ion-select-option>
+            <ion-select-option *ngFor="let crime of nonIndexCrimes" >{{ crime.crime_name }}</ion-select-option>
           </ion-select>
         </ion-item>
       </ion-list>
-
       <div class="anonymous-person-info">
         <ion-label class="title-info-personal">PERSONAL INFORMATION</ion-label>
         <!-- <ion-button class="anonymous" size="small">
@@ -68,42 +70,49 @@
       </div>
       <ion-list class="info" lines="none">
         <ion-item >
-          <ion-input id="fname" placeholder="First Name"> </ion-input>
+          <ion-input [(ngModel)]="complainant.firstname" id="fname" placeholder="First Name"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="mname" placeholder="Middle Name"> </ion-input>
+          <ion-input [(ngModel)]="complainant.middlename" id="mname" placeholder="Middle Name"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="lname" placeholder="Last Name"> </ion-input>
+          <ion-input [(ngModel)]="complainant.lastname" id="lname" placeholder="Last Name"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="citizenship" placeholder="Citizenship"> </ion-input>
+          <ion-select  id="citizenship" placeholder="Citizenship" [(ngModel)]="complainant.description.ethnicity">
+            <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality">
+              {{ nationality }}
+            </ion-select-option>
+          </ion-select>
         </ion-item>
+
         <div class="detail-select">
           <ion-item class="dob">
             <ion-icon name="calendar" color="black"></ion-icon>
-            <ion-input
+            <ion-input [(ngModel)]="complainant.birthdate"
+              name="dateOfbirth"
+              [ngModelOptions]="{standalone: true}"
               placeholder="Date of Birth"
-              value="{{ dateOfBirth | date: 'dd.MM.yyyy' }}"
+              value="{{ dateOfBirth | date: 'yyyy.MM.dd' }}"
               id="date"
               class="ion-text-end"
             ></ion-input>
-            <ion-popover trigger="date" size="cover">
+            <ion-popover trigger="date" >
               <ng-template>
                 <ion-datetime
                   presentation="date"
                   [(ngModel)]="dateOfBirth"
-                  locale="sl-SI"
+                  locale="en"  
                 ></ion-datetime>
               </ng-template>
             </ion-popover>
           </ion-item>
 
           <ion-item>
-            <ion-select id="gender" placeholder="Gender">
+            <ion-select [(ngModel)]="complainant.sex" id="gender" placeholder="Gender">
               <ion-select-option>Male</ion-select-option>
               <ion-select-option>Female</ion-select-option>
               <ion-select-option>Prefer not to say</ion-select-option>
@@ -111,98 +120,194 @@
           </ion-item>
         </div>
 
-        <ion-label class="title-info">ADDRESS</ion-label>
+        
+      <ion-item>
+        <ion-select [(ngModel)]="complainant.civilStatus" placeholder="Civil Status">
+          <ion-select-option >Single</ion-select-option>
+          <ion-select-option >Married</ion-select-option>
+          <ion-select-option >Separated</ion-select-option>
+          <ion-select-option >Divorced</ion-select-option>
+          <ion-select-option >Widowed</ion-select-option>
+        </ion-select>
+      </ion-item>
 
-        <ion-item>
-          <ion-input
-            id="currAddress"
-            placeholder="Current Address (House Number/Street)"
-          >
-          </ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input id="village" placeholder="Village/Sitio"> </ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input id="barangay" placeholder="Barangay"> </ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input id="city" placeholder="Town/City"> </ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input id="province" placeholder="Province"> </ion-input>
-        </ion-item>
 
         <ion-label class="title-info">CONTACT DETAILS</ion-label>
 
         <ion-item>
-          <ion-input placeholder="Home Phone"> </ion-input>
+          <ion-input [(ngModel)]="complainant.contactDetails.telNum" placeholder="Home Phone"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="mobileNum" placeholder="Mobile Number"> </ion-input>
+          <ion-input [(ngModel)]="complainant.contactDetails.mobileNum" id="mobileNum" placeholder="Mobile Number"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="email" placeholder="Email"> </ion-input>
+          <ion-input [(ngModel)]="complainant.contactDetails.email" id="email" placeholder="Email"> </ion-input>
         </ion-item>
 
-        <ion-label class="title-info">WORK DETAILS</ion-label>
+
+        <ion-label class="title-info">HOME ADDRESS</ion-label>
 
         <ion-item>
-          <ion-input id="education" placeholder="Highest Education Attainment">
-          </ion-input>
+          <ion-select [(ngModel)]="complainant.homeAddress.region" name="homeregionName" placeholder="Region" (ionChange)="onHomeRegionChange($event)">
+            <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
+              {{ region.region_name }}
+            </ion-select-option>
+          </ion-select>
         </ion-item>
-
+        
         <ion-item>
-          <ion-input id="occupation" placeholder="Occupation"> </ion-input>
+          <ion-select [(ngModel)]="complainant.homeAddress.province" name="homeprovinceName" placeholder="Province" (ionChange)="onHomeProvinceChange($event)">
+            <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
+              {{ province.province_name }}
+            </ion-select-option>
+          </ion-select>
         </ion-item>
-
+        
         <ion-item>
-          <ion-input id="workAddress" placeholder="Work Address"> </ion-input>
+          <ion-select [(ngModel)]="complainant.homeAddress.municipality" name="homemunicipalName" placeholder="Municipality" (ionChange)="onHomeMunicipalityChange($event)">
+            <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
+              {{ municipality.municipality_name }}
+            </ion-select-option>
+          </ion-select>
         </ion-item>
-
+        
         <ion-item>
-          <ion-input id="officeNum" placeholder="Office Number"> </ion-input>
+          <ion-select [(ngModel)]="complainant.homeAddress.barangay" name="homebrgyName" placeholder="Barangay">
+            <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
+              {{ barangay.barangay_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input [(ngModel)]="complainant.homeAddress.street" name="homestreetName" placeholder="Street"></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input [(ngModel)]="complainant.homeAddress.block" name="homeblockName" placeholder="Block/Lot/Unit Number"></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input [(ngModel)]="comp_home_zip_code" name="homezip" placeholder="Zip Code"></ion-input>
+        </ion-item>
+  
+        <ion-label class="title-info">WORK ADDRESS</ion-label>
+  
+        <div class="checkbox-container">
+          <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="isSameAddress" (ionChange)="onAddressCheckboxChange($event, 'complainant')" ></ion-checkbox>
+          <ion-label class="checkbox-label">Same as Home Address</ion-label>
+  
+        </div>
+  
+        <ion-item>
+          <ion-select [(ngModel)]="complainant.workAddress.region" name="workregionName" placeholder="Region" (ionChange)="onWorkRegionChange($event)" >
+            <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
+              {{ region.region_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        
+  
+        <ion-item>
+          <ion-select [(ngModel)]="complainant.workAddress.province" name="workprovinceName" placeholder="Province" (ionChange)="onWorkProvinceChange($event)">
+            <ng-container *ngIf="isSameAddress; else workProvinceOptions">
+              <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
+                {{ province.province_name }}
+              </ion-select-option>
+            </ng-container>
+            <ng-template #workProvinceOptions>
+              <ion-select-option *ngFor="let province of workProvinces" [value]="province.province_id">
+                {{ province.province_name }}
+              </ion-select-option>
+            </ng-template>
+          </ion-select>
+        </ion-item>
+        
+        <ion-item>
+          <ion-select [(ngModel)]="complainant.workAddress.municipality" name="workmunicipalName" placeholder="Municipality" (ionChange)="onWorkMunicipalityChange($event)">
+            <ng-container *ngIf="isSameAddress; else workMunicipalityOptions">
+              <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
+                {{ municipality.municipality_name }}
+              </ion-select-option>
+            </ng-container>
+            <ng-template #workMunicipalityOptions>
+              <ion-select-option *ngFor="let municipality of workMunicipalities" [value]="municipality.municipality_id">
+                {{ municipality.municipality_name }}
+              </ion-select-option>
+            </ng-template>
+          </ion-select>
+        </ion-item>
+        
+        <ion-item>
+          <ion-select [(ngModel)]="complainant.workAddress.barangay" name="workbrgyName" placeholder="Barangay">
+            <ng-container *ngIf="isSameAddress; else workBarangayOptions">
+              <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
+                {{ barangay.barangay_name }}
+              </ion-select-option>
+            </ng-container>
+            <ng-template #workBarangayOptions>
+              <ion-select-option *ngFor="let barangay of workBarangays" [value]="barangay.barangay_id">
+                {{ barangay.barangay_name }}
+              </ion-select-option>
+            </ng-template>
+          </ion-select>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input [(ngModel)]="complainant.workAddress.street" name="workstreetName" placeholder="Street"></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input [(ngModel)]="complainant.workAddress.block" name="workblockName" placeholder="Office/Bldg Name"></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input [(ngModel)]="comp_work_zip_code" name="workzip" placeholder="Zip Code" [disabled]="suspect.isUnidentified"></ion-input>
         </ion-item>
 
         <ion-label class="title-info">ID DETAILS</ion-label>
 
         <ion-item>
-          <ion-input id="idType" placeholder="ID Presented"> </ion-input>
+          <ion-select [(ngModel)]="idData.contentType"  placeholder="ID Presented">
+            <ion-select-option *ngFor="let id of idOptions">
+              {{ id }}
+            </ion-select-option>
+          </ion-select>
         </ion-item>
 
         <ion-item>
-          <ion-input id="idNum" placeholder="ID Number"> </ion-input>
+          <ion-input [(ngModel)]="idData.description" id="idNum" placeholder="ID Number"> </ion-input>
         </ion-item>
       </ion-list>
 
       <div id="uploadfile" class="uploadfile">
        <ion-label class="title-info">Upload your valid ID</ion-label>
-          <input type="file" class="file" id="actual-btn" hidden/>
+          <input type="file" class="file" id="actual-btn" (change)="onFileSelected($event)" hidden/>
           <div class="icon-label">
             <ion-icon src="assets/upload.svg" class="upload-icon"></ion-icon>
             <label for="actual-btn">Upload file/s</label>
           </div>  
+          <div *ngIf="fileName" class="file-name">{{ fileName }}
+          <!-- <ion-button (click)="uploadFile()" *ngIf="selectedFile">Upload</ion-button>  -->
+        </div>
           <p class="max-size">Maximum size up to 2GB</p>
       </div>
 
       <div class="next-container">
-        <ion-button class="next" (click)="goToNextSegment('segment2')"
+        <ion-button class="next" (click)="goToNextSegment(2)"
           >Next</ion-button
         >
+          <ion-button style="--background: blue;" (click)="save()">Save</ion-button>
       </div>
     </div>
   </div>
 
-  <div *ngIf="selectedSegment === 'segment2'" class="segment-content">
+  <div *ngIf="selectedSegment === '2' " class="segment-content">
     <div class="item-b">
       <div class="checkbox-container">
-        <ion-checkbox labelPlacement="end"></ion-checkbox>
+        <ion-checkbox labelPlacement="end" [(ngModel)]="suspect.isUnidentified"  (ionChange)="proceedToNextSegment()"></ion-checkbox>
         <ion-label class="checkbox-label"
           >Click here if there is no suspect involved or identified and
           thereafter proceed to item “C”</ion-label
@@ -214,42 +319,49 @@
       </div>
       <ion-list class="info" lines="none">
         <ion-item>
-          <ion-input id="fname" placeholder="First Name"> </ion-input>
+          <ion-input [(ngModel)]="suspect.firstname" id="fname" placeholder="First Name" [disabled]="suspect.isUnidentified"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="mname" placeholder="Middle Name"> </ion-input>
+          <ion-input [(ngModel)]="suspect.middlename" id="mname" placeholder="Middle Name" [disabled]="suspect.isUnidentified"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="lname" placeholder="Last Name"> </ion-input>
+          <ion-input [(ngModel)]="suspect.lastname" id="lname" placeholder="Last Name" [disabled]="suspect.isUnidentified"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="citizenship" placeholder="Citizenship"> </ion-input>
+          <ion-select id="citizenship" placeholder="Citizenship" [(ngModel)]="suspect.description.ethnicity" [disabled]="suspect.isUnidentified">
+            <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality" [disabled]="suspect.isUnidentified">
+              {{ nationality }}
+            </ion-select-option>
+          </ion-select>
         </ion-item>
+
         <div class="detail-select">
           <ion-item class="dob">
             <ion-icon name="calendar" color="black"></ion-icon>
-            <ion-input
+            <ion-input [(ngModel)]="suspect.birthdate"
+              name="dateOfbirth"
+              [ngModelOptions]="{standalone: true}"
               placeholder="Date of Birth"
-              value="{{ dateOfBirth | date: 'dd.MM.yyyy' }}"
+              value="{{ dateOfBirth | date: 'yyyy.MM.dd' }}"
               id="date"
               class="ion-text-end"
             ></ion-input>
-            <ion-popover trigger="date" size="cover">
+            <ion-popover trigger="date" >
               <ng-template>
                 <ion-datetime
                   presentation="date"
                   [(ngModel)]="dateOfBirth"
-                  locale="sl-SI"
+                  locale="en"  
                 ></ion-datetime>
               </ng-template>
             </ion-popover>
           </ion-item>
 
           <ion-item>
-            <ion-select id="gender" placeholder="Gender">
+            <ion-select [(ngModel)]="suspect.sex"  id="gender" placeholder="Gender" [disabled]="suspect.isUnidentified">
               <ion-select-option>Male</ion-select-option>
               <ion-select-option>Female</ion-select-option>
               <ion-select-option>Prefer not to say</ion-select-option>
@@ -257,77 +369,166 @@
           </ion-item>
         </div>
 
-        <ion-label class="title-info">ADDRESS</ion-label>
+        
+      <ion-item>
+        <ion-select [(ngModel)]="suspect.civilStatus" placeholder="Civil Status" [disabled]="suspect.isUnidentified">
+          <ion-select-option >Single</ion-select-option>
+          <ion-select-option >Married</ion-select-option>
+          <ion-select-option >Separated</ion-select-option>
+          <ion-select-option >Divorced</ion-select-option>
+          <ion-select-option >Widowed</ion-select-option>
+        </ion-select>
+      </ion-item>
 
         <ion-item>
-          <ion-input
-            id="currAddress"
-            placeholder="Current Address (House Number/Street)"
-          >
-          </ion-input>
+          <ion-input [(ngModel)]="suspect.contactDetails.telNum" placeholder="Home Phone" [disabled]="suspect.isUnidentified"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="village" placeholder="Village/Sitio"> </ion-input>
+          <ion-input [(ngModel)]="suspect.contactDetails.mobileNum" id="mobileNum" placeholder="Mobile Number" [disabled]="suspect.isUnidentified"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="barangay" placeholder="Barangay"> </ion-input>
+          <ion-input [(ngModel)]="suspect.contactDetails.email" id="email" placeholder="Email" [disabled]="suspect.isUnidentified"> </ion-input>
+        </ion-item>
+
+
+        <ion-label class="title-info">HOME ADDRESS</ion-label>
+
+        <ion-item>
+          <ion-select [(ngModel)]="suspect.homeAddress.region" name="homeregionName" placeholder="Region" 
+          [disabled]="suspect.isUnidentified" (ionChange)="onHomeRegionChange($event)">
+            <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
+              {{ region.region_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        
+        <ion-item>
+          <ion-select [(ngModel)]="suspect.homeAddress.province" name="homeprovinceName" placeholder="Province" (ionChange)="onHomeProvinceChange($event)" [disabled]="suspect.isUnidentified">
+            <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
+              {{ province.province_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        
+        <ion-item>
+          <ion-select [(ngModel)]="suspect.homeAddress.municipality" name="homemunicipalName" placeholder="Municipality" 
+          [disabled]="suspect.isUnidentified" (ionChange)="onHomeMunicipalityChange($event)">
+            <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
+              {{ municipality.municipality_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        
+        <ion-item>
+          <ion-select [(ngModel)]="suspect.homeAddress.barangay" name="homebrgyName" placeholder="Barangay" [disabled]="suspect.isUnidentified">
+            <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
+              {{ barangay.barangay_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input [(ngModel)]="suspect.homeAddress.street" name="homestreetName" placeholder="Street" [disabled]="suspect.isUnidentified"></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input [(ngModel)]="suspect.homeAddress.block" name="homeblockName" placeholder="Block/Lot/Unit Number" [disabled]="suspect.isUnidentified"></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input [(ngModel)]="sus_home_zip_code" name="workzip" placeholder="Zip Code" [disabled]="suspect.isUnidentified"></ion-input>
+        </ion-item>
+  
+        <ion-label class="title-info">WORK ADDRESS</ion-label>
+  
+        <div class="checkbox-container">
+          <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="isSameAddress" [disabled]="suspect.isUnidentified" (ionChange)="onAddressCheckboxChange($event, 'suspect')" ></ion-checkbox>
+          <ion-label class="checkbox-label">Same as Home Address</ion-label>
+  
+        </div>
+  
+        <ion-item>
+          <ion-select [(ngModel)]="suspect.workAddress.region" name="workregionName" placeholder="Region" [disabled]="suspect.isUnidentified"
+           (ionChange)="onWorkRegionChange($event)" >
+            <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
+              {{ region.region_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        
+  
+        <ion-item>
+          <ion-select [(ngModel)]="suspect.workAddress.province" name="workprovinceName" placeholder="Province" [disabled]="suspect.isUnidentified" (ionChange)="onWorkProvinceChange($event)">
+            <ng-container *ngIf="isSameAddress; else workProvinceOptions">
+              <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
+                {{ province.province_name }}
+              </ion-select-option>
+            </ng-container>
+            <ng-template #workProvinceOptions>
+              <ion-select-option *ngFor="let province of workProvinces" [value]="province.province_id">
+                {{ province.province_name }}
+              </ion-select-option>
+            </ng-template>
+          </ion-select>
+        </ion-item>
+        
+        <ion-item>
+          <ion-select [(ngModel)]="suspect.workAddress.municipality" name="workmunicipalName" placeholder="Municipality" [disabled]="suspect.isUnidentified" (ionChange)="onWorkMunicipalityChange($event)">
+            <ng-container *ngIf="isSameAddress; else workMunicipalityOptions">
+              <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
+                {{ municipality.municipality_name }}
+              </ion-select-option>
+            </ng-container>
+            <ng-template #workMunicipalityOptions>
+              <ion-select-option *ngFor="let municipality of workMunicipalities" [value]="municipality.municipality_id">
+                {{ municipality.municipality_name }}
+              </ion-select-option>
+            </ng-template>
+          </ion-select>
+        </ion-item>
+        
+        <ion-item>
+          <ion-select [(ngModel)]="suspect.workAddress.barangay" name="workbrgyName" placeholder="Barangay" [disabled]="suspect.isUnidentified">
+            <ng-container *ngIf="isSameAddress; else workBarangayOptions">
+              <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
+                {{ barangay.barangay_name }}
+              </ion-select-option>
+            </ng-container>
+            <ng-template #workBarangayOptions>
+              <ion-select-option *ngFor="let barangay of workBarangays" [value]="barangay.barangay_id">
+                {{ barangay.barangay_name }}
+              </ion-select-option>
+            </ng-template>
+          </ion-select>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input [(ngModel)]="suspect.workAddress.street" name="workstreetName" placeholder="Street" [disabled]="suspect.isUnidentified"></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input [(ngModel)]="suspect.workAddress.block" name="workblockName" placeholder="Office/Bldg Name" [disabled]="suspect.isUnidentified"></ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="city" placeholder="Town/City"> </ion-input>
+          <ion-input [(ngModel)]="sus_work_zip_code" name="homezip" placeholder="Zip Code"></ion-input>
+        </ion-item>
+  
+
+        <ion-label  class="title-info">DESCRIPTION</ion-label>
+
+        <ion-item>
+          <ion-input [(ngModel)]="height" id="height" placeholder="Height" [disabled]="suspect.isUnidentified"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="province" placeholder="Province"> </ion-input>
-        </ion-item>
-
-        <ion-label class="title-info">CONTACT DETAILS</ion-label>
-
-        <ion-item>
-          <ion-input placeholder="Home Phone"> </ion-input>
+          <ion-input [(ngModel)]="weight" id="weight" placeholder="Weight" [disabled]="suspect.isUnidentified"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="mobileNum" placeholder="Mobile Number"> </ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input id="email" placeholder="Email"> </ion-input>
-        </ion-item>
-
-        <ion-label class="title-info">WORK DETAILS</ion-label>
-
-        <ion-item>
-          <ion-input id="education" placeholder="Highest Education Attainment">
-          </ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input id="occupation" placeholder="Occupation"> </ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input id="workAddress" placeholder="Work Address"> </ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input id="officeNum" placeholder="Office Number"> </ion-input>
-        </ion-item>
-
-        <ion-label class="title-info">DESCRIPTION</ion-label>
-
-        <ion-item>
-          <ion-input id="height" placeholder="Height"> </ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input id="weight" placeholder="Weight"> </ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input id="eyecolor" placeholder="Color of Eyes"> </ion-input>
+          <ion-input [(ngModel)]="suspect.description.eyeColor" id="eyecolor" placeholder="Color of Eyes" [disabled]="suspect.isUnidentified" > </ion-input>
         </ion-item>
 
         <ion-item>
@@ -336,7 +537,7 @@
         </ion-item>
 
         <ion-item>
-          <ion-input id="haircolor" placeholder="Color of hair"> </ion-input>
+          <ion-input [(ngModel)]="suspect.description.hairColor" id="haircolor" placeholder="Color of hair" [disabled]="suspect.isUnidentified"> </ion-input>
         </ion-item>
 
         <div class="influence-under">
@@ -345,16 +546,15 @@
             style="font-size: 15px; text-align: start"
             >Under the influence?</ion-label
           >
-          <ion-checkbox id="drugs" labelPlacement="end"></ion-checkbox>
+          <ion-checkbox [(ngModel)]="suspect.description.drug" id="drugs" labelPlacement="end" [disabled]="suspect.isUnidentified"></ion-checkbox>
           <ion-label class="checkbox-label">Drugs</ion-label>
-          <ion-checkbox id="liquor" labelPlacement="end"></ion-checkbox>
+          <ion-checkbox [(ngModel)]="suspect.description.alcohol" id="liquor" labelPlacement="end" [disabled]="suspect.isUnidentified"></ion-checkbox>
           <ion-label class="checkbox-label">Liquor</ion-label>
-          <ion-checkbox id="na" labelPlacement="end"></ion-checkbox>
-          <ion-label class="checkbox-label">NA</ion-label>
+          
         </div>
 
         <ion-item class="sus-narrative">
-          <ion-textarea rows="15"
+          <ion-textarea [(ngModel)]="suspect.description.distinguishingMark" rows="15" [disabled]="suspect.isUnidentified"
             id="suspect-narrative" class="suspect-textarea"
             placeholder="Other distinguishing features (describe in detail clothes, vehicle, sunglasses, weapon/s, scars and other data or activity of the suspect/s which were observed by the reporting person and/or witness/es to identify the suspect/s. These are important and may become evidence to identify, and link to the crime, the suspect/s) "
           >
@@ -363,11 +563,21 @@
 
 
       </ion-list>
+      <ion-list>
+  <ion-item *ngFor="let suspect of suspects">
+    <ion-label>
+      {{ suspect.firstname }} {{ suspect.lastname }} 
+    </ion-label>
+  </ion-item>
+</ion-list>
+
+<ion-button class="add-btn" (click)="navigateToAddSuspect()" [disabled]="suspect.isUnidentified">
+  <ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add suspect
+</ion-button>
         
-        <ion-button class="add-btn" routerLink="/add-suspect"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add suspect</ion-button>
       
       <div class="next-container">
-        <ion-button class="next" (click)="goToNextSegment('segment3')"
+        <ion-button class="next" (click)="goToNextSegment(3)"
           >Next</ion-button
         >
       </div>
@@ -376,11 +586,11 @@
 
 
 
-  <div *ngIf="selectedSegment === 'segment3'" class="segment-content">
+  <div *ngIf="selectedSegment === '3'" class="segment-content">
     <div class="item-b">
       <div class="checkbox-container">
-        <ion-checkbox labelPlacement="end"></ion-checkbox>
-        <ion-label class="checkbox-label"
+        <ion-checkbox labelPlacement="end" [(ngModel)]="isSamePerson" (ionChange)="proceedToNextSegment()"></ion-checkbox>
+        <ion-label class="checkbox-label" 
           >Check here if the reporter is also a victim and thereafter proceed to item “D” </ion-label
         >
       </div>
@@ -390,42 +600,48 @@
       </div>
       <ion-list class="info" lines="none">
         <ion-item>
-          <ion-input id="fname" placeholder="First Name"> </ion-input>
+          <ion-input [(ngModel)]="victim.firstname" id="fname" placeholder="First Name" [disabled]="isSamePerson"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="mname" placeholder="Middle Name"> </ion-input>
+          <ion-input [(ngModel)]="victim.middlename" id="mname" placeholder="Middle Name" [disabled]="isSamePerson"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="lname" placeholder="Last Name"> </ion-input>
+          <ion-input [(ngModel)]="victim.lastname" id="lname" placeholder="Last Name" [disabled]="isSamePerson"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="citizenship" placeholder="Citizenship"> </ion-input>
+          <ion-select id="citizenship" placeholder="Citizenship" [(ngModel)]="victim.description.ethnicity" [disabled]="isSamePerson">
+            <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality" [disabled]="suspect.isUnidentified">
+              {{ nationality }}
+            </ion-select-option>
+          </ion-select>
         </ion-item>
+
         <div class="detail-select">
           <ion-item class="dob">
             <ion-icon name="calendar" color="black"></ion-icon>
-            <ion-input
+            <ion-input [(ngModel)]="victim.birthdate"
+              name="dateOfbirth"
+              [ngModelOptions]="{standalone: true}"
               placeholder="Date of Birth"
-              value="{{ dateOfBirth | date: 'dd.MM.yyyy' }}"
+              value="{{ dateOfBirth | date: 'yyyy.MM.dd' }}"
               id="date"
               class="ion-text-end"
             ></ion-input>
-            <ion-popover trigger="date" size="cover">
+            <ion-popover trigger="date" >
               <ng-template>
                 <ion-datetime
                   presentation="date"
                   [(ngModel)]="dateOfBirth"
-                  locale="sl-SI"
+                  locale="en"  
                 ></ion-datetime>
               </ng-template>
             </ion-popover>
           </ion-item>
-
           <ion-item>
-            <ion-select id="gender" placeholder="Gender">
+            <ion-select [(ngModel)]="suspect.sex"  id="gender" placeholder="Gender" [disabled]="isSamePerson">
               <ion-select-option>Male</ion-select-option>
               <ion-select-option>Female</ion-select-option>
               <ion-select-option>Prefer not to say</ion-select-option>
@@ -433,72 +649,159 @@
           </ion-item>
         </div>
 
-        <ion-label class="title-info">ADDRESS</ion-label>
+        
+      <ion-item>
+        <ion-select [(ngModel)]="suspect.civilStatus" placeholder="Civil Status" [disabled]="isSamePerson">
+          <ion-select-option >Single</ion-select-option>
+          <ion-select-option >Married</ion-select-option>
+          <ion-select-option >Separated</ion-select-option>
+          <ion-select-option >Divorced</ion-select-option>
+          <ion-select-option >Widowed</ion-select-option>
+        </ion-select>
+      </ion-item>
 
         <ion-item>
-          <ion-input
-            id="currAddress"
-            placeholder="Current Address (House Number/Street)"
-          >
-          </ion-input>
+          <ion-input [(ngModel)]="victim.contactDetails.telNum" placeholder="Home Phone" [disabled]="isSamePerson"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="village" placeholder="Village/Sitio"> </ion-input>
+          <ion-input [(ngModel)]="victim.contactDetails.mobileNum" id="mobileNum" placeholder="Mobile Number" [disabled]="suspect.isUnidentified"> </ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="barangay" placeholder="Barangay"> </ion-input>
+          <ion-input [(ngModel)]="victim.contactDetails.email" id="email" placeholder="Email" [disabled]="isSamePerson"> </ion-input>
+        </ion-item>
+
+
+        <ion-label class="title-info">HOME ADDRESS</ion-label>
+
+        <ion-item>
+          <ion-select [(ngModel)]="victim.homeAddress.region" name="homeregionName" placeholder="Region" 
+          [disabled]="isSamePerson" (ionChange)="onHomeRegionChange($event)">
+            <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
+              {{ region.region_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        
+        <ion-item>
+          <ion-select [(ngModel)]="victim.homeAddress.province" name="homeprovinceName" placeholder="Province" (ionChange)="onHomeProvinceChange($event)" [disabled]="isSamePerson" >
+            <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
+              {{ province.province_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        
+        <ion-item>
+          <ion-select [(ngModel)]="victim.homeAddress.municipality" name="homemunicipalName" placeholder="Municipality" 
+          [disabled]="isSamePerson" (ionChange)="onHomeMunicipalityChange($event)">
+            <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
+              {{ municipality.municipality_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        
+        <ion-item>
+          <ion-select [(ngModel)]="victim.homeAddress.barangay" name="homebrgyName" placeholder="Barangay" [disabled]="isSamePerson" >
+            <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
+              {{ barangay.barangay_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input [(ngModel)]="victim.homeAddress.street" name="homestreetName" placeholder="Street" [disabled]="isSamePerson"></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input [(ngModel)]="victim.homeAddress.block" name="homeblockName" placeholder="Block/Lot/Unit Number" [disabled]="isSamePerson" ></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input [(ngModel)]="vic_home_zip_code" name="workzip" placeholder="Zip Code" [disabled]="isSamePerson"></ion-input>
+        </ion-item>
+  
+        <ion-label class="title-info">WORK ADDRESS</ion-label>
+  
+        <div class="checkbox-container">
+          <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="isSameAddress" [disabled]="isSamePerson" (ionChange)="onAddressCheckboxChange($event, 'suspect')" ></ion-checkbox>
+          <ion-label class="checkbox-label">Same as Home Address</ion-label>
+  
+        </div>
+  
+        <ion-item>
+          <ion-select [(ngModel)]="victim.workAddress.region" name="workregionName" placeholder="Region" [disabled]="isSamePerson"
+           (ionChange)="onWorkRegionChange($event)" >
+            <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
+              {{ region.region_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        
+  
+        <ion-item>
+          <ion-select [(ngModel)]="victim.workAddress.province" name="workprovinceName" placeholder="Province" [disabled]="isSamePerson" (ionChange)="onWorkProvinceChange($event)">
+            <ng-container *ngIf="isSameAddress; else workProvinceOptions">
+              <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
+                {{ province.province_name }}
+              </ion-select-option>
+            </ng-container>
+            <ng-template #workProvinceOptions>
+              <ion-select-option *ngFor="let province of workProvinces" [value]="province.province_id">
+                {{ province.province_name }}
+              </ion-select-option>
+            </ng-template>
+          </ion-select>
+        </ion-item>
+        
+        <ion-item>
+          <ion-select [(ngModel)]="victim.workAddress.municipality" name="workmunicipalName" placeholder="Municipality" [disabled]="isSamePerson" (ionChange)="onWorkMunicipalityChange($event)">
+            <ng-container *ngIf="isSameAddress; else workMunicipalityOptions">
+              <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
+                {{ municipality.municipality_name }}
+              </ion-select-option>
+            </ng-container>
+            <ng-template #workMunicipalityOptions>
+              <ion-select-option *ngFor="let municipality of workMunicipalities" [value]="municipality.municipality_id">
+                {{ municipality.municipality_name }}
+              </ion-select-option>
+            </ng-template>
+          </ion-select>
+        </ion-item>
+        
+        <ion-item>
+          <ion-select [(ngModel)]="victim.workAddress.barangay" name="workbrgyName" placeholder="Barangay" [disabled]="isSamePerson">
+            <ng-container *ngIf="isSameAddress; else workBarangayOptions">
+              <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
+                {{ barangay.barangay_name }}
+              </ion-select-option>
+            </ng-container>
+            <ng-template #workBarangayOptions>
+              <ion-select-option *ngFor="let barangay of workBarangays" [value]="barangay.barangay_id">
+                {{ barangay.barangay_name }}
+              </ion-select-option>
+            </ng-template>
+          </ion-select>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input [(ngModel)]="victim.workAddress.street" name="workstreetName" placeholder="Street" [disabled]="isSamePerson"></ion-input>
+        </ion-item>
+  
+        <ion-item>
+          <ion-input [(ngModel)]="victim.workAddress.block" name="workblockName" placeholder="Office/Bldg Name" [disabled]="isSamePerson"></ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-input id="city" placeholder="Town/City"> </ion-input>
+          <ion-input [(ngModel)]="vic_work_zip_code" name="homezip" placeholder="Zip Code" [disabled]="isSamePerson" ></ion-input>
         </ion-item>
-
-        <ion-item>
-          <ion-input id="province" placeholder="Province"> </ion-input>
-        </ion-item>
-
-        <ion-label class="title-info">CONTACT DETAILS</ion-label>
-
-        <ion-item>
-          <ion-input placeholder="Home Phone"> </ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input id="mobileNum" placeholder="Mobile Number"> </ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input id="email" placeholder="Email"> </ion-input>
-        </ion-item>
-
-        <ion-label class="title-info">WORK DETAILS</ion-label>
-
-        <ion-item>
-          <ion-input id="education" placeholder="Highest Education Attainment">
-          </ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input id="occupation" placeholder="Occupation"> </ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input id="workAddress" placeholder="Work Address"> </ion-input>
-        </ion-item>
-
-        <ion-item>
-          <ion-input id="officeNum" placeholder="Office Number"> </ion-input>
-        </ion-item>
-
       </ion-list>
     </div>
         
-        <ion-button class="add-btn"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add victim</ion-button>
+        <ion-button class="add-btn" [disabled]="isSamePerson"><ion-icon name="add-circle" style="margin: 5px;" ></ion-icon>Add victim</ion-button>
       
       <div class="next-container">
-        <ion-button class="next" (click)="goToNextSegment('segment4')"
+        <ion-button class="next" (click)="goToNextSegment(4)"
           >Next</ion-button
         >
       </div>
@@ -507,7 +810,7 @@
 
 
 
-  <div *ngIf="selectedSegment === 'segment4'" class="segment-content">
+  <div *ngIf="selectedSegment === '4'" class="segment-content">
     
     <ion-list class="info" lines="none">
 
@@ -554,11 +857,12 @@
       
        <ion-button class="add-btn" routerLink="/add-evidence"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add Evidence</ion-button>
       </div>
-      
 
+      <ion-button (click)="openSignatureModal()">Sign Here</ion-button> 
+      
     </ion-list>
     <div class="next-container">
-      <ion-button style="--background: blue;">Save</ion-button>
+      <ion-button style="--background: blue;" (click)="save()">Save</ion-button>
       <ion-button class="next" style="width: 200px; font-size: small;" 
         >Proceed to payment</ion-button
       >

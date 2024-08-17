@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar class="back-button" >
     <ion-buttons slot="start" fill="clear">
-      <ion-back-button defaultHref="/report-as" ></ion-back-button>
+      <ion-back-button defaultHref="/carousel" ></ion-back-button>
     </ion-buttons>
 
   </ion-toolbar>
@@ -15,48 +15,235 @@
   </div>
 
   <div class="container">
-    <ion-list class="info">
+  <!-- <form (ngSubmit)="register(registrationForm)" #registrationForm="ngForm"> -->
+    <ion-list class="info" lines="none">
+
+      <ion-label class="title-info">PERSONAL INFORMATION</ion-label>
+
       <ion-item>
-        <ion-input id="fname" placeholder="First Name"> </ion-input>
+        <ion-input [(ngModel)]="upgraded.firstname" [ngModelOptions]="{standalone: true}"
+        name="first" id="fname" placeholder="First Name"> </ion-input>
       </ion-item>
 
       <ion-item>
-        <ion-input id="mname" placeholder="Middle Name"> </ion-input>
+        <ion-input [(ngModel)]="upgraded.middlename"
+        name="middle" id="mname" placeholder="Middle Name"> </ion-input>
       </ion-item>
 
       <ion-item>
-        <ion-input id="lname" placeholder="Last Name"> </ion-input>
+        <ion-input [(ngModel)]="upgraded.lastname"
+        name="last" id="lname" placeholder="Last Name"> </ion-input>
+      </ion-item>
+
+      <div class="detail-select">
+        <ion-item class="dob">
+          <ion-icon name="calendar" color="black"></ion-icon>
+          <ion-input [(ngModel)]="upgraded.birthdate"
+            name="dateOfbirth"
+            [ngModelOptions]="{standalone: true}"
+            placeholder="Date of Birth"
+            value="{{ dateOfBirth | date: 'yyyy.MM.dd' }}"
+            id="date"
+            class="ion-text-end"
+          ></ion-input>
+          <ion-popover trigger="date" >
+            <ng-template>
+              <ion-datetime
+                presentation="date"
+                [(ngModel)]="dateOfBirth"
+                locale="en"  
+                (ionChange)="updateBirthdate()"
+              ></ion-datetime>
+            </ng-template>
+          </ion-popover>
+        </ion-item>
+
+        <ion-item>
+  <ion-select [(ngModel)]="selectedGender" (ionChange)="updateGender()" placeholder="Gender">
+    <ion-select-option value="M">Male</ion-select-option>
+    <ion-select-option value="F">Female</ion-select-option>
+    <ion-select-option value="N">Prefer not to say</ion-select-option>
+  </ion-select>
+</ion-item>
+      </div>
+
+      <ion-item>
+        <ion-select [(ngModel)]="upgraded.civilStatus" placeholder="Civil Status">
+          <ion-select-option >Single</ion-select-option>
+          <ion-select-option >Married</ion-select-option>
+          <ion-select-option >Separated</ion-select-option>
+          <ion-select-option >Divorced</ion-select-option>
+          <ion-select-option >Widowed</ion-select-option>
+        </ion-select>
+      </ion-item>
+     
+      <ion-label class="title-info">HOME ADDRESS</ion-label>
+
+      <ion-item>
+        <ion-select [(ngModel)]="userHomeAddress.region" name="homeregionName" placeholder="Region" (ionChange)="onHomeRegionChange($event)">
+          <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
+            {{ region.region_name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      
+      <ion-item>
+        <ion-select [(ngModel)]="userHomeAddress.province" name="homeprovinceName" placeholder="Province" (ionChange)="onHomeProvinceChange($event)">
+          <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
+            {{ province.province_name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      
+      <ion-item>
+        <ion-select [(ngModel)]="userHomeAddress.municipality" name="homemunicipalName" placeholder="Municipality" (ionChange)="onHomeMunicipalityChange($event)">
+          <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
+            {{ municipality.municipality_name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      
+      <ion-item>
+        <ion-select [(ngModel)]="userHomeAddress.barangay" name="homebrgyName" placeholder="Barangay" >
+          <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
+            {{ barangay.barangay_name }}
+          </ion-select-option>
+        </ion-select>
       </ion-item>
 
       <ion-item>
-        <ion-input id="email" placeholder="Email"> </ion-input>
+        <ion-input [(ngModel)]="userHomeAddress.street" name="homestreetName" placeholder="Street"></ion-input>
       </ion-item>
 
       <ion-item>
-        <ion-input type="password" id="pass" placeholder="Password"><ion-icon name="eye" slot="end"></ion-icon> </ion-input>
+        <ion-input [(ngModel)]="userHomeAddress.block" name="homeblockName" placeholder="Block/Lot/Unit Number"></ion-input>
       </ion-item>
 
       <ion-item>
-        <ion-input type="password" id="pass" placeholder="Confirm Password"><ion-icon name="eye" slot="end"></ion-icon> </ion-input>
+        <ion-input [(ngModel)]="zip_code" name="homezip" placeholder="Zip Code"></ion-input>
+      </ion-item>
+
+      <ion-label class="title-info">WORK ADDRESS</ion-label>
+
+      <div class="checkbox-container">
+        <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="isSameAddress" (ionChange)="onAddressCheckboxChange($event)"></ion-checkbox>
+        <ion-label class="checkbox-label">Same as Home Address</ion-label>
+
+      </div>
+
+      <ion-item>
+        <ion-select [(ngModel)]="userWorkAddress.region" name="workregionName" placeholder="Region" (ionChange)="onWorkRegionChange($event)">
+          <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
+            {{ region.region_name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      
+
+      <ion-item>
+        <ion-select [(ngModel)]="userWorkAddress.province" name="workprovinceName" placeholder="Province" (ionChange)="onWorkProvinceChange($event)">
+          <ng-container *ngIf="isSameAddress; else workProvinceOptions">
+            <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
+              {{ province.province_name }}
+            </ion-select-option>
+          </ng-container>
+          <ng-template #workProvinceOptions>
+            <ion-select-option *ngFor="let province of workProvinces" [value]="province.province_id">
+              {{ province.province_name }}
+            </ion-select-option>
+          </ng-template>
+        </ion-select>
+      </ion-item>
+      
+      <ion-item>
+        <ion-select [(ngModel)]="userWorkAddress.municipality" name="workmunicipalName" placeholder="Municipality" (ionChange)="onWorkMunicipalityChange($event)">
+          <ng-container *ngIf="isSameAddress; else workMunicipalityOptions">
+            <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
+              {{ municipality.municipality_name }}
+            </ion-select-option>
+          </ng-container>
+          <ng-template #workMunicipalityOptions>
+            <ion-select-option *ngFor="let municipality of workMunicipalities" [value]="municipality.municipality_id">
+              {{ municipality.municipality_name }}
+            </ion-select-option>
+          </ng-template>
+        </ion-select>
+      </ion-item>
+      
+      <ion-item>
+        <ion-select [(ngModel)]="userWorkAddress.barangay" name="workbrgyName" placeholder="Barangay">
+          <ng-container *ngIf="isSameAddress; else workBarangayOptions">
+            <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
+              {{ barangay.barangay_name }}
+            </ion-select-option>
+          </ng-container>
+          <ng-template #workBarangayOptions>
+            <ion-select-option *ngFor="let barangay of workBarangays" [value]="barangay.barangay_id">
+              {{ barangay.barangay_name }}
+            </ion-select-option>
+          </ng-template>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-input [(ngModel)]="userWorkAddress.street" name="workstreetName" placeholder="Street"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input [(ngModel)]="userWorkAddress.block" name="workblockName" placeholder="Office/Bldg Name"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input [(ngModel)]="zip_code" name="workzip" placeholder="Zip Code"></ion-input>
+      </ion-item>
+
+      
+      <ion-label class="title-info">ACCOUNT INFORMATION</ion-label>
+
+      <ion-item>
+        <ion-input [(ngModel)]="upgraded.email"
+        name="emailAdd" id="email" placeholder="Email"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input [(ngModel)]="upgraded.contactNum"
+        name="contactNum" id="contactNum" placeholder="Contact Number"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input [(ngModel)]="upgraded.telNum"
+        name="tel_num" id="telNum" placeholder="Telephone Number"> </ion-input>
+      </ion-item>
+
+
+      
+      <ion-item>
+        <ion-input type="password" [(ngModel)]="upgraded.password"
+        name="pwd" id="pass" placeholder="Password"><ion-icon name="eye" slot="end"></ion-icon> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input [(ngModel)]="confirmPassword"
+        name="confirmPwd" type="password" id="confirmpass" placeholder="Confirm Password"><ion-icon name="eye" slot="end"></ion-icon> </ion-input>
       </ion-item>
 
       <div class="checkbox-container">
-        <ion-checkbox labelPlacement="end"></ion-checkbox>
+        <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="termsAccepted" required></ion-checkbox>
         <ion-label class="checkbox-label"
           >I hereby certify to the correctness of the foregoing to the best of my knowledge and belief</ion-label
         >
       </div>
 
-      
       <div class="next-container">
-        <ion-button class="confirm">Register</ion-button
+        <ion-button  class="confirm" (click)="register()">Proceed to Register</ion-button
         >
         </div>
         <div class="sign-in-here">
-          <ion-label class="sign-in">Don't have an account?</ion-label>
+          <ion-label class="sign-in">Already have an account?</ion-label>
           <a class="sign-in-link" routerLink="/login">Sign in here</a>
         </div>
     </ion-list>
-    
+  <!-- </form> -->
   </div>
+  
 </ion-content>

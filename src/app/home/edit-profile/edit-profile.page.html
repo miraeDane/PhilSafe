@@ -1,13 +1,196 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>edit-profile</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+<ion-content>
+  <ion-header>
     <ion-toolbar>
-      <ion-title size="large">edit-profile</ion-title>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/tabs"></ion-back-button>
+      </ion-buttons>
+      <ion-title>Edit Profile</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <div class="profile-pic">
+    <ion-avatar class="avatar-prof">
+      <img [src]="avatarUrl" class="medium-img" />
+    </ion-avatar>
+
+    <ion-button name="add" class="upload-button" (click)="fileInput.click()">
+      +
+    </ion-button>
+    <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)" style="display: none;" />
+  </div>
+  
+
+  <div class="top-details">
+    <ion-label class="name">Maria Leonora Theresa Vergara</ion-label>
+    <ion-label class="email">email</ion-label>
+  </div>
+
+
+  <div class="segment-content">
+
+    <div class="edit">
+      <ion-button class="edit" (click)="edit()">Edit</ion-button>
+    </div>
+
+  <ion-list class="info" lines="none">
+    <ion-item>
+      <ion-input [(ngModel)]="person.firstname" id="fname" placeholder="First Name" disabled> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input [(ngModel)]="person.middlename" id="mname" placeholder="Middle Name" disabled> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input [(ngModel)]="person.lastname" id="lname" placeholder="Last Name" disabled> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-select id="citizenship" placeholder="Citizenship" [(ngModel)]="selectedNationality" disabled>
+        <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality">
+          {{ nationality }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-label class="title-info">CONTACT DETAILS</ion-label>
+
+    <ion-item>
+      <ion-input [(ngModel)]="accountData.telNum" placeholder="Home Phone" disabled> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input [(ngModel)]="accountData.contactNum" id="mobileNum" placeholder="Mobile Number" disabled> </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input [(ngModel)]="accountData.email" id="email" placeholder="Email" disabled> </ion-input>
+    </ion-item>
+
+    <ion-label class="title-info">HOME ADDRESS</ion-label>
+
+      <ion-item>
+        <ion-select [(ngModel)]="userHomeAddress.region" name="homeregionName" placeholder="Region" (ionChange)="onHomeRegionChange($event)" disabled>
+          <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
+            {{ region.region_name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      
+      <ion-item>
+        <ion-select [(ngModel)]="userHomeAddress.province" name="homeprovinceName" placeholder="Province" (ionChange)="onHomeProvinceChange($event)" disabled>
+          <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
+            {{ province.province_name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      
+      <ion-item>
+        <ion-select [(ngModel)]="userHomeAddress.municipality" name="homemunicipalName" placeholder="Municipality" (ionChange)="onHomeMunicipalityChange($event)" disabled>
+          <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
+            {{ municipality.municipality_name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      
+      <ion-item>
+        <ion-select [(ngModel)]="userHomeAddress.barangay" name="homebrgyName" placeholder="Barangay" disabled>
+          <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
+            {{ barangay.barangay_name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-input [(ngModel)]="userHomeAddress.street" name="homestreetName" placeholder="Street" disabled></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input [(ngModel)]="userHomeAddress.block" name="homeblockName" placeholder="Block/Lot/Unit Number" disabled></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input [(ngModel)]="home_zip_code" name="homezip" placeholder="Zip Code" disabled></ion-input>
+      </ion-item>
+
+      <ion-label class="title-info">WORK ADDRESS</ion-label>
+
+      <div class="checkbox-container">
+        <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="isSameAddress" (ionChange)="onAddressCheckboxChange($event)" disabled></ion-checkbox>
+        <ion-label class="checkbox-label">Same as Home Address</ion-label>
+
+      </div>
+
+      <ion-item>
+        <ion-select [(ngModel)]="userWorkAddress.region" name="workregionName" placeholder="Region" (ionChange)="onWorkRegionChange($event)" disabled>
+          <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
+            {{ region.region_name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      
+
+      <ion-item>
+        <ion-select [(ngModel)]="userWorkAddress.province" name="workprovinceName" placeholder="Province" (ionChange)="onWorkProvinceChange($event)" disabled>
+          <ng-container *ngIf="isSameAddress; else workProvinceOptions">
+            <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
+              {{ province.province_name }}
+            </ion-select-option>
+          </ng-container>
+          <ng-template #workProvinceOptions>
+            <ion-select-option *ngFor="let province of workProvinces" [value]="province.province_id">
+              {{ province.province_name }}
+            </ion-select-option>
+          </ng-template>
+        </ion-select>
+      </ion-item>
+      
+      <ion-item>
+        <ion-select [(ngModel)]="userWorkAddress.municipality" name="workmunicipalName" placeholder="Municipality" (ionChange)="onWorkMunicipalityChange($event)" disabled>
+          <ng-container *ngIf="isSameAddress; else workMunicipalityOptions">
+            <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
+              {{ municipality.municipality_name }}
+            </ion-select-option>
+          </ng-container>
+          <ng-template #workMunicipalityOptions>
+            <ion-select-option *ngFor="let municipality of workMunicipalities" [value]="municipality.municipality_id">
+              {{ municipality.municipality_name }}
+            </ion-select-option>
+          </ng-template>
+        </ion-select>
+      </ion-item>
+      
+      <ion-item>
+        <ion-select [(ngModel)]="userWorkAddress.barangay" name="workbrgyName" placeholder="Barangay" disabled>
+          <ng-container *ngIf="isSameAddress; else workBarangayOptions">
+            <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
+              {{ barangay.barangay_name }}
+            </ion-select-option>
+          </ng-container>
+          <ng-template #workBarangayOptions>
+            <ion-select-option *ngFor="let barangay of workBarangays" [value]="barangay.barangay_id">
+              {{ barangay.barangay_name }}
+            </ion-select-option>
+          </ng-template>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-input [(ngModel)]="userWorkAddress.street" name="workstreetName" placeholder="Street" disabled></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input [(ngModel)]="userWorkAddress.block" name="workblockName" placeholder="Office/Bldg Name" disabled></ion-input>
+      </ion-item>
+
+  </ion-list>
+
+  <div class="save">
+    <ion-button class="save" (click)="save()" *ngIf="isEditing">Save</ion-button>
+  </div>
+  
+</div>
+
+
+
 </ion-content>

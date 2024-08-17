@@ -1,0 +1,22 @@
+
+export const idLists: string[] = [
+    "National ID",
+    "UMID",
+    "Employee’s ID / Office Id",
+    "Driver’s License*",
+    "Professional Regulation Commission (PRC) ID *",
+    "Passport ",
+    "Senior Citizen ID",
+    "SSS ID",
+    "COMELEC / Voter’s ID / COMELEC Registration Form",
+    "Philippine Identification (PhilID / ePhilID)",
+    "NBI Clearance *",
+    "Integrated Bar of the Philippines (IBP) ID",
+    "BIR (TIN)",
+    "Pag-ibig ID",
+    "Person’s With Disability (PWD) ID",
+    "Solo Parent ID",
+    "Philippine Postal ID *",
+    "Phil-health ID",
+    "School ID",
+];

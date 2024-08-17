@@ -1,9 +1,10 @@
 ion-toolbar {
-    --background: #004AAD;
-    height: 80px;
-    width: 100%;
+  --background: linear-gradient(to right, #004AAD, #009FFD);
+  height: 80px;
+  width: 100%;
 
-  }
+}
+
 ion-title {
     color: #ffff;
     text-align: left;
@@ -109,15 +110,17 @@ ion-title {
     
   }
 
+  ion-select-option {
+    --background: #ffffff;
+    --color: #ffffff;
+    
+  }
+
+
   .incident-item {
     width: 200px;
   }
 
-  ion-select-option {
-    --background: #ffffff;
-    color: #000000;
-    width: 50px;
-  }
 
   .title-info-personal {
     font-size: 15px;
@@ -176,10 +179,6 @@ ion-title {
     justify-content: flex-start;
     margin: 2px;
    }
-  // .detail-select {
-  //   display: flex;
-  //   justify-content: space-between;
-  // }
 
   .dob{
     width: 180px;
@@ -200,15 +199,12 @@ ion-title {
    .checkbox-label  {
     font-size: 13px;
     color:#000000;
-    //padding-left: 17px;
     text-align: start;
   }
   
   ion-textarea {
 
-    --height: 350px;
-
-    
+    --height: 350px; 
   }
 
   .suspect-textarea, 
@@ -269,3 +265,27 @@ ion-title {
     display: flex;
     flex-direction: column;
   }
+
+  .file-name {
+    color: #000000;
+  }
+
+
+ 
+  .incident ion-select {
+    --background: white; 
+    --color: black; 
+  }
+  
+  .incident ion-select-option {
+    --background: white;
+    --color: black;
+   
+  }
+
+  .dob {
+    width: 200px;
+  }
+  
+ 
+  

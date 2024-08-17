@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreateAccountPage } from './create-account.page';
+import { Component } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 describe('CreateAccountPage', () => {
   let component: CreateAccountPage;

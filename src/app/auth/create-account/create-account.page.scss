@@ -10,6 +10,7 @@ ion-content {
     --box-shadow: 0 40px 80px rgba(167, 159, 159, 0.2);
     color: #000000;
     font-weight: bold;
+    padding-bottom: 20px;
 
   }
   
@@ -22,7 +23,7 @@ ion-content {
     justify-content: center;
     border-radius: 50px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-top: 60px;
+    margin-top: 30px;
   }
   
   ion-segment-button#register-as {
@@ -46,6 +47,8 @@ ion-content {
     box-shadow: 0px 4px 4px #00000040;
     width: auto;
     height: auto;
+    margin-bottom: 50px;
+    padding-top: 10px;
   }
   
   .container ion-list {
@@ -64,10 +67,11 @@ ion-content {
     --background: #ffffff;
     border-radius: 50px;
     border: solid 0.3px #b4b1b1;
-    margin: 0 auto;
+    margin: 10px;
   }
+
   
-  .info ion-item {
+  .info {
     margin-bottom: 15px;
     margin-top: 25px;
   }
@@ -92,6 +96,7 @@ ion-content {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: auto;
   }
   .container,
   ion-icon {
@@ -102,12 +107,12 @@ ion-content {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    margin: 5px;
+    margin: 15px;
   }
   ion-checkbox {
     --checkbox-background: #ffff;
     --border-color: #838181;
-    margin: 2px;
+    margin: 15px;
     margin-right: 5px;
   }
   
@@ -132,3 +137,40 @@ ion-content {
     font-size: 15px;
   }
   
+  .detail-select {
+    display: flex;
+    justify-content: space-between;
+  
+  }
+
+  .dob {
+    width: 200px;
+  }
+
+  .select-icon {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+  }
+
+  .title-info {
+    font-size: 15px;
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 25px;
+  }
+
+
+  .issameaddress {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .issameaddresscheck {
+    margin: 0 auto;
+
+  }

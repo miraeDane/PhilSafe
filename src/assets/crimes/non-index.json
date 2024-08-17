@@ -1,0 +1,58 @@
+[
+    {
+        "crime_id": 1,
+        "crime_name": "Illegal Drugs"
+    },
+    {
+        "crime_id": 2,
+        "crime_name": "Illegal Gambling"
+    },
+    {
+        "crime_id": 3,
+        "crime_name": "Illegal Possession of Firearms"
+    },
+    {
+        "crime_id": 4,
+        "crime_name": "Violation of Environmental Laws"
+    },
+    {
+        "crime_id": 5,
+        "crime_name": "Cybercrimes"
+    },
+    {
+        "crime_id": 6,
+        "crime_name": "Traffic Violations"
+    },
+    {
+        "crime_id": 7,
+        "crime_name": "Violations of Local Ordinances"
+    },
+    {
+        "crime_id": 8,
+        "crime_name": "Smuggling"
+    },
+    {
+        "crime_id": 9,
+        "crime_name": "Human Trafficking"
+    },
+    {
+        "crime_id": 10,
+        "crime_name": "Illegal Logging"
+    },
+    {
+        "crime_id": 11,
+        "crime_name": "Estafa"
+    },
+    {
+        "crime_id": 12,
+        "crime_name": "Falsification of Documents"
+    },
+    {
+        "crime_id": 13,
+        "crime_name": "Libel"
+    },
+    {
+        "crime_id": 14,
+        "crime_name": "Adultery and Concubinage"
+    }
+]

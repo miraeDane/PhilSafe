@@ -1,0 +1,81 @@
+<ion-header>
+  <ion-toolbar class="back-button" >
+    <ion-buttons slot="start" fill="clear">
+      <ion-back-button defaultHref="/carousel" ></ion-back-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="custom-background">
+
+  <div class="segment-container">
+   <ion-label>Create an account</ion-label>
+  </div>
+
+  <div class="container">
+    <!-- <form (ngSubmit)="onSubmit()" #registrationForm="ngForm"> -->
+
+      
+    <ion-list class="info" lines="none">
+
+      <!-- <div class="metadata-container">
+        <ion-avatar class="profile-pic">
+          
+          <img [src]="profilePicUrl || null" alt="Profile Picture">
+        </ion-avatar>
+        <input type="file" (change)="onFileChange($event)" accept="image/*" />
+      </div> -->
+
+      <ion-label class="title-info">ACCOUNT INFORMATION</ion-label>
+
+      <ion-item>
+        <ion-input [(ngModel)]="accountData.email"
+        name="emailAdd" id="email" placeholder="Email"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input [(ngModel)]="accountData.contactNum"
+        name="contactNum" id="contactNum" placeholder="Contact Number"> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input [(ngModel)]="accountData.telNum"
+        name="tel_num" id="telNum" placeholder="Telephone Number"> </ion-input>
+      </ion-item>
+
+
+      
+      <ion-item>
+        <ion-input type="password" [(ngModel)]="accountData.password"
+        name="pwd" id="pass" placeholder="Password"><ion-icon name="eye" slot="end"></ion-icon> </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input [(ngModel)]="confirmPassword"
+        name="confirmPwd" type="password" id="confirmpass" placeholder="Confirm Password"><ion-icon name="eye" slot="end"></ion-icon> </ion-input>
+      </ion-item>
+
+      <div class="checkbox-container">
+        <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="termsAccepted" required></ion-checkbox>
+        <ion-label class="checkbox-label"
+          >I hereby certify to the correctness of the foregoing to the best of my knowledge and belief</ion-label
+        >
+      </div>
+
+      
+      <div class="next-container">
+        <ion-button  class="confirm" (click)="createAccount()"
+        [disabled]="accountData.password !== confirmPassword || accountData.password.length < 8 || !termsAccepted">Register</ion-button
+        >
+        </div>
+        <div class="sign-in-here">
+          <ion-label class="sign-in">Don't have an account?</ion-label>
+          <a class="sign-in-link" routerLink="/login">Sign in here</a>
+        </div>
+    </ion-list>
+  <!-- </form> -->
+  </div>
+  
+</ion-content>

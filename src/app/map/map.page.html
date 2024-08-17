@@ -1,57 +1,65 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Crime Map</ion-title>
+  </ion-toolbar>
+</ion-header>
 
-  <ion-header>
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-back-button defaultHref="/tabs"></ion-back-button>
-      </ion-buttons>
-      <ion-title>Crime Map</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+
+  <div class="jurisdiction">
+    <ion-item>
+      <ion-label>Station Code</ion-label>
+      <ion-select [(ngModel)]="selectedStationCode" (ionChange)="onStationCodeChange($event)">
+        <ion-select-option *ngFor="let code of stations" [value]="code">
+          {{ code }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Station Name</ion-label>
+      <ion-select [(ngModel)]="selectedStationName" (ionChange)="onStationNameChange($event)">
+        <ion-select-option *ngFor="let name of stationNames" [value]="name">
+          {{ name }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+  </div>
+  <div class="date">
+    <ion-item>
+      <ion-label>Month</ion-label>
+      <ion-select [(ngModel)]="selectedMonth" (ionChange)="onMonthChange($event)">
+        <ion-select-option *ngFor="let month of months" [value]="month">
+          {{ month }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Day Name</ion-label>
+      <ion-select [(ngModel)]="selectedDayName" (ionChange)="onDayNameChange($event)">
+        <ion-select-option *ngFor="let day of dayNames" [value]="day">
+          {{ day }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>General Time</ion-label>
+      <ion-select [(ngModel)]="selectedGeneralTime" (ionChange)="onGeneralTimeChange($event)">
+        <ion-select-option *ngFor="let time of generalTimes" [value]="time">
+          {{ time }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+  </div>
+  <iframe id="map" width='100%' height='400px' src="https://api.mapbox.com/styles/v1/mimsh23/clzxshvrk004g01rb21e17pa5.html?title=false&access_token=pk.eyJ1IjoibWltc2gyMyIsImEiOiJjbHltZ2F3MTIxbWY2Mmtvc2YyZXd0ZWF1In0.YP4QQgS9F_Mqj3m7cB8gLw&zoomwheel=false#11.38/10.3001/123.8667" title="CRIME_DATA" style="border:none;"></iframe>
+
+  <div id="main-content" class="main-content">
+    <!-- <div id="map" style="height: 100%;"></div> -->
+  </div>
   
-
-  <ion-content>
-    <div id="main-content" class="main-content">
-      <div class="segment-container">
-        <ion-segment value="custom" class="custom-segment">
-          <ion-segment-button id="duration" value="recent">
-            <ion-label>Recent</ion-label>
-          </ion-segment-button>
-          <ion-segment-button id="duration" value="segment">
-            <ion-label>Previous</ion-label>
-          </ion-segment-button>
-        </ion-segment>
-      </div>
-      </div>
-
-      <div class="jurisdiction">
-        <ion-item>
-          <ion-label>Region</ion-label>
-          <ion-select [(ngModel)]="selectedRegion" (ionChange)="onRegionChange($event)">
-            <ion-select-option *ngFor="let region of regions" [value]="region.id">{{ region.name }}</ion-select-option>
-          </ion-select>
-        </ion-item>
-
-        <ion-item>
-          <ion-label>Province</ion-label>
-          <ion-select [(ngModel)]="selectedProvince" (ionChange)="onProvinceChange($event)" [disabled]="!selectedRegion">
-            <ion-select-option *ngFor="let province of provinces" [value]="province.id">{{ province.name }}</ion-select-option>
-          </ion-select>
-        </ion-item>
-
-        <ion-item>
-          <ion-label>City</ion-label>
-          <ion-select [(ngModel)]="selectedCity" (ionChange)="onCityChange($event)" [disabled]="!selectedProvince">
-            <ion-select-option *ngFor="let city of cities" [value]="city.id">{{ city.name }}</ion-select-option>
-          </ion-select>
-        </ion-item>
-      
-      </div>
-      <div class="crime-level"></div>
-      <div class="mapboxgl-canvas-container">
-        <!-- <div class="mapboxgl-canvas" id="map" ></div> -->
-        
-      </div>
-      <div id="map" style="height:100%;"></div>
 </ion-content>
-
-

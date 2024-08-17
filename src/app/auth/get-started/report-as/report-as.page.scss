@@ -1,13 +1,23 @@
 ion-content {
-    --background: url("../assets/bacgkround.svg") no-repeat fixed center / cover;
+    // --background: url("../assets/bacgkround.svg") no-repeat fixed center / cover;
+    --background: #ffffff;
   }
 
+
+ion-toolbar {
+    --background: linear-gradient(to right, #004AAD, #009FFD);
+    height: 80px;
+    width: 100%;
+
+  }
+
+  
   .container {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-top: 150px;
+    margin-top: 100px;
     color: #000000;
   }
 
