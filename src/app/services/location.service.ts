@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { Province, Region, Municipality, Barangay } from '../models/location-data';
+import { Cluster, Coordinates } from '../models/location';
 
 
 
@@ -16,6 +17,7 @@ export class LocationService {
   private barangayUrl = 'assets/location/table_barangay.json';
   private cebuBarangays = 'assets/location/cebu_barangay.json';
   private locationURL = 'http://localhost:5100/api/location/create/';
+  private coordinates = 'http://localhost:5100/api/location/retrieve/mapcoordinates';
 
   constructor(private http: HttpClient) {}
 
@@ -37,6 +39,10 @@ export class LocationService {
 
   getCebuBarangays(): Observable<Barangay[]> {
     return this.http.get<Barangay[]>(this.cebuBarangays);
+  }
+
+  getCoordinates(): Observable<Cluster[]> {
+    return this.http.get<Cluster[]>(this.coordinates);
   }
 
 

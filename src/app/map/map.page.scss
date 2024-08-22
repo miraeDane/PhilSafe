@@ -16,15 +16,25 @@ ion-toolbar {
 //     padding: 0;
 //   }
   
-  #map {
+  .map {
 
-    height: 100%; 
-    min-height: 400px;
-    flex: 1; 
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
 
   }
- 
 
+  #map {
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+
+  }
 
 ion-select {
   --background: white; 
@@ -41,14 +51,19 @@ ion-select-option:hover {
 }
 
 .main-content {
-  // position: relative;
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
-  // top: 20px;
-  width: auto;
-  height: auto;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 500px;
+  background-color: white;
+  border-radius: 50px;
+  width: 90%;
+  height: 30%;
   z-index: 99;
+  /* flex-direction: column; */
+  margin-left: auto;
+  margin-right: auto;
   flex-direction: column;
 }
 
@@ -156,4 +171,222 @@ ion-segment-button#duration {
   border: solid 0.1px #b4b1b1;
  
 }
+
+
+.density {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  border-radius: 50px;
+  border: #000000 solid 0.2px;
+  height: 20px;
+  width: 80%;
+  // margin-bottom: 150px;
+}
+
+
+.percentage {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  border-radius: 50px;
+  //height: 20px;
+  width: 80%;
+  // margin-bottom: 150px;
+}
+
+.percent {
+  color: #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center ;
+  width: 80%;
+
+}
+
+.safe {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  border-top-left-radius: 50px;
+  //border: #000000 solid 0.2px;
+  height: 20px;
+  width: 20%;
+  margin-bottom: 150px;
+  background-color: #0fcaeb;
+  border-bottom-left-radius: 50px;
+
+}
+
+.alert {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  // border-top-left-radius: 50px;
+  //border: #000000 solid 0.2px;
+  height: 20px;
+  width: 30%;
+  margin-bottom: 150px;
+  background-color: #d9ff00;
+  // border-bottom-left-radius: 50px;
+
+}
+
+.risk {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  // border-top-left-radius: 50px;
+  //border: #000000 solid 0.2px;
+  height: 20px;
+  width: 30%;
+  margin-bottom: 150px;
+  background-color: #ff9d00;
+  // border-bottom-left-radius: 50px;
+
+}
+
+.risky {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  border-top-right-radius: 50px;
+  //border: #000000 solid 0.2px;
+  height: 20px;
+  width: 20%;
+  margin-bottom: 150px;
+  background-color: #ff0000;
+  border-bottom-right-radius: 50px;
+
+}
+
+.level {
+  color:#000000;
+  display: flex;
+  justify-content: center;
+  align-items: center
+}
+
+.level1 {
+  color:#0fcaeb;
+  font-weight: bold;
+  margin: 20px;
+
+}
+
+.level2 {
+  color:#9bb024;
+  font-weight: bold;
+  margin: 20px;
+
+}
+
+
+.level3 {
+  color:#ff9d00;
+  font-weight: bold;
+  margin: 20px;
+
+}
+
+
+.level4 {
+  color:#ff0000;
+  font-weight: bold;
+  margin: 20px;
+
+}
+
+
+.crime-analysis {
+  color:#004AAD;
+  font-weight: bold;
+  margin: 10px;
+  text-decoration: underline;
+}
+
+
+
+ion-modal {
+  --width: 90%;
+  --height: 80%;
+  --background: #ffffff;
+}
+
+
+.modal-analysis ion-toolbar {
+  --background: #007acc;
+  --color: #fff; 
+  --border-radius: 20px 20px 0 0; 
+  --padding-top: 16px;
+}
+
+
+.modal-analysis ion-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+
+.modal-analysis ion-content {
+  --padding: 16px;
+  background-color: #f5f5f5; 
+  font-family: 'Arial', sans-serif;
+}
+
+
+.modal-analysis ion-item {
+  --background: #fff; 
+  --border-radius: 12px;
+  --padding: 20px;
+  --margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-analysis ion-list {
+  background-color: #ffffff;
+  --border-radius: 12px;
+  --margin-bottom: 20px;
+}
+
+
+
+.modal-analysis ion-item ion-label {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333; /* Label color */
+}
+
+
+.modal-analysis ion-note {
+  font-size: 16px;
+  color: #555; 
+}
+
+
+.modal-analysis ion-button {
+  --background: #007acc;
+  --color: #fff;
+  --border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.inclusive-date {
+  font-size: 30px;
+  font-weight: bold;
+  color: #007acc; 
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-top: 30px;
+}
+
+
+
+
+
 

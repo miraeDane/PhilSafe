@@ -1,0 +1,1491 @@
+{
+    "version": 8,
+    "name": "Crime_Heatmap_DarkVer",
+    "metadata": {
+        "mapbox:autocomposite": true,
+        "mapbox:thumb": "data:image/webp;base64,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",
+        "mapbox:uiParadigm": "imports",
+        "mapbox:sdk-support": {
+            "js": "3.6.0",
+            "android": "11.6.0",
+            "ios": "11.6.0"
+        },
+        "mapbox:groups": {},
+        "mapbox:uiExpandedImports": []
+    },
+    "center": [123.8803879834752, 10.292884406837118],
+    "zoom": 13.599518563784043,
+    "bearing": 0,
+    "pitch": 0,
+    "terrain": null,
+    "imports": [
+        {
+            "id": "basemap",
+            "url": "mapbox://styles/mapbox/standard",
+            "config": {
+                "showRoadLabels": true,
+                "showPlaceLabels": true,
+                "lightPreset": "dusk",
+                "font": "Roboto",
+                "show3dObjects": true,
+                "theme": "default"
+            }
+        }
+    ],
+    "sources": {
+        "composite": {
+            "url": "mapbox://mimsh23.a0w6i3kp,mimsh23.8rbk7j44,mimsh23.adus4n5r,mimsh23.8bsqdobw,mimsh23.7ugm3bgr,mimsh23.64sbjx4x,mimsh23.57voxxzq,mimsh23.8icbftzs,mimsh23.d6wctyq3,mimsh23.bjvijeqe,mimsh23.9d8ilnw6",
+            "type": "vector"
+        }
+    },
+    "sprite": "mapbox://sprites/mimsh23/cm00otph7008801pw975359hd/8cfd3drho5eet9n336g32nhhr",
+    "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+    "projection": {"name": "globe"},
+    "layers": [
+        {
+            "id": "ps01",
+            "type": "heatmap",
+            "source": "composite",
+            "source-layer": "PS_01-1c51js",
+            "slot": "middle",
+            "minzoom": 12,
+            "filter": [
+                "all",
+                [
+                    "match",
+                    ["get", "BARANGAY"],
+                    [
+                        "T. Padilla",
+                        "Lorega (Lorega San Miguel)",
+                        "Pari-an",
+                        "Day-as",
+                        "Zapatera",
+                        "Kamagayan (Pob.)",
+                        "San Antonio (Pob.)"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME TYPE"],
+                    [
+                        "NON-INDEX CRIME",
+                        "INDEX CRIME",
+                        "VEHICULAR/TRAFFIC INCIDENT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME"],
+                    [
+                        "ATTEMPTED/FRUSTRATED STAGES FOCUS CRIME",
+                        "RAPE",
+                        "VIOLATION OF SPECIAL LAWS",
+                        "MURDER",
+                        "RIR DAMAGE TO PROPERTY",
+                        "ROBBERY",
+                        "OTHER THAN INDEX CRIME",
+                        "RIR PHYSICAL INJURY",
+                        "PHYSICAL INJURIES",
+                        "THEFT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Day Name"],
+                    [
+                        "Thursday",
+                        "Tuesday",
+                        "Saturday",
+                        "Friday",
+                        "Wednesday",
+                        "Monday",
+                        "Sunday"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "GENERAL TIME"],
+                    ["AFTERNOON", "MORNING", "EVENING"],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Month Name"],
+                    ["May", "April", "March", "February", "January"],
+                    true,
+                    false
+                ],
+                ["match", ["get", "STATION CODE"], ["PS 01"], true, false],
+                ["match", ["get", "STATION NAME"], ["Pari-An"], true, false],
+                [
+                    "match",
+                    ["get", "Start of Hour"],
+                    [
+                        "9:00:00 PM",
+                        "8:00:00 PM",
+                        "7:00:00 PM",
+                        "6:00:00 PM",
+                        "5:00:00 PM",
+                        "4:00:00 PM",
+                        "3:00:00 PM",
+                        "2:00:00 PM",
+                        "12:00:00 AM",
+                        "11:00:00 AM",
+                        "1:00:00 PM",
+                        "10:00:00 AM",
+                        "9:00:00 AM",
+                        "8:00:00 AM",
+                        "7:00:00 AM",
+                        "6:00:00 AM",
+                        "5:00:00 AM",
+                        "4:00:00 AM",
+                        "3:00:00 AM",
+                        "2:00:00 AM",
+                        "1:00:00 AM",
+                        "12:00:00 PM",
+                        "11:00:00 PM",
+                        "10:00:00 PM"
+                    ],
+                    true,
+                    false
+                ]
+            ],
+            "layout": {},
+            "paint": {
+                "heatmap-radius": 5,
+                "heatmap-opacity": 0.63,
+                "heatmap-color": [
+                    "interpolate",
+                    ["linear"],
+                    ["heatmap-density"],
+                    0,
+                    "rgba(0, 0, 255, 0)",
+                    0.1,
+                    "hsl(189, 88%, 49%)",
+                    0.4,
+                    "hsl(69, 100%, 50%)",
+                    0.7,
+                    "hsl(37, 100%, 50%)",
+                    1,
+                    "red"
+                ]
+            }
+        },
+        {
+            "id": "ps02",
+            "type": "heatmap",
+            "source": "composite",
+            "source-layer": "PS_02-dkuolb",
+            "slot": "middle",
+            "minzoom": 12,
+            "filter": [
+                "all",
+                [
+                    "match",
+                    ["get", "BARANGAY"],
+                    [
+                        "Sambag I (Pob.)",
+                        "Capitol Site (Pob.)",
+                        "Sambag II (Pob.)",
+                        "Santa Cruz (Pob.)",
+                        "Camputhaw (Pob.)",
+                        "Cogon Ramos (Pob.)"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME TYPE"],
+                    [
+                        "NON-INDEX CRIME",
+                        "INDEX CRIME",
+                        "VEHICULAR/TRAFFIC INCIDENT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME"],
+                    [
+                        "ATTEMPTED/FRUSTRATED STAGES FOCUS CRIME",
+                        "VIOLATION OF SPECIAL LAWS",
+                        "MURDER",
+                        "RIR DAMAGE TO PROPERTY",
+                        "RIR HOMICIDE",
+                        "ROBBERY",
+                        "OTHER THAN INDEX CRIME",
+                        "RIR PHYSICAL INJURY",
+                        "PHYSICAL INJURIES",
+                        "THEFT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Day Name"],
+                    [
+                        "Tuesday",
+                        "Sunday",
+                        "Saturday",
+                        "Thursday",
+                        "Wednesday",
+                        "Monday",
+                        "Friday"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "GENERAL TIME"],
+                    ["MORNING", "EVENING", "AFTERNOON"],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Month Name"],
+                    ["May", "April", "March", "February", "January"],
+                    true,
+                    false
+                ],
+                ["match", ["get", "STATION CODE"], ["PS 02"], true, false],
+                ["match", ["get", "STATION NAME"], ["Abellana"], true, false],
+                [
+                    "match",
+                    ["get", "Start of Hour"],
+                    [
+                        "9:00:00 PM",
+                        "8:00:00 PM",
+                        "7:00:00 PM",
+                        "6:00:00 PM",
+                        "5:00:00 PM",
+                        "4:00:00 PM",
+                        "3:00:00 PM",
+                        "2:00:00 PM",
+                        "12:00:00 AM",
+                        "11:00:00 AM",
+                        "1:00:00 PM",
+                        "10:00:00 AM",
+                        "9:00:00 AM",
+                        "8:00:00 AM",
+                        "7:00:00 AM",
+                        "5:00:00 AM",
+                        "6:00:00 AM",
+                        "4:00:00 AM",
+                        "2:00:00 AM",
+                        "1:00:00 AM",
+                        "12:00:00 PM",
+                        "11:00:00 PM",
+                        "10:00:00 PM",
+                        "3:00:00 AM"
+                    ],
+                    true,
+                    false
+                ]
+            ],
+            "layout": {},
+            "paint": {
+                "heatmap-radius": 5,
+                "heatmap-opacity": 0.63,
+                "heatmap-color": [
+                    "interpolate",
+                    ["linear"],
+                    ["heatmap-density"],
+                    0,
+                    "rgba(0, 0, 255, 0)",
+                    0.1,
+                    "hsl(189, 88%, 49%)",
+                    0.4,
+                    "hsl(69, 100%, 50%)",
+                    0.7,
+                    "hsl(37, 100%, 50%)",
+                    1,
+                    "red"
+                ]
+            }
+        },
+        {
+            "id": "ps03",
+            "type": "heatmap",
+            "source": "composite",
+            "source-layer": "PS_03-2het8y",
+            "slot": "middle",
+            "minzoom": 12,
+            "filter": [
+                "all",
+                [
+                    "match",
+                    ["get", "BARANGAY"],
+                    [
+                        "Carreta (Station 3)",
+                        "Santo Nino",
+                        "Tejero",
+                        "Tinago",
+                        "San Roque (Ciudad)"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME TYPE"],
+                    [
+                        "NON-INDEX CRIME",
+                        "INDEX CRIME",
+                        "VEHICULAR/TRAFFIC INCIDENT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME"],
+                    [
+                        "VIOLATION OF SPECIAL LAWS",
+                        "OTHER THAN INDEX CRIME",
+                        "THEFT",
+                        "ATTEMPTED/FRUSTRATED STAGES FOCUS CRIME",
+                        "PHYSICAL INJURIES",
+                        "RIR DAMAGE TO PROPERTY",
+                        "RIR PHYSICAL INJURY"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Day Name"],
+                    [
+                        "Tuesday",
+                        "Thursday",
+                        "Wednesday",
+                        "Friday",
+                        "Monday",
+                        "Saturday",
+                        "Sunday"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "GENERAL TIME"],
+                    ["EVENING", "AFTERNOON", "MORNING"],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Month Name"],
+                    ["May", "April", "March", "February", "January"],
+                    true,
+                    false
+                ],
+                ["match", ["get", "STATION CODE"], ["PS 03"], true, false],
+                [
+                    "match",
+                    ["get", "Start of Hour"],
+                    [
+                        "9:00:00 PM",
+                        "8:00:00 PM",
+                        "7:00:00 PM",
+                        "6:00:00 PM",
+                        "5:00:00 PM",
+                        "4:00:00 PM",
+                        "3:00:00 PM",
+                        "2:00:00 PM",
+                        "12:00:00 AM",
+                        "11:00:00 AM",
+                        "1:00:00 PM",
+                        "10:00:00 AM",
+                        "9:00:00 AM",
+                        "8:00:00 AM",
+                        "7:00:00 AM",
+                        "6:00:00 AM",
+                        "5:00:00 AM",
+                        "4:00:00 AM",
+                        "3:00:00 AM",
+                        "2:00:00 AM",
+                        "1:00:00 AM",
+                        "12:00:00 PM",
+                        "11:00:00 PM",
+                        "10:00:00 PM"
+                    ],
+                    true,
+                    false
+                ]
+            ],
+            "layout": {},
+            "paint": {
+                "heatmap-radius": 5,
+                "heatmap-opacity": 0.63,
+                "heatmap-color": [
+                    "interpolate",
+                    ["linear"],
+                    ["heatmap-density"],
+                    0,
+                    "rgba(0, 0, 255, 0)",
+                    0.1,
+                    "hsl(189, 88%, 49%)",
+                    0.4,
+                    "hsl(69, 100%, 50%)",
+                    0.7,
+                    "hsl(37, 100%, 50%)",
+                    1,
+                    "red"
+                ]
+            }
+        },
+        {
+            "id": "ps04",
+            "type": "heatmap",
+            "source": "composite",
+            "source-layer": "PS_04-42w9sr",
+            "slot": "middle",
+            "minzoom": 12,
+            "filter": [
+                "all",
+                [
+                    "match",
+                    ["get", "BARANGAY"],
+                    [
+                        "Apas",
+                        "Banilad",
+                        "Lahug",
+                        "Mabolo",
+                        "Carreta (Station 4)",
+                        "Hippodromo",
+                        "Luz",
+                        "Kasambagan"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME TYPE"],
+                    [
+                        "NON-INDEX CRIME",
+                        "INDEX CRIME",
+                        "VEHICULAR/TRAFFIC INCIDENT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME"],
+                    [
+                        "ATTEMPTED/FRUSTRATED STAGES FOCUS CRIME",
+                        "RAPE",
+                        "VIOLATION OF SPECIAL LAWS",
+                        "MURDER",
+                        "HOMICIDE",
+                        "RIR DAMAGE TO PROPERTY",
+                        "RIR HOMICIDE",
+                        "ROBBERY",
+                        "OTHER THAN INDEX CRIME",
+                        "RIR PHYSICAL INJURY",
+                        "CARNAPPING MC",
+                        "PHYSICAL INJURIES",
+                        "THEFT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Day Name"],
+                    [
+                        "Tuesday",
+                        "Sunday",
+                        "Friday",
+                        "Saturday",
+                        "Thursday",
+                        "Wednesday",
+                        "Monday"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "GENERAL TIME"],
+                    ["AFTERNOON", "MORNING", "EVENING"],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Month Name"],
+                    ["May", "April", "March", "February", "January"],
+                    true,
+                    false
+                ],
+                ["match", ["get", "STATION CODE"], ["PS 04"], true, false],
+                ["match", ["get", "STATION NAME"], ["Mabolo"], true, false],
+                [
+                    "match",
+                    ["get", "Start of Hour"],
+                    [
+                        "9:00:00 PM",
+                        "8:00:00 PM",
+                        "7:00:00 PM",
+                        "6:00:00 PM",
+                        "5:00:00 PM",
+                        "4:00:00 PM",
+                        "3:00:00 PM",
+                        "2:00:00 PM",
+                        "12:00:00 AM",
+                        "11:00:00 AM",
+                        "1:00:00 PM",
+                        "10:00:00 AM",
+                        "9:00:00 AM",
+                        "8:00:00 AM",
+                        "7:00:00 AM",
+                        "6:00:00 AM",
+                        "5:00:00 AM",
+                        "4:00:00 AM",
+                        "3:00:00 AM",
+                        "2:00:00 AM",
+                        "1:00:00 AM",
+                        "12:00:00 PM",
+                        "11:00:00 PM",
+                        "10:00:00 PM"
+                    ],
+                    true,
+                    false
+                ]
+            ],
+            "layout": {},
+            "paint": {
+                "heatmap-radius": 5,
+                "heatmap-opacity": 0.63,
+                "heatmap-color": [
+                    "interpolate",
+                    ["linear"],
+                    ["heatmap-density"],
+                    0,
+                    "rgba(0, 0, 255, 0)",
+                    0.1,
+                    "hsl(189, 88%, 49%)",
+                    0.4,
+                    "hsl(69, 100%, 50%)",
+                    0.7,
+                    "hsl(37, 100%, 50%)",
+                    1,
+                    "red"
+                ]
+            }
+        },
+        {
+            "id": "ps05",
+            "type": "heatmap",
+            "source": "composite",
+            "source-layer": "PS_05-3clqyv",
+            "slot": "middle",
+            "minzoom": 12,
+            "filter": [
+                "all",
+                [
+                    "match",
+                    ["get", "BARANGAY"],
+                    ["Ermita", "Pahina Central", "Kalubihan"],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME TYPE"],
+                    [
+                        "NON-INDEX CRIME",
+                        "INDEX CRIME",
+                        "VEHICULAR/TRAFFIC INCIDENT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME"],
+                    [
+                        "ATTEMPTED/FRUSTRATED STAGES FOCUS CRIME",
+                        "VIOLATION OF SPECIAL LAWS",
+                        "HOMICIDE",
+                        "RIR DAMAGE TO PROPERTY",
+                        "RIR HOMICIDE",
+                        "ROBBERY",
+                        "OTHER THAN INDEX CRIME",
+                        "RIR PHYSICAL INJURY",
+                        "PHYSICAL INJURIES",
+                        "THEFT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Day Name"],
+                    [
+                        "Tuesday",
+                        "Friday",
+                        "Thursday",
+                        "Wednesday",
+                        "Monday",
+                        "Sunday",
+                        "Saturday"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "GENERAL TIME"],
+                    ["EVENING", "AFTERNOON", "MORNING"],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Month Name"],
+                    ["May", "April", "March", "February", "January"],
+                    true,
+                    false
+                ],
+                ["match", ["get", "STATION CODE"], ["PS 05"], true, false],
+                ["match", ["get", "STATION NAME"], ["Carbon"], true, false],
+                [
+                    "match",
+                    ["get", "Start of Hour"],
+                    [
+                        "9:00:00 PM",
+                        "8:00:00 PM",
+                        "7:00:00 PM",
+                        "6:00:00 PM",
+                        "4:00:00 PM",
+                        "5:00:00 PM",
+                        "3:00:00 PM",
+                        "2:00:00 PM",
+                        "12:00:00 AM",
+                        "11:00:00 AM",
+                        "1:00:00 PM",
+                        "10:00:00 AM",
+                        "9:00:00 AM",
+                        "8:00:00 AM",
+                        "7:00:00 AM",
+                        "5:00:00 AM",
+                        "4:00:00 AM",
+                        "3:00:00 AM",
+                        "2:00:00 AM",
+                        "1:00:00 AM",
+                        "12:00:00 PM",
+                        "11:00:00 PM",
+                        "10:00:00 PM"
+                    ],
+                    true,
+                    false
+                ]
+            ],
+            "layout": {},
+            "paint": {
+                "heatmap-radius": 5,
+                "heatmap-opacity": 0.63,
+                "heatmap-color": [
+                    "interpolate",
+                    ["linear"],
+                    ["heatmap-density"],
+                    0,
+                    "rgba(0, 0, 255, 0)",
+                    0.1,
+                    "hsl(189, 88%, 49%)",
+                    0.4,
+                    "hsl(69, 100%, 50%)",
+                    0.7,
+                    "hsl(37, 100%, 50%)",
+                    1,
+                    "red"
+                ]
+            }
+        },
+        {
+            "id": "ps06",
+            "type": "heatmap",
+            "source": "composite",
+            "source-layer": "PS_06-4trjio",
+            "slot": "middle",
+            "minzoom": 12,
+            "filter": [
+                "all",
+                [
+                    "match",
+                    ["get", "BARANGAY"],
+                    [
+                        "Sawang Calero",
+                        "Pahina San Nicolas",
+                        "Suba",
+                        "San Nicolas Proper",
+                        "Pasil",
+                        "Calamba"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME TYPE"],
+                    [
+                        "NON-INDEX CRIME",
+                        "INDEX CRIME",
+                        "VEHICULAR/TRAFFIC INCIDENT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME"],
+                    [
+                        "ATTEMPTED/FRUSTRATED STAGES FOCUS CRIME",
+                        "VIOLATION OF SPECIAL LAWS",
+                        "RIR DAMAGE TO PROPERTY",
+                        "MURDER",
+                        "RIR HOMICIDE",
+                        "ROBBERY",
+                        "OTHER THAN INDEX CRIME",
+                        "RIR PHYSICAL INJURY",
+                        "PHYSICAL INJURIES",
+                        "THEFT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Day Name"],
+                    [
+                        "Monday",
+                        "Wednesday",
+                        "Friday",
+                        "Thursday",
+                        "Saturday",
+                        "Sunday",
+                        "Tuesday"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "GENERAL TIME"],
+                    ["EVENING", "AFTERNOON", "MORNING"],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Month Name"],
+                    ["May", "April", "March", "February", "January"],
+                    true,
+                    false
+                ],
+                ["match", ["get", "STATION CODE"], ["PS 06"], true, false],
+                ["match", ["get", "STATION NAME"], ["Pasil"], true, false],
+                [
+                    "match",
+                    ["get", "Start of Hour"],
+                    [
+                        "9:00:00 PM",
+                        "8:00:00 PM",
+                        "7:00:00 PM",
+                        "6:00:00 PM",
+                        "5:00:00 PM",
+                        "4:00:00 PM",
+                        "3:00:00 PM",
+                        "2:00:00 PM",
+                        "12:00:00 AM",
+                        "11:00:00 AM",
+                        "1:00:00 PM",
+                        "10:00:00 AM",
+                        "9:00:00 AM",
+                        "8:00:00 AM",
+                        "6:00:00 AM",
+                        "5:00:00 AM",
+                        "4:00:00 AM",
+                        "2:00:00 AM",
+                        "1:00:00 AM",
+                        "12:00:00 PM",
+                        "11:00:00 PM",
+                        "10:00:00 PM"
+                    ],
+                    true,
+                    false
+                ]
+            ],
+            "layout": {},
+            "paint": {
+                "heatmap-radius": 5,
+                "heatmap-opacity": 0.63,
+                "heatmap-color": [
+                    "interpolate",
+                    ["linear"],
+                    ["heatmap-density"],
+                    0,
+                    "rgba(0, 0, 255, 0)",
+                    0.1,
+                    "hsl(189, 88%, 49%)",
+                    0.4,
+                    "hsl(69, 100%, 50%)",
+                    0.7,
+                    "hsl(37, 100%, 50%)",
+                    1,
+                    "red"
+                ]
+            }
+        },
+        {
+            "id": "ps07",
+            "type": "heatmap",
+            "source": "composite",
+            "source-layer": "PS_07-a8h979",
+            "slot": "middle",
+            "minzoom": 12,
+            "filter": [
+                "all",
+                [
+                    "match",
+                    ["get", "BARANGAY"],
+                    [
+                        "Pardo (Pob.)",
+                        "Kinasang-an",
+                        "Bulacao",
+                        "Inayawan",
+                        "Cogon Pardo",
+                        "Basak Pardo"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME TYPE"],
+                    [
+                        "NON-INDEX CRIME",
+                        "INDEX CRIME",
+                        "VEHICULAR/TRAFFIC INCIDENT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME"],
+                    [
+                        "ATTEMPTED/FRUSTRATED STAGES FOCUS CRIME",
+                        "VIOLATION OF SPECIAL LAWS",
+                        "MURDER",
+                        "RIR DAMAGE TO PROPERTY",
+                        "RIR HOMICIDE",
+                        "ROBBERY",
+                        "OTHER THAN INDEX CRIME",
+                        "RIR PHYSICAL INJURY",
+                        "PHYSICAL INJURIES",
+                        "THEFT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Day Name"],
+                    [
+                        "Wednesday",
+                        "Saturday",
+                        "Tuesday",
+                        "Monday",
+                        "Sunday",
+                        "Friday",
+                        "Thursday"
+                    ],
+                    true,
+                    false
+                ]
+            ],
+            "layout": {},
+            "paint": {
+                "heatmap-radius": 5,
+                "heatmap-opacity": 0.63,
+                "heatmap-color": [
+                    "interpolate",
+                    ["linear"],
+                    ["heatmap-density"],
+                    0,
+                    "rgba(0, 0, 255, 0)",
+                    0.1,
+                    "hsl(189, 88%, 49%)",
+                    0.4,
+                    "hsl(69, 100%, 50%)",
+                    0.7,
+                    "hsl(37, 100%, 50%)",
+                    1,
+                    "red"
+                ]
+            }
+        },
+        {
+            "id": "ps08",
+            "type": "heatmap",
+            "source": "composite",
+            "source-layer": "PS_08-dhobec",
+            "slot": "middle",
+            "minzoom": 12,
+            "filter": [
+                "all",
+                [
+                    "match",
+                    ["get", "BARANGAY"],
+                    [
+                        "Binaliw",
+                        "Talamban",
+                        "Agsungot",
+                        "Lusaran",
+                        "Bacayan",
+                        "Sirao",
+                        "Guba",
+                        "Pulangbato",
+                        "Cambinocot",
+                        "Budlaan",
+                        "Pit-os",
+                        "Mabini",
+                        "Adlaon",
+                        "San Jose"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME TYPE"],
+                    [
+                        "NON-INDEX CRIME",
+                        "INDEX CRIME",
+                        "VEHICULAR/TRAFFIC INCIDENT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME"],
+                    [
+                        "ATTEMPTED/FRUSTRATED STAGES FOCUS CRIME",
+                        "RAPE",
+                        "VIOLATION OF SPECIAL LAWS",
+                        "MURDER",
+                        "HOMICIDE",
+                        "RIR DAMAGE TO PROPERTY",
+                        "RIR HOMICIDE",
+                        "OTHER THAN INDEX CRIME",
+                        "ROBBERY",
+                        "RIR PHYSICAL INJURY",
+                        "PHYSICAL INJURIES",
+                        "THEFT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Day Name"],
+                    [
+                        "Wednesday",
+                        "Sunday",
+                        "Saturday",
+                        "Monday",
+                        "Friday",
+                        "Thursday",
+                        "Tuesday"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "GENERAL TIME"],
+                    ["AFTERNOON", "MORNING", "EVENING"],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Month Name"],
+                    ["May", "April", "March", "February", "January"],
+                    true,
+                    false
+                ],
+                ["match", ["get", "STATION CODE"], ["PS 08"], true, false],
+                ["match", ["get", "STATION NAME"], ["Talamban"], true, false],
+                [
+                    "match",
+                    ["get", "Start of Hour"],
+                    [
+                        "9:00:00 PM",
+                        "8:00:00 PM",
+                        "7:00:00 PM",
+                        "6:00:00 PM",
+                        "5:00:00 PM",
+                        "4:00:00 PM",
+                        "3:00:00 PM",
+                        "2:00:00 PM",
+                        "12:00:00 AM",
+                        "11:00:00 AM",
+                        "1:00:00 PM",
+                        "10:00:00 AM",
+                        "9:00:00 AM",
+                        "8:00:00 AM",
+                        "7:00:00 AM",
+                        "6:00:00 AM",
+                        "5:00:00 AM",
+                        "3:00:00 AM",
+                        "2:00:00 AM",
+                        "1:00:00 AM",
+                        "12:00:00 PM",
+                        "11:00:00 PM",
+                        "10:00:00 PM"
+                    ],
+                    true,
+                    false
+                ]
+            ],
+            "layout": {},
+            "paint": {
+                "heatmap-radius": 5,
+                "heatmap-opacity": 0.63,
+                "heatmap-color": [
+                    "interpolate",
+                    ["linear"],
+                    ["heatmap-density"],
+                    0,
+                    "rgba(0, 0, 255, 0)",
+                    0.1,
+                    "hsl(189, 88%, 49%)",
+                    0.4,
+                    "hsl(69, 100%, 50%)",
+                    0.7,
+                    "hsl(37, 100%, 50%)",
+                    1,
+                    "red"
+                ]
+            }
+        },
+        {
+            "id": "ps09",
+            "type": "heatmap",
+            "source": "composite",
+            "source-layer": "PS_09-7hfxid",
+            "slot": "middle",
+            "minzoom": 12,
+            "filter": [
+                "all",
+                [
+                    "match",
+                    ["get", "BARANGAY"],
+                    ["Guadalupe", "Kalunasan", "Sapang-Dako"],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME TYPE"],
+                    [
+                        "NON-INDEX CRIME",
+                        "INDEX CRIME",
+                        "VEHICULAR/TRAFFIC INCIDENT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME"],
+                    [
+                        "ATTEMPTED/FRUSTRATED STAGES FOCUS CRIME",
+                        "RAPE",
+                        "VIOLATION OF SPECIAL LAWS",
+                        "MURDER",
+                        "RIR DAMAGE TO PROPERTY",
+                        "RIR HOMICIDE",
+                        "ROBBERY",
+                        "OTHER THAN INDEX CRIME",
+                        "RIR PHYSICAL INJURY",
+                        "PHYSICAL INJURIES",
+                        "THEFT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Day Name"],
+                    [
+                        "Wednesday",
+                        "Tuesday",
+                        "Sunday",
+                        "Friday",
+                        "Monday",
+                        "Thursday",
+                        "Saturday"
+                    ],
+                    true,
+                    false
+                ],
+                ["match", ["get", "STATION CODE"], ["PS 09"], true, false],
+                ["match", ["get", "STATION NAME"], ["Guadalupe"], true, false],
+                [
+                    "match",
+                    ["get", "Start of Hour"],
+                    [
+                        "9:00:00 PM",
+                        "8:00:00 PM",
+                        "7:00:00 PM",
+                        "6:00:00 PM",
+                        "5:00:00 PM",
+                        "4:00:00 PM",
+                        "3:00:00 PM",
+                        "2:00:00 PM",
+                        "12:00:00 AM",
+                        "11:00:00 AM",
+                        "1:00:00 PM",
+                        "10:00:00 AM",
+                        "9:00:00 AM",
+                        "8:00:00 AM",
+                        "7:00:00 AM",
+                        "5:00:00 AM",
+                        "2:00:00 AM",
+                        "3:00:00 AM",
+                        "12:00:00 PM",
+                        "11:00:00 PM",
+                        "10:00:00 PM"
+                    ],
+                    true,
+                    false
+                ]
+            ],
+            "layout": {},
+            "paint": {
+                "heatmap-radius": 5,
+                "heatmap-opacity": 0.63,
+                "heatmap-color": [
+                    "interpolate",
+                    ["linear"],
+                    ["heatmap-density"],
+                    0,
+                    "rgba(0, 0, 255, 0)",
+                    0.1,
+                    "hsl(189, 88%, 49%)",
+                    0.4,
+                    "hsl(69, 100%, 50%)",
+                    0.7,
+                    "hsl(37, 100%, 50%)",
+                    1,
+                    "red"
+                ]
+            }
+        },
+        {
+            "id": "ps10",
+            "type": "heatmap",
+            "source": "composite",
+            "source-layer": "PS_10-2dfg67",
+            "slot": "middle",
+            "minzoom": 12,
+            "filter": [
+                "all",
+                [
+                    "match",
+                    ["get", "BARANGAY"],
+                    [
+                        "Labangon",
+                        "Tisa",
+                        "Toong",
+                        "Quiot Pardo",
+                        "Buhisan",
+                        "Punta Princesa"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME TYPE"],
+                    [
+                        "NON-INDEX CRIME",
+                        "INDEX CRIME",
+                        "VEHICULAR/TRAFFIC INCIDENT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME"],
+                    [
+                        "ATTEMPTED/FRUSTRATED STAGES FOCUS CRIME",
+                        "RAPE",
+                        "VIOLATION OF SPECIAL LAWS",
+                        "MURDER",
+                        "OTHER THAN INDEX CRIME",
+                        "RIR DAMAGE TO PROPERTY",
+                        "ROBBERY",
+                        "RIR PHYSICAL INJURY",
+                        "CARNAPPING MC",
+                        "PHYSICAL INJURIES",
+                        "THEFT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Day Name"],
+                    [
+                        "Thursday",
+                        "Wednesday",
+                        "Saturday",
+                        "Tuesday",
+                        "Sunday",
+                        "Monday",
+                        "Friday"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "GENERAL TIME"],
+                    ["EVENING", "AFTERNOON", "MORNING"],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Month Name"],
+                    ["May", "April", "March", "February", "January"],
+                    true,
+                    false
+                ],
+                ["match", ["get", "STATION CODE"], ["PS 10"], true, false],
+                [
+                    "match",
+                    ["get", "STATION NAME"],
+                    ["Punta Princesa"],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Start of Hour"],
+                    [
+                        "9:00:00 PM",
+                        "8:00:00 PM",
+                        "7:00:00 PM",
+                        "6:00:00 PM",
+                        "5:00:00 PM",
+                        "4:00:00 PM",
+                        "3:00:00 PM",
+                        "2:00:00 PM",
+                        "12:00:00 AM",
+                        "11:00:00 AM",
+                        "1:00:00 PM",
+                        "10:00:00 AM",
+                        "9:00:00 AM",
+                        "8:00:00 AM",
+                        "7:00:00 AM",
+                        "6:00:00 AM",
+                        "4:00:00 AM",
+                        "3:00:00 AM",
+                        "2:00:00 AM",
+                        "1:00:00 AM",
+                        "12:00:00 PM",
+                        "11:00:00 PM",
+                        "10:00:00 PM"
+                    ],
+                    true,
+                    false
+                ]
+            ],
+            "layout": {},
+            "paint": {
+                "heatmap-radius": 5,
+                "heatmap-opacity": 0.63,
+                "heatmap-color": [
+                    "interpolate",
+                    ["linear"],
+                    ["heatmap-density"],
+                    0,
+                    "rgba(0, 0, 255, 0)",
+                    0.1,
+                    "hsl(189, 88%, 49%)",
+                    0.4,
+                    "hsl(69, 100%, 50%)",
+                    0.7,
+                    "hsl(37, 100%, 50%)",
+                    1,
+                    "red"
+                ]
+            }
+        },
+        {
+            "id": "ps11",
+            "type": "heatmap",
+            "source": "composite",
+            "source-layer": "PS_11-3hrra6",
+            "slot": "middle",
+            "minzoom": 12,
+            "filter": [
+                "all",
+                [
+                    "match",
+                    ["get", "BARANGAY"],
+                    ["Mambaling", "Duljo (Pob.)", "Basak San Nicolas"],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME TYPE"],
+                    [
+                        "NON-INDEX CRIME",
+                        "INDEX CRIME",
+                        "VEHICULAR/TRAFFIC INCIDENT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "CRIME"],
+                    [
+                        "ATTEMPTED/FRUSTRATED STAGES FOCUS CRIME",
+                        "RAPE",
+                        "VIOLATION OF SPECIAL LAWS",
+                        "MURDER",
+                        "HOMICIDE",
+                        "RIR DAMAGE TO PROPERTY",
+                        "RIR HOMICIDE",
+                        "ROBBERY",
+                        "OTHER THAN INDEX CRIME",
+                        "RIR PHYSICAL INJURY",
+                        "CARNAPPING MC",
+                        "PHYSICAL INJURIES",
+                        "THEFT"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Day Name"],
+                    [
+                        "Thursday",
+                        "Wednesday",
+                        "Tuesday",
+                        "Friday",
+                        "Monday",
+                        "Saturday",
+                        "Sunday"
+                    ],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "GENERAL TIME"],
+                    ["MORNING", "AFTERNOON", "EVENING"],
+                    true,
+                    false
+                ],
+                [
+                    "match",
+                    ["get", "Month Name"],
+                    ["May", "April", "March", "February", "January"],
+                    true,
+                    false
+                ],
+                ["match", ["get", "STATION CODE"], ["PS 11"], true, false],
+                ["match", ["get", "STATION NAME"], ["Mambaling"], true, false],
+                [
+                    "match",
+                    ["get", "Start of Hour"],
+                    [
+                        "9:00:00 PM",
+                        "8:00:00 PM",
+                        "7:00:00 PM",
+                        "5:00:00 PM",
+                        "6:00:00 PM",
+                        "4:00:00 PM",
+                        "3:00:00 PM",
+                        "12:00:00 AM",
+                        "2:00:00 PM",
+                        "11:00:00 AM",
+                        "10:00:00 AM",
+                        "1:00:00 PM",
+                        "9:00:00 AM",
+                        "8:00:00 AM",
+                        "7:00:00 AM",
+                        "6:00:00 AM",
+                        "5:00:00 AM",
+                        "4:00:00 AM",
+                        "3:00:00 AM",
+                        "2:00:00 AM",
+                        "1:00:00 AM",
+                        "12:00:00 PM",
+                        "11:00:00 PM",
+                        "10:00:00 PM"
+                    ],
+                    true,
+                    false
+                ]
+            ],
+            "layout": {},
+            "paint": {
+                "heatmap-radius": 5,
+                "heatmap-opacity": 0.63,
+                "heatmap-color": [
+                    "interpolate",
+                    ["linear"],
+                    ["heatmap-density"],
+                    0,
+                    "rgba(0, 0, 255, 0)",
+                    0.1,
+                    "hsl(189, 88%, 49%)",
+                    0.4,
+                    "hsl(69, 100%, 50%)",
+                    0.7,
+                    "hsl(37, 100%, 50%)",
+                    1,
+                    "red"
+                ]
+            }
+        }
+    ],
+    "created": "2024-08-19T07:41:46.939Z",
+    "modified": "2024-08-19T14:03:48.586Z",
+    "id": "cm00otph7008801pw975359hd",
+    "owner": "mimsh23",
+    "visibility": "public",
+    "protected": false,
+    "draft": false
+}

@@ -21,4 +21,24 @@ export interface Location {
     reports?: Report[];
     zipCode: number;
   }
+
+
+  export interface Coordinates {
+    longitude: number;
+    latitude: number;
+    eventTime?: string;
+  }
+
+
+  export interface Cluster {
+    cluster_label: number;
+    density: number;
+    centroid: {
+        longitude: number;
+        latitude: number;
+        event_time: string;
+    };
+    coordinates: Coordinates[];
+  }
+  
   
