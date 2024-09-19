@@ -34,7 +34,7 @@
         <ion-input [(ngModel)]="upgraded.lastname"
         name="last" id="lname" placeholder="Last Name"> </ion-input>
       </ion-item>
-
+      
       <div class="detail-select">
         <ion-item class="dob">
           <ion-icon name="calendar" color="black"></ion-icon>
@@ -120,16 +120,16 @@
       </ion-item>
 
       <ion-item>
-        <ion-input [(ngModel)]="zip_code" name="homezip" placeholder="Zip Code"></ion-input>
+        <ion-input [(ngModel)]="home_zip_code" name="homezip" placeholder="Zip Code"></ion-input>
       </ion-item>
 
       <ion-label class="title-info">WORK ADDRESS</ion-label>
 
-      <div class="checkbox-container">
+      <!-- <div class="checkbox-container">
         <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="isSameAddress" (ionChange)="onAddressCheckboxChange($event)"></ion-checkbox>
         <ion-label class="checkbox-label">Same as Home Address</ion-label>
 
-      </div>
+      </div> -->
 
       <ion-item>
         <ion-select [(ngModel)]="userWorkAddress.region" name="workregionName" placeholder="Region" (ionChange)="onWorkRegionChange($event)">
@@ -194,7 +194,7 @@
       </ion-item>
 
       <ion-item>
-        <ion-input [(ngModel)]="zip_code" name="workzip" placeholder="Zip Code"></ion-input>
+        <ion-input [(ngModel)]="work_zip_code" name="workzip" placeholder="Zip Code"></ion-input>
       </ion-item>
 
       
@@ -235,8 +235,9 @@
       </div>
 
       <div class="next-container">
-        <ion-button  class="confirm" (click)="register()">Proceed to Register</ion-button
+        <ion-button id="register" class="confirm" (click)="register()">Proceed to Register</ion-button
         >
+        <ion-loading class="custom-loading" trigger="register" message="Logging in.." [duration]="5000"></ion-loading>
         </div>
         <div class="sign-in-here">
           <ion-label class="sign-in">Already have an account?</ion-label>

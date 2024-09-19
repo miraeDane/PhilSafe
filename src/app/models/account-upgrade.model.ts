@@ -21,5 +21,5 @@ export interface UpgradeAccount {
     workAddressId: number;
     personId?: number;
     role: string;
-
+    profile_pic?: Uint16Array
 }

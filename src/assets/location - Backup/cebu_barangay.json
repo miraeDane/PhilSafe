@@ -1,0 +1,383 @@
+[
+    {
+       "barangay_id": 1,
+       "municipality_id": 875,
+       "barangay_name": "Adlaon"
+    },
+    {
+       "barangay_id": 2,
+       "municipality_id": 875,
+       "barangay_name": "Agsungot"
+    },
+    {
+       "barangay_id": 3,
+       "municipality_id": 875,
+       "barangay_name": "Apas"
+    },
+    {
+       "barangay_id": 4,
+       "municipality_id": 875,
+       "barangay_name": "Babag"
+    },
+    {
+       "barangay_id": 5,
+       "municipality_id": 875,
+       "barangay_name": "Bacayan"
+    },
+    {
+       "barangay_id": 6,
+       "municipality_id": 875,
+       "barangay_name": "Banilad"
+    },
+    {
+       "barangay_id": 7,
+       "municipality_id": 875,
+       "barangay_name": "Basak Pardo"
+    },
+    {
+       "barangay_id": 8,
+       "municipality_id": 875,
+       "barangay_name": "Basak San Nicolas"
+    },
+    {
+       "barangay_id": 9,
+       "municipality_id": 875,
+       "barangay_name": "Binaliw"
+    },
+    {
+       "barangay_id": 10,
+       "municipality_id": 875,
+       "barangay_name": "Bonbon"
+    },
+    {
+       "barangay_id": 11,
+       "municipality_id": 875,
+       "barangay_name": "Budla-an"
+    },
+    {
+       "barangay_id": 12,
+       "municipality_id": 875,
+       "barangay_name": "Buhisan"
+    },
+    {
+       "barangay_id": 13,
+       "municipality_id": 875,
+       "barangay_name": "Bulacao"
+    },
+    {
+       "barangay_id": 14,
+       "municipality_id": 875,
+       "barangay_name": "Buot-Taup Pardo"
+    },
+    {
+       "barangay_id": 15,
+       "municipality_id": 875,
+       "barangay_name": "Busay"
+    },
+    {
+       "barangay_id": 16,
+       "municipality_id": 875,
+       "barangay_name": "Calamba"
+    },
+    {
+       "barangay_id": 17,
+       "municipality_id": 875,
+       "barangay_name": "Cambinocot"
+    },
+    {
+       "barangay_id": 18,
+       "municipality_id": 875,
+       "barangay_name": "Camputhaw"
+    },
+    {
+       "barangay_id": 19,
+       "municipality_id": 875,
+       "barangay_name": "Capitol Site"
+    },
+    {
+       "barangay_id": 20,
+       "municipality_id": 875,
+       "barangay_name": "Carreta"
+    },
+    {
+       "barangay_id": 21,
+       "municipality_id": 875,
+       "barangay_name": "Central"
+    },
+    {
+       "barangay_id": 22,
+       "municipality_id": 875,
+       "barangay_name": "Cogon Pardo"
+    },
+    {
+       "barangay_id": 23,
+       "municipality_id": 875,
+       "barangay_name": "Cogon Ramos"
+    },
+    {
+       "barangay_id": 24,
+       "municipality_id": 875,
+       "barangay_name": "Day-as"
+    },
+    {
+       "barangay_id": 25,
+       "municipality_id": 875,
+       "barangay_name": "Duljo"
+    },
+    {
+       "barangay_id": 26,
+       "municipality_id": 875,
+       "barangay_name": "Ermita"
+    },
+    {
+       "barangay_id": 27,
+       "municipality_id": 875,
+       "barangay_name": "Guadalupe"
+    },
+    {
+       "barangay_id": 28,
+       "municipality_id": 875,
+       "barangay_name": "Guba"
+    },
+    {
+       "barangay_id": 29,
+       "municipality_id": 875,
+       "barangay_name": "Hippodromo"
+    },
+    {
+       "barangay_id": 30,
+       "municipality_id": 875,
+       "barangay_name": "Inayawan"
+    },
+    {
+       "barangay_id": 31,
+       "municipality_id": 875,
+       "barangay_name": "Kalubihan"
+    },
+    {
+       "barangay_id": 32,
+       "municipality_id": 875,
+       "barangay_name": "Kalunasan"
+    },
+    {
+       "barangay_id": 33,
+       "municipality_id": 875,
+       "barangay_name": "Kamagayan"
+    },
+    {
+       "barangay_id": 34,
+       "municipality_id": 875,
+       "barangay_name": "Kasambagan"
+    },
+    {
+       "barangay_id": 35,
+       "municipality_id": 875,
+       "barangay_name": "Kinasang-an Pardo"
+    },
+    {
+       "barangay_id": 36,
+       "municipality_id": 875,
+       "barangay_name": "Labangon"
+    },
+    {
+       "barangay_id": 37,
+       "municipality_id": 875,
+       "barangay_name": "Lahug"
+    },
+    {
+       "barangay_id": 38,
+       "municipality_id": 875,
+       "barangay_name": "Lorega"
+    },
+    {
+       "barangay_id": 39,
+       "municipality_id": 875,
+       "barangay_name": "Lusaran"
+    },
+    {
+       "barangay_id": 40,
+       "municipality_id": 875,
+       "barangay_name": "Luz"
+    },
+    {
+       "barangay_id": 41,
+       "municipality_id": 875,
+       "barangay_name": "Mabini"
+    },
+    {
+       "barangay_id": 42,
+       "municipality_id": 875,
+       "barangay_name": "Mabolo"
+    },
+    {
+       "barangay_id": 43,
+       "municipality_id": 875,
+       "barangay_name": "Malubog"
+    },
+    {
+       "barangay_id": 44,
+       "municipality_id": 875,
+       "barangay_name": "Mambaling"
+    },
+    {
+       "barangay_id": 45,
+       "municipality_id": 875,
+       "barangay_name": "Pahina Central"
+    },
+    {
+       "barangay_id": 46,
+       "municipality_id": 875,
+       "barangay_name": "Pahina San Nicolas"
+    },
+    {
+       "barangay_id": 47,
+       "municipality_id": 875,
+       "barangay_name": "Pamutan"
+    },
+    {
+       "barangay_id": 48,
+       "municipality_id": 875,
+       "barangay_name": "Pardo"
+    },
+    {
+       "barangay_id": 49,
+       "municipality_id": 875,
+       "barangay_name": "Pari-an"
+    },
+    {
+       "barangay_id": 50,
+       "municipality_id": 875,
+       "barangay_name": "Paril"
+    },
+    {
+       "barangay_id": 51,
+       "municipality_id": 875,
+       "barangay_name": "Pasil"
+    },
+    {
+       "barangay_id": 52,
+       "municipality_id": 875,
+       "barangay_name": "Pit-os"
+    },
+    {
+       "barangay_id": 53,
+       "municipality_id": 875,
+       "barangay_name": "Pulangbato"
+    },
+    {
+       "barangay_id": 54,
+       "municipality_id": 875,
+       "barangay_name": "Pung-ol-Sibugay"
+    },
+    {
+       "barangay_id": 55,
+       "municipality_id": 875,
+       "barangay_name": "Punta Princesa"
+    },
+    {
+       "barangay_id": 56,
+       "municipality_id": 875,
+       "barangay_name": "Quiot Pardo"
+    },
+    {
+       "barangay_id": 57,
+       "municipality_id": 875,
+       "barangay_name": "Sambag I"
+    },
+    {
+       "barangay_id": 58,
+       "municipality_id": 875,
+       "barangay_name": "Sambag II"
+    },
+    {
+       "barangay_id": 59,
+       "municipality_id": 875,
+       "barangay_name": "San Antonio"
+    },
+    {
+       "barangay_id": 60,
+       "municipality_id": 875,
+       "barangay_name": "San Jose"
+    },
+    {
+       "barangay_id": 61,
+       "municipality_id": 875,
+       "barangay_name": "San Nicolas Central"
+    },
+    {
+       "barangay_id": 62,
+       "municipality_id": 875,
+       "barangay_name": "Sapangdaku"
+    },
+    {
+       "barangay_id": 63,
+       "municipality_id": 875,
+       "barangay_name": "Sawang Calero"
+    },
+    {
+       "barangay_id": 64,
+       "municipality_id": 875,
+       "barangay_name": "Sinsin"
+    },
+    {
+       "barangay_id": 65,
+       "municipality_id": 875,
+       "barangay_name": "Sirao"
+    },
+    {
+       "barangay_id": 66,
+       "municipality_id": 875,
+       "barangay_name": "Suba"
+    },
+    {
+       "barangay_id": 67,
+       "municipality_id": 875,
+       "barangay_name": "Sudlon I"
+    },
+    {
+       "barangay_id": 68,
+       "municipality_id": 875,
+       "barangay_name": "Sudlon II"
+    },
+    {
+       "barangay_id": 69,
+       "municipality_id": 875,
+       "barangay_name": "Tabunan"
+    },
+    {
+       "barangay_id": 70,
+       "municipality_id": 875,
+       "barangay_name": "Tagbao"
+    },
+    {
+       "barangay_id": 71,
+       "municipality_id": 875,
+       "barangay_name": "Taptap"
+    },
+    {
+       "barangay_id": 72,
+       "municipality_id": 875,
+       "barangay_name": "Tejero"
+    },
+    {
+       "barangay_id": 73,
+       "municipality_id": 875,
+       "barangay_name": "Tinago"
+    },
+    {
+       "barangay_id": 74,
+       "municipality_id": 875,
+       "barangay_name": "Tisa"
+    },
+    {
+       "barangay_id": 75,
+       "municipality_id": 875,
+       "barangay_name": "Toong"
+    },
+    {
+       "barangay_id": 76,
+       "municipality_id": 875,
+       "barangay_name": "Zapatera"
+    }
+ ]
+ 

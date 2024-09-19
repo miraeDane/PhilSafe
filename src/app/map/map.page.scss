@@ -52,19 +52,18 @@ ion-select-option:hover {
 
 .main-content {
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 500px;
-  background-color: white;
-  border-radius: 50px;
-  width: 90%;
-  height: 30%;
-  z-index: 99;
-  /* flex-direction: column; */
-  margin-left: auto;
-  margin-right: auto;
-  flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 60%;
+    background-color: white;
+    border-radius: 50px;
+    width: 98%;
+    height: 35%;
+    z-index: 99;
+    margin-left: auto;
+    margin-right: auto;
+    flex-direction: column;
 }
 
 .jurisdiction {
@@ -193,6 +192,7 @@ ion-segment-button#duration {
   //height: 20px;
   width: 80%;
   // margin-bottom: 150px;
+  padding-top: 25px;
 }
 
 .percent {
@@ -266,6 +266,16 @@ ion-segment-button#duration {
   justify-content: center;
   align-items: center
 }
+
+.level p{
+  padding-right: 10px 
+}
+
+.level ion-label {
+  padding-left: 10px 
+}
+
+
 
 .level1 {
   color:#0fcaeb;
@@ -350,15 +360,20 @@ ion-modal {
   --margin-bottom: 20px;
 }
 
-
-
 .modal-analysis ion-item ion-label {
-  font-size: 18px;
+
   font-weight: bold;
-  color: #333; /* Label color */
+  color: #333; 
 }
 
+.modal-name {
+  font-weight: normal; 
+  color: #333; 
+}
 
+.modal-analysis .modal-name {
+  font-weight: normal; 
+}
 .modal-analysis ion-note {
   font-size: 16px;
   color: #555; 
@@ -374,7 +389,7 @@ ion-modal {
 }
 
 .inclusive-date {
-  font-size: 30px;
+  font-size: 18px;
   font-weight: bold;
   color: #007acc; 
   margin-bottom: 20px;
@@ -386,7 +401,31 @@ ion-modal {
 }
 
 
+#crimeTimeChart {
+  width: 100%; 
+  height: 400px; 
+}
 
 
+#crimeLocationPieChart {
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 270px;
+  height: 100%
+}
+
+
+.crimeLocationPieChart {
+    width: 100% !important; 
+    height: auto !important;
+}
+
+.chart-parent{
+  position: relative;
+  padding: 20px;
+  margin-top: 30px;
+}
 
 

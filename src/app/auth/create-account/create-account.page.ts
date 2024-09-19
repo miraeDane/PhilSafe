@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { AccountService } from 'src/app/services/account.service';
 import { PersonService } from 'src/app/services/person.service';
 import { UpgradeAccount } from 'src/app/models/account-upgrade.model';
+import { Citizen } from 'src/app/models/citizen';
+import { CitizenService } from 'src/app/services/citizen.service';
 
 @Component({
   selector: 'app-create-account',
@@ -70,9 +72,16 @@ export class CreateAccountPage implements OnInit {
     contactNum: '',
     homeAddressId: 0,
     workAddressId: 0,
-    role: 'user',
+    role: 'Certified',
+    personId: 0,
 
-  }
+  };
+
+  citizenData: Citizen = {
+    citizenId: 0,
+    personId: this.upgraded.personId || 0,
+    person: this.upgraded
+  };
 
   confirmPassword: string = '';
   termsAccepted: boolean = false;
@@ -99,23 +108,30 @@ export class CreateAccountPage implements OnInit {
   selectedGender = '';
   selectedStatus = '';
   isSameAddress = false;
-  zip_code: string = ''
+  home_zip_code: string = ''
+  work_zip_code: string = ''
+  loading: boolean = false;
+
 
   constructor(
     private createAccountService: AccountService,
     private personService: PersonService,
     private locationService: LocationService,
     private router: Router,
-    private changeDetector: ChangeDetectorRef
+    private citizenService: CitizenService
   ) {
     this.dateOfBirth = new Date().toISOString().substring(0, 10);
-    // this.upgraded.birthdate = this.dateOfBirth;
+  
   }
 
   ngOnInit(): void {
     this.createAccountService;
     this.locationService.getRegions().subscribe((data) => {
       this.regions = data;
+      this.userHomeAddress.region = 'Region VII'; 
+      this.onHomeRegionChange({ detail: { value: 'Region VII' } });
+      this.userHomeAddress.province = 'City of Cebu'; // Default province
+      this.onHomeProvinceChange({ detail: { value: 'City of Cebu' } });
     });
   }
 
@@ -168,12 +184,14 @@ copyHomeToWorkAddress() {
     }
   }
 
-  register() {
+  
+ 
+  async register() {
 
-    this.userHomeAddress.zipCode = Number(this.zip_code);
-    this.userWorkAddress.zipCode = Number(this.zip_code);
+    this.userHomeAddress.zipCode = Number(this.home_zip_code);
+    this.userWorkAddress.zipCode = Number(this.work_zip_code);
     this.personData.birthdate = this.dateOfBirth;
-    
+  
     this.convertLocationIdsToNames(
       this.userHomeAddress,
       this.homeProvinces,
@@ -181,9 +199,9 @@ copyHomeToWorkAddress() {
       this.homeBarangays
     );
     this.userHomeAddress.zipCode = Number(this.userHomeAddress.zipCode);
-
+  
     if (this.isSameAddress) {
-      this.userWorkAddress = { 
+      this.userWorkAddress = {
         locationId: 0,
         region: this.userHomeAddress.region,
         province: this.userHomeAddress.province,
@@ -201,127 +219,81 @@ copyHomeToWorkAddress() {
       );
       this.userWorkAddress.zipCode = Number(this.userWorkAddress.zipCode);
     }
-
-    console.log(this.userHomeAddress);
-    console.log(this.userWorkAddress);
-    // console.log(this.personData);
-
-    // this.personService
-    //   .createOrRetrievePerson(this.personData)
-    //   .subscribe((response) => {
-    //     if (response.personFound) {
-    //       const personId = response.personId;
-    //       this.accountData.personId = personId;
-    //       console.log('Person exists with ID:', personId);
-    //     } else {
-    //       const newPersonId = response.personId;
-    //       console.log('New person created with ID:', newPersonId);
-    //       this.accountData.personId = newPersonId;
-    //     }
-    //   });
-
-    this.locationService
-      .createOrRetrieveLocation(
-        this.userHomeAddress,
-        this.userHomeAddress.zipCode
-      )
-      .subscribe((homeResponse) => {
+  
+    this.loading = true;
+    const homeAddressPromise = this.locationService
+      .createOrRetrieveLocation(this.userHomeAddress, this.userHomeAddress.zipCode)
+      .toPromise()
+      .then((homeResponse) => {
         if (homeResponse.locationFound) {
-          const homeLocationId = homeResponse.locationId;
-          this.upgraded.homeAddressId = homeLocationId;
-          this.upgraded.workAddressId = homeLocationId
-          console.log('Home address exists with ID:', homeLocationId);
+          this.upgraded.homeAddressId = homeResponse.locationId;
+          this.upgraded.workAddressId = homeResponse.locationId;
+          console.log('Home address exists with ID:', homeResponse.locationId);
         } else {
-          const newHomeLocationId = homeResponse.locationId;
-          console.log('New home address created with ID:', newHomeLocationId);
-          this.upgraded.homeAddressId = newHomeLocationId
-        }
-
-        if (!this.isSameAddress) {
-          this.locationService
-            .createOrRetrieveLocation(
-              this.userWorkAddress,
-              this.userWorkAddress.zipCode
-            )
-            .subscribe((workResponse) => {
-              if (workResponse.locationFound) {
-                const workLocationId = workResponse.locationId;
-                this.upgraded.workAddressId = workLocationId;
-                console.log('Work address exists with ID:', workLocationId);
-              } else {
-                const newWorkLocationId = workResponse.locationId;
-                this.upgraded.workAddressId = newWorkLocationId;
-                console.log(
-                  'New work address created with ID:',
-                  newWorkLocationId
-                );
-              }
-            });
+          this.upgraded.homeAddressId = homeResponse.locationId;
+          console.log('New home address created with ID:', homeResponse.locationId);
         }
       });
+  
+    const workAddressPromise = !this.isSameAddress
+      ? this.locationService
+          .createOrRetrieveLocation(this.userWorkAddress, this.userWorkAddress.zipCode)
+          .toPromise()
+          .then((workResponse) => {
+            if (workResponse.locationFound) {
+              this.upgraded.workAddressId = workResponse.locationId;
+              console.log('Work address exists with ID:', workResponse.locationId);
+            } else {
+              this.upgraded.workAddressId = workResponse.locationId;
+              console.log('New work address created with ID:', workResponse.locationId);
+            }
+          })
+      : Promise.resolve(); 
+  
+    if (!this.termsAccepted) {
+      console.error('You must accept the terms and conditions');
+      return;
+    }
 
-      if (!this.termsAccepted) {
-        console.error('You must accept the terms and conditions');
-        return;
-      }
-      // if (this.accountData.password !== this.confirmPassword) {
-      //   console.error('Passwords do not match');
-      //   return;
-      // }
-      // if (this.accountData.password.length < 8) {
-      //   console.error('Password must be at least 8 characters long');
-      //   return;
-      // }
-  
-      // this.createAccountService.postAccount(this.accountData).subscribe(
-      //   (response) => {
-      //     alert('Registration successful');
-      //     console.log(this.accountData);
-      //     this.router.navigate(['/tabs/home']);
-      //   },
-      //   (error) => {
-      //     console.error('Failed to register account', error);
-      //     console.log(this.accountData);
-  
-  
-      //   });
 
+  
+    Promise.all([homeAddressPromise, workAddressPromise])
+      .then(() => {
         this.createAccountService.upgradeAccount(this.upgraded).subscribe(
-          (response) => {
+          async (response) => {
             alert('Registration successful');
             console.log(this.upgraded);
-            this.router.navigate(['/tabs/home']);
-          },
-          (error) => {
-            console.error('Failed to register account', error);
+            this.citizenData.personId = this.upgraded.personId || 0;
+            this.router.navigate(['/login']);
             console.log(this.upgraded);
 
-            if (error.status === 500) {
-              alert(`An internal server error occurred while trying to register your account. This may be due to a problem with the server or an issue with the data being sent. Please try again later, or contact support if the problem persists.
-        
-        Details:
-        Error Code: ${error.status}
-        Message: ${error.message}
-        
-        Data Sent: ${JSON.stringify(this.upgraded)}
-        
-        This error might be caused by one of the following:
-        - The server encountered an unexpected condition that prevented it from fulfilling the request.
-        - There could be a mismatch between the expected data format and the data being sent.
-        - Some required fields might be missing or incorrect in the request payload.
-        - There might be a problem with the server's database connection or a related service.
-        
-        Please review the data being sent and ensure all required fields are filled out correctly. If the issue persists, provide the above information to the support team for further assistance.`);
+            if(response) {
+              sessionStorage.setItem('userData', JSON.stringify(response));
+              console.log('UserData stored in sessionStorage:',           
+              sessionStorage.getItem('userData'));
             } else {
-              alert(`An error occurred: ${error.message}`);
+              console.error('Response is undefined or null');``
             }
-    
-    
-          });
-
-    // console.log(this.accountData); 
-    // this.router.navigate(['/account-registration'], { state: { accountData: this.accountData } });
+            
+          },
+          (error) => {
+            if (error.status === 0) {
+              alert('Network error: Unable to reach the server. Please check your connection.');
+              console.log('Error Status:', error.status);
+            } else {
+              alert(`Error Code: ${error.status}\nMessage: ${error.message}`);
+              console.log('Error Message:', error);
+              console.log(this.upgraded);
+            }
+          }
+        );
+      })
+      .catch((err) => {
+        console.error('Error in address creation/retrieval:', err);
+        this.loading = false;
+      });
   }
+  
 
  
 onHomeRegionChange(event: any) {
@@ -331,6 +303,9 @@ onHomeRegionChange(event: any) {
       this.homeProvinces = data.filter((p) => p.region_id === regionId);
       this.homeMunicipalities = []; 
       this.homeBarangays = [];
+      if (this.userHomeAddress.province) {
+        this.onHomeProvinceChange({ detail: { value: this.userHomeAddress.province } });
+    }
   });
 }
 
@@ -403,4 +378,6 @@ onWorkMunicipalityChange(event: any) {
       : '';
     location.barangay = selectedBarangay ? selectedBarangay.barangay_name : '';
   }
+
+
 }

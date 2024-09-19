@@ -170,6 +170,16 @@ ion-title {
   .anonymous-person-info, .detail-select {
     display: flex;
     justify-content: space-between;
+
+    .load-data-btn {
+      --color: #007bff; // Blue text color
+      font-size: 14px; // Adjust as needed
+  
+      ion-icon {
+        color: #007bff; // Blue icon color
+        margin-right: 5px;
+      }
+    }
   
   }
 

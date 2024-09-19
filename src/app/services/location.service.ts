@@ -16,8 +16,8 @@ export class LocationService {
   private municipalityUrl = 'assets/location/table_municipality.json';
   private barangayUrl = 'assets/location/table_barangay.json';
   private cebuBarangays = 'assets/location/cebu_barangay.json';
-  private locationURL = 'http://localhost:5100/api/location/create/';
-  private coordinates = 'http://localhost:5100/api/location/retrieve/mapcoordinates';
+  private locationURL = 'https://192.168.120.11:7108/api';
+  // private coordinates = 'https://localhost:7108/api';
 
   constructor(private http: HttpClient) {}
 
@@ -42,14 +42,14 @@ export class LocationService {
   }
 
   getCoordinates(): Observable<Cluster[]> {
-    return this.http.get<Cluster[]>(this.coordinates);
+    return this.http.get<Cluster[]>(`${this.locationURL}/location/retrieve/mapcoordinates`);
   }
 
 
 
 
   createOrRetrieveLocation(locationData: any, zipCode: number): Observable<any> {
-    return this.http.post(`${this.locationURL}${zipCode}`, locationData, { observe: 'response' })
+    return this.http.post(`${this.locationURL}/location/create/${zipCode}`, locationData, { observe: 'response' })
       .pipe(
         map((response: HttpResponse<any>) => {
           if (response.status === 200) {
@@ -64,6 +64,22 @@ export class LocationService {
         catchError(this.handleError)
       );
   
+    }
+
+    getLocation(locationId: number): Observable<any> {
+      return this.http.get(`${this.locationURL}/retrieve/${locationId}`, { observe: 'response' })
+        .pipe(
+          map((response: HttpResponse<any>) => {
+            if (response.status === 200) {
+              console.log('RESPONSE FROM PERSON SERVICE', response.body)
+              return response.body;
+            } else {
+              console.log('RESPONSE FROM PERSON SERVICE', response.body)
+              return null;
+            }
+          }),
+          catchError(this.handleError)
+        );
     }
 
     updateLocation(id: number, data: any): Observable<any> {

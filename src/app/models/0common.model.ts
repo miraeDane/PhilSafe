@@ -1,5 +1,5 @@
 export interface BasePerson {
-    personId: number;
+    personId?: number;
     firstname: string;
     middlename: string;
     lastname: string;
@@ -11,7 +11,6 @@ export interface BasePerson {
   
   export interface ContactDetails {
     email: string;
-    homePhone: string;
     mobileNum: string;
     telNum?: string;
   }
@@ -39,6 +38,7 @@ export interface BasePerson {
     victimId?: number;
     witnessId?: number;
     suspectId?: number;
+    personId?: number;
     occupationId?: number;
     distinguishingMark?: string;
   }

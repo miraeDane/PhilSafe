@@ -9,6 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SignatureModalComponent } from './signature-modal/signature-modal.component';
+import { CookieService } from 'ngx-cookie-service';
 
 
 
@@ -21,7 +22,9 @@ import { SignatureModalComponent } from './signature-modal/signature-modal.compo
     HttpClientModule,
     SignatureModalComponent
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    CookieService
+  ],
   bootstrap: [AppComponent],
  
 })

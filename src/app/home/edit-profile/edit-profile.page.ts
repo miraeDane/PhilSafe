@@ -7,6 +7,10 @@ import { LocationService } from 'src/app/services/location.service';
 import { Description, Nationalities } from 'src/app/models/description';
 import { DescriptionService } from 'src/app/services/description.service';
 import { MediumService } from 'src/app/services/medium.service';
+import { AccountService } from 'src/app/services/account.service';
+import { PersonService } from 'src/app/services/person.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 
 
 @Component({
@@ -59,6 +63,17 @@ export class EditProfilePage implements OnInit {
     personId: 0,
   };
 
+  personData: Person = {
+    personId: 0,
+    firstname: '',
+    middlename: '',
+    lastname: '',
+    sex: '',
+    birthdate: '',
+    civilStatus: '',
+    bioStatus: true,
+  };
+
   occupation: Occupation = {
     occupationId: 0,
     name: '',
@@ -96,12 +111,18 @@ export class EditProfilePage implements OnInit {
    avatarUrl: string = 'assets/user-default.jpg';
    selectedFile!: File;
    isSameAddress = false;
+   personId: number = 0;
 
    @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
   constructor(
     private locationService: LocationService,
+    private accountService: AccountService,
+    private personService: PersonService,
     private nationalityService: DescriptionService,
     private mediumService: MediumService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private cookieService: CookieService
   ) { }
 
   ngOnInit() {
@@ -110,7 +131,99 @@ export class EditProfilePage implements OnInit {
     this.locationService.getRegions().subscribe((data) => {
       this.regions = data;
     });
+
+    this.loadUserProfile();
+  
   }
+
+
+  loadUserProfile() {
+    const userData = sessionStorage.getItem('userData');
+    if (userData) {
+      try {
+        const parsedData = JSON.parse(userData);
+        this.personData = {
+          personId: parsedData.personId || 0,
+          firstname: this.capitalizeFirstLetter(parsedData.first_name || ''),
+          middlename: this.capitalizeFirstLetter(parsedData.middle_name || ''),
+          lastname: this.capitalizeFirstLetter(parsedData.last_name || ''),
+          sex: parsedData.sex, 
+          birthdate: parsedData.birthdate, 
+          civilStatus: parsedData.civil_status, 
+          bioStatus: true, 
+        };
+  
+        this.accountData = {
+          email: parsedData.email || '',
+          password: '', 
+          telNum: parsedData.tel_num, 
+          contactNum: parsedData.contact_num, 
+          homeAddressId: parsedData.home_address_id, 
+          workAddressId: parsedData.work_address_id, 
+          role: '', 
+          personId: parsedData.personId || 0,
+          profile_pic: '', 
+        };
+
+
+        if(this.accountData.homeAddressId){
+          this.locationService.getLocation(this.accountData.homeAddressId).subscribe(
+            (homeLocation) => {
+              this.userHomeAddress = {
+                locationId: homeLocation.location_id,
+                province: homeLocation.province,
+                municipality: homeLocation.municipality,
+                street: homeLocation.street,
+                region: homeLocation.region,
+                barangay: homeLocation.barangay,
+                block: homeLocation.block,
+                zipCode: homeLocation.zipCode,
+              };
+              console.log('Home Address:', this.userHomeAddress);
+           
+            },
+            (error) => {
+              console.error('Error fetching home address:', error);
+            }
+          );
+        }
+
+        if(this.accountData.workAddressId){
+          this.locationService.getLocation(this.accountData.workAddressId).subscribe(
+            (workLocation) => {
+              this.userWorkAddress = {
+                locationId: workLocation.location_id,
+                province: workLocation.province,
+                municipality: workLocation.municipality,
+                street: workLocation.street,
+                region: workLocation.region,
+                barangay: workLocation.barangay,
+                block: workLocation.block || '', 
+                zipCode: workLocation.zipCode,
+              };
+              console.log('Work Address:', this.userWorkAddress);
+            
+            },
+            (error) => {
+              console.error('Error fetching work address:', error);
+            }
+          );
+        }
+    
+        // console.log('Person Data from Session:', this.personData);
+        // console.log('Account Data from Session:', this.accountData);
+      } catch (e) {
+        console.error('Failed to parse userData from session:', e);
+      }
+    } else {
+      console.log('No userData found in session storage.');
+    }
+  }
+
+  capitalizeFirstLetter(string: string): string {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  }
+
 
   loadNationalities() {
     this.nationalityService.getNationalities().subscribe(
@@ -212,6 +325,55 @@ export class EditProfilePage implements OnInit {
     console.log('Profile saved!'); 
 
     this.isEditing = false; 
+    this.updateData();
+  }
+
+
+
+
+  updateData() {
+    
+    this.personService.update(this.person.personId, this.personData).subscribe({
+      next: (res) => {
+        console.log('Person data updated successfully', res);
+      },
+      error: (err) => {
+        console.error('Error updating person data', err);
+      }
+    });
+  
+  
+    this.locationService.updateLocation(this.userHomeAddress.locationId, this.userHomeAddress).subscribe({
+      next: (res) => {
+        console.log('Home address updated successfully', res);
+      },
+      error: (err) => {
+        console.error('Error updating home address', err);
+      }
+    });
+  
+    this.locationService.updateLocation(this.userWorkAddress.locationId, this.userWorkAddress).subscribe({
+      next: (res) => {
+        console.log('Work address updated successfully', res);
+      },
+      error: (err) => {
+        console.error('Error updating work address', err);
+      }
+    });
+  
+    const personId = this.accountData.personId;
+    if (personId) {
+      this.accountService.updateAccount(personId, this.accountData).subscribe({
+        next: (res) => {
+          console.log('Account data updated successfully', res);
+        },
+        error: (err) => {
+          console.error('Error updating account data', err);
+        }
+      });
+    } else {
+      console.error('Error: personId is undefined.');
+    }
   }
 
   onAddressCheckboxChange(event: any) {

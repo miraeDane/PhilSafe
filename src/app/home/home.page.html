@@ -8,16 +8,17 @@
     <ion-content>
       <div class="profile-container">
         <ion-avatar class="side-avatar">
-          <img src="assets/user.jpg" class="medium-img"/>
+          <img [src]="accountData.profile_pic && accountData.profile_pic.trim() !== '' ? accountData.profile_pic : 'assets/user-default.jpg'" alt="Profile Picture" />
+        
         </ion-avatar>
       </div>
       <div class="user-details">
-        <ion-label class="email">email:</ion-label>
-        <ion-label class="profile-name">Maria Leonora Theresa Vergara</ion-label>
+        <ion-label class="email">Email: {{accountData.email}}</ion-label>
+        <ion-label class="profile-name">{{personData.firstname}} {{personData.lastname}}</ion-label>
       </div>
       
       <ion-list class="side-menu-list" lines="none">
-        <ion-item class="side-menu-item" routerLink="/home/edit-profile">
+        <ion-item class="side-menu-item"  (click)="editProfile(personData.personId)">
           <img src="assets/edit.svg" class="small-img"> 
           <ion-label>Edit Profile</ion-label>
         </ion-item>
@@ -78,7 +79,8 @@
       <ion-buttons slot="end" class="user-home-button">
         <ion-menu-button menu="first" >
           <ion-avatar class="user-home-avatar">
-            <img src="assets/user.jpg" class="user"/>
+            <img [src]="accountData.profile_pic && accountData.profile_pic.trim() !== '' ? accountData.profile_pic : 'assets/user-default.jpg'" alt="Profile Picture" />
+            <!-- <img src="assets/user-default.jpg" alt="Profile Picture" /> -->
           </ion-avatar>
         </ion-menu-button>
       </ion-buttons>

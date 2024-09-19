@@ -65,8 +65,8 @@ ion-content {
   ion-item {
     color: #000000;
     --background: #ffffff;
-    border-radius: 50px;
-    border: solid 0.3px #b4b1b1;
+    // border-radius: 50px;
+    // border: solid 0.3px #b4b1b1;
     margin: 10px;
   }
 
@@ -173,4 +173,12 @@ ion-content {
   .issameaddresscheck {
     margin: 0 auto;
 
+  }
+
+
+  ion-loading.register {
+    --background: #e3edff;
+    --spinner-color: #1c6dff;
+  
+    color: #1c6dff;
   }

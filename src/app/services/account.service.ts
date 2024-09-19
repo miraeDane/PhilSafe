@@ -8,7 +8,10 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 export class AccountService {
 
 
-  private accountURL = 'http://localhost:5100/api/account';
+  // private accountURL = 'https://localhost:7108/api/account';
+  private accountURL = 'https://192.168.120.11:7108/api/account';
+  private loggedIn = false;
+  private tokenKey = 'auth_token';
 
   
   constructor(private http: HttpClient) { }
@@ -22,43 +25,9 @@ export class AccountService {
   //   );
   // }
 
-  
-   loginByEmail(data: any): Observable<any> {
-    const url = `${this.accountURL}/login`;
-    return this.http.post(url, data).pipe(
-      catchError(this.handleError)
-    );
-  }
+
 
  
-  loginByContactNumber(data: any): Observable<any> {
-    const url = `${this.accountURL}/login`;
-    return this.http.post(url, data).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-
-  verifyPasswordByEmail(data: any): Observable<any> {
-    const url = `${this.accountURL}/verify/email`;
-    return this.http.post(url, data).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  verifyPasswordByContact(data: any): Observable<any> {
-    const url = `${this.accountURL}/verify/contact`;
-    return this.http.post(url, data).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  signOut(): Observable<any> {
-    const url = `${this.accountURL}/signout`;
-    return this.http.post(url, {}).pipe(
-      catchError(this.handleError)
-    );
-  }
 
  
   signUp(data: any): Observable<any> {
@@ -76,6 +45,23 @@ export class AccountService {
     );
   }
 
+  getAccount(): Observable<any> {
+    return this.http.get(`${this.accountURL}`, { observe: 'response' })
+      .pipe(
+        map((response: HttpResponse<any>) => {
+          if (response.status === 200) {
+            console.log('RESPONSE FROM ACCOUNT SERVICE', response.body)
+            return response.body;
+    
+          } else {
+            console.log('RESPONSE FROM ACCOUNT SERVICE', response.body)
+            return null;
+          }
+        }),
+        catchError(this.handleError)
+      );
+  }
+
  
   updateAccount(id: number, data: any): Observable<any> {
     const url = `${this.accountURL}/up/${id}`;
@@ -91,6 +77,7 @@ export class AccountService {
       catchError(this.handleError)
     );
   }
+
 
 
   private handleError(error: HttpErrorResponse) {

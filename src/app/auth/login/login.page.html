@@ -42,9 +42,9 @@
           </ion-item>
 
           <ion-item>
-            <ion-input type="password" [(ngModel)]="password" id="pass" placeholder="Password"></ion-input>
-          <ion-icon src="assets/lock.svg" slot="start"></ion-icon>
-          <ion-icon name="eye" slot="end"></ion-icon>
+            <ion-input [type]="passwordVisible ? 'text' : 'password'" [(ngModel)]="password" id="pass" placeholder="Password"></ion-input>
+            <ion-icon src="assets/lock.svg" slot="start"></ion-icon>
+            <ion-icon name="eye" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
           </ion-item>
         </div>
 
@@ -52,9 +52,15 @@
         <ion-label class="forgot-pwd">Forgot Password? <a>Click here</a></ion-label>
 
         <div class="next-container">
-          <!-- <ion-button class="confirm" (click)="login()">Sign in</ion-button> -->
-          <ion-button class="confirm" routerLink="/tabs/home">Sign in</ion-button>
+          <ion-button id="login" class="confirm" (click)="login()">Sign in</ion-button>
+          <ion-loading class="custom-loading" trigger="login" message="Logging in.." [duration]="5000"></ion-loading>
+          
         </div>
+
+        <!-- <div *ngIf="loading" class="loading-indicator">
+          <ion-spinner></ion-spinner> 
+          <p>Loading...</p>
+        </div> -->
         
         <div class="sign-up-here">
           <ion-label class="sign-up">Don't have an account?</ion-label>

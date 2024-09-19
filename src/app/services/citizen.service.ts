@@ -7,7 +7,8 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class CitizenService {
-  private citizenUrl = 'http://localhost:5100/api/citizen';
+  private citizenUrl = 'https://localhost:7108/api/citizen';
+  // private citizenUrl = 'https://192.168.181.11:7108/api/citizen';
 
   constructor(private http: HttpClient) {}
 

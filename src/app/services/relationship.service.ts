@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class RelationshipService {
-  private relUrl = 'https://localhost:5100/api/relationship'; 
+  private relUrl = 'https://localhost:7108/api/relationship'; 
 
   constructor(private http: HttpClient) {}
 

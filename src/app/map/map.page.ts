@@ -6,7 +6,23 @@ import { LocationService } from '../services/location.service';
 import { Cluster, Coordinates } from '../models/location';
 import { ModalController } from '@ionic/angular';
 import { map } from 'rxjs';
-import { Chart, registerables } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {
+  ArcElement,
+  BarController,
+  BarElement,
+  CategoryScale,
+  Chart,
+  LinearScale,
+  LineController,
+  LineElement,
+  PieController,
+  PointElement,
+  registerables,
+  Title,
+  Tooltip,
+} from 'chart.js';
+
 
 @Component({
   selector: 'app-map',
@@ -14,29 +30,18 @@ import { Chart, registerables } from 'chart.js';
   styleUrls: ['./map.page.scss'],
 })
 export class MapPage implements OnInit, AfterViewInit {
-  selectedRegion: any;
-  selectedProvince: any;
-  selectedCity: any;
-  selectedMunicipality: any = { municipality_id: 875, name: 'City of Cebu' };
-  selectedBarangay: any;
-  selectedMonth: string = 'all';
-  selectedTime: string = 'all';
-  selectedStationCode: string = 'all';
-  selectedStationName: string = 'all';
-  selectedGeneralTime: string = 'all';
-  selectedDayName: string = 'all';
-
+  
   topHours: string[] = [];
   topCounts: number[] = [];
+  topLocations: string[] = [];
+  topLocationCounts: number[] = [];
   selectedLevel: any = '1';
   private map!: mapboxgl.Map;
   isModalOpen = false;
-  highestCrimeLocation = '';
+  highestCrimeLocation: any = '';
   highestCrimeTime = '';
   crimeTimeChart: Chart | undefined;
-  private mapboxGeocodingUrl =
-    'https://api.mapbox.com/geocoding/v5/mapbox.places/reverse.json';
-  private mapboxAccessToken = environment.mapboxKey;
+  private locationCache: { [key: string]: string } = {};
 
   constructor(
     private http: HttpClient,
@@ -44,7 +49,22 @@ export class MapPage implements OnInit, AfterViewInit {
     private coordinateService: LocationService,
     private modalCtrl: ModalController
   ) {
-    Chart.register(...registerables);
+    Chart.register(
+      
+      CategoryScale,
+      LinearScale,
+      BarController,
+      BarElement,
+      LineController,
+      LineElement,
+      PointElement,
+      Title,
+      Tooltip,
+      PieController,
+      ArcElement,
+     ChartDataLabels
+      
+    );
   }
 
   ngOnInit() {
@@ -68,7 +88,7 @@ export class MapPage implements OnInit, AfterViewInit {
     this.map.addControl(new mapboxgl.NavigationControl());
 
     this.map.on('load', () => {
-      // Fetch data and add the GeoJSON source here
+     
       this.coordinateService.getCoordinates().subscribe(
         (responses: Cluster[]) => {
           const geoJSONData = this.convertToGeoJSON(responses);
@@ -83,42 +103,73 @@ export class MapPage implements OnInit, AfterViewInit {
     });
   }
 
+  async openCrimeAnalysisModal() {
+    this.isModalOpen = true;
+
+
+    setTimeout(() => {
+      if (this.topHours.length && this.topCounts.length) {
+        this.createCrimeTimeChart(this.topHours, this.topCounts);
+      } else {
+        // console.error('Top hours and counts are not available.');
+        // console.log(
+        //   'Heres the tophours and topcounts',
+        //   this.topHours,
+        //   this.topCounts
+        // );
+      }
+      if (this.topLocations.length && this.topLocationCounts.length) {
+        this.createCrimeLocationPieChart(this.topLocations, this.topLocationCounts);
+      } else {
+        console.error('Top locations and counts are not available.');
+        // console.log(
+        //   'Heres the top location and topcounts',
+        //   this.topLocations,
+        //   this.topLocationCounts
+        // );
+      }
+      
+    }, 500);
+  }
+
   convertToGeoJSON(data: Cluster[]): GeoJSON.FeatureCollection {
     const features: GeoJSON.Feature[] = [];
 
     data.forEach((item) => {
-      if (
-        item.centroid &&
-        item.centroid.latitude !== undefined &&
-        item.centroid.longitude !== undefined
-      ) {
-        features.push({
-          type: 'Feature',
-          properties: {
-            cluster_label: item.cluster_label,
-            density: item.density,
-            event_time: item.centroid.event_time,
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: [item.centroid.longitude, item.centroid.latitude],
-          },
-        });
+   
+      if (item.centroid) {
+        const { longitude, latitude } = item.centroid;
+        if (latitude !== undefined && longitude !== undefined) {
+          features.push({
+            type: 'Feature',
+            properties: {
+              cluster_label: item.cluster_label,
+              density: item.density,
+              centroid: item.centroid,
+            },
+            geometry: {
+              type: 'Point',
+              coordinates: [longitude, latitude],
+            },
+          });
+        }
       }
 
+   
       if (item.coordinates && Array.isArray(item.coordinates)) {
         item.coordinates.forEach((coord) => {
-          if (coord.longitude !== undefined && coord.latitude !== undefined) {
+          const { longitude, latitude, event_time } = coord;
+          if (longitude !== undefined && latitude !== undefined) {
             features.push({
               type: 'Feature',
               properties: {
                 cluster_label: item.cluster_label,
                 density: item.density,
-                event_time: coord.eventTime,
+                event_time,
               },
               geometry: {
                 type: 'Point',
-                coordinates: [coord.longitude, coord.latitude],
+                coordinates: [longitude, latitude],
               },
             });
           } else {
@@ -142,7 +193,7 @@ export class MapPage implements OnInit, AfterViewInit {
       features: validFeatures,
     };
 
-    console.log('Converted GeoJSON:', JSON.stringify(geoJSONResult, null, 2));
+  //  console.log('Converted GeoJSON:', JSON.stringify(geoJSONResult, null, 2));
 
     return geoJSONResult;
   }
@@ -186,95 +237,104 @@ export class MapPage implements OnInit, AfterViewInit {
     });
   }
 
-  // async initializeAndOpenModal(geoJSONData: GeoJSON.FeatureCollection) {
-  //   await this.calculateHighestCrimeTime(geoJSONData);
-  //   this.openCrimeAnalysisModal();
-  // }
-
   async calculateHighestCrimeTime(geoJSONData: GeoJSON.FeatureCollection) {
-    const hourCountMap: { [hour: string]: number } = {};
+ 
+    const eventTimes: string[] = [];
 
-    // Extract the features and count occurrences of each hour
     geoJSONData.features.forEach((feature) => {
-      if (
-        feature.properties &&
-        feature.properties['event_time'] &&
-        typeof feature.properties['event_time'] === 'string'
-      ) {
-        const timeParts = feature.properties['event_time'].split(':');
-        if (timeParts.length === 3) {
-          const [hour] = timeParts.map((part) => parseInt(part, 10));
-          const hourString = String(hour).padStart(2, '0');
-
-          if (!hourCountMap[hourString]) {
-            hourCountMap[hourString] = 0;
-          }
-          hourCountMap[hourString]++;
-        }
+      if (feature.properties?.['event_time']) {
+        eventTimes.push(feature.properties['event_time']);
       }
     });
 
-    // Convert to an array of [hour, count] and sort by count
+    // console.log('Event Times:', eventTimes);
+
+    // Count occurrences of each hour in the event times
+    const hourCountMap: { [hour: string]: number } = {};
+
+    eventTimes.forEach((eventTime) => {
+      const timeParts = eventTime.split(':');
+      if (timeParts.length >= 2) {
+        const hour = timeParts[0].padStart(2, '0');
+        hourCountMap[hour] = (hourCountMap[hour] || 0) + 1;
+      }
+    });
+
+    //  Sort and get the top 5 hours
     const sortedHours = Object.entries(hourCountMap)
       .sort(([, a], [, b]) => b - a)
-      .slice(0, 4); // Take top 4
+      .slice(0, 5);
 
-    // Format hours as ${hour}:00
     const topHours = sortedHours.map(([hour]) => `${hour}:00`);
     const topCounts = sortedHours.map(([, count]) => count);
 
-    // Find the highest crime time
-    const [mostFrequentHour] = Object.entries(hourCountMap).reduce(
-      (max, [hour, count]) => (count > max[1] ? [hour, count] : max),
-      ['', 0]
-    );
-
-    // Format most frequent hour for display
+    // the most frequent hour
+    const [mostFrequentHour] =
+      sortedHours.length > 0 ? sortedHours[0] : ['', 0];
     this.highestCrimeTime = mostFrequentHour
       ? `${mostFrequentHour}:00`
       : 'No data';
 
     // Log the results
-    console.log('Most frequent hour:', this.highestCrimeTime);
-    console.log('Top 4 hours:', topHours);
-    console.log('Top 4 counts:', topCounts);
+    // console.log('Most frequent hour:', this.highestCrimeTime);
+    // console.log('Top 5 hours:', topHours);
+    // console.log('Top 5 counts:', topCounts);
 
-    // Update the chart with top 4 data
-    this.createCrimeTimeChart(topHours, topCounts);
+    this.topHours = topHours;
+    this.topCounts = topCounts;
+
+    // Ensure data is available
+    this.openCrimeAnalysisModal();
   }
 
-  updateCrimeTimeChart(topHours: string[], topCounts: number[]) {
-    if (this.crimeTimeChart) {
-      this.crimeTimeChart.data.labels = topHours;
-      this.crimeTimeChart.data.datasets[0].data = topCounts;
-      this.crimeTimeChart.update();
-    } else {
-      console.error('Chart instance not found');
-    }
-  }
+ 
 
   createCrimeTimeChart(topHours: string[], topCounts: number[]) {
-    const canvas = document.getElementById('crimeTimeChart') as HTMLCanvasElement | null;
-    
-    if (canvas) {
-      const ctx = canvas.getContext('2d');
-      
-      if (ctx) {
-        if (this.crimeTimeChart) {
-          // Update existing chart
-          this.crimeTimeChart.data.labels = topHours;
-          this.crimeTimeChart.data.datasets[0].data = topCounts;
-          this.crimeTimeChart.update();
-        } else {
+    if (
+      !Array.isArray(topHours) ||
+      !Array.isArray(topCounts) ||
+      !topHours.length ||
+      !topCounts.length
+    ) {
+      // console.log('Heres the tophours and topcounts', topHours, topCounts);
+      console.error(
+        'Invalid data for chart rendering. Please ensure both topHours and topCounts are provided and are arrays with at least one element.'
+      );
+      return;
+    }
+
+    const sortedData = topHours
+      .map((hour, index) => ({ hour, count: topCounts[index] }))
+      .sort((a, b) => a.hour.localeCompare(b.hour));
+
+    const sortedHours = sortedData.map((data) => data.hour);
+    const sortedCounts = sortedData.map((data) => data.count);
+
+    try {
+      console.log('Creating chart...');
+      const canvas = document.getElementById(
+        'crimeTimeChart'
+      ) as HTMLCanvasElement | null;
+
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+
+        if (ctx) {
+          // Clear previous chart if it exists
+          if (this.crimeTimeChart) {
+            this.crimeTimeChart.destroy();
+            this.crimeTimeChart = undefined;
+          }
+
           // Create new chart
           this.crimeTimeChart = new Chart(ctx, {
             type: 'line',
             data: {
-              labels: topHours,
+              labels: sortedHours.length ? sortedHours : ['Loading...'],
               datasets: [
                 {
-                  label: 'Top 4 Crime Frequencies per Hour',
-                  data: topCounts,
+                  label: 'Top 5 Crime Frequencies per Hour',
+                  data: sortedCounts.length ? sortedCounts : [0],
                   borderColor: 'rgba(75, 192, 192, 1)',
                   backgroundColor: 'rgba(75, 192, 192, 0.2)',
                   fill: true,
@@ -289,6 +349,11 @@ export class MapPage implements OnInit, AfterViewInit {
                     display: true,
                     text: 'Hour of the Day',
                   },
+                  ticks: {
+                    autoSkip: false,
+                    maxRotation: 0,
+                    minRotation: 0,
+                  },
                 },
                 y: {
                   title: {
@@ -299,75 +364,245 @@ export class MapPage implements OnInit, AfterViewInit {
               },
               responsive: true,
               maintainAspectRatio: false,
+              plugins: {
+                title: {
+                  display: true,
+                  text: 'Top 5 Crime Frequencies per Time',
+                },
+              },
             },
           });
+        } else {
+          console.error('Failed to get 2D context from canvas');
         }
       } else {
-        console.error('Failed to get 2D context from canvas');
+        // console.error('Canvas element not found');
       }
-    } else {
-      console.error('Canvas element not found');
+    } catch (error) {
+      console.error('Error creating crime time chart:', error);
     }
   }
-  
 
-  calculateCrimeAnalysis(geoJSONData: GeoJSON.FeatureCollection) {
-    let highestDensityFeature: any = null;
+async calculateCrimeAnalysis(geoJSONData: GeoJSON.FeatureCollection) {
+    let highestDensityFeature: GeoJSON.Feature | undefined;
     let highestDensity = -Infinity;
+    const featuresWithDensity: Array<{ feature: GeoJSON.Feature; density: number }> = [];
 
+    // Collect all features with their densities
     geoJSONData.features.forEach((feature) => {
-      if (feature.properties && feature.properties['density'] !== undefined) {
-        const density = feature.properties['density'];
+        const density = feature.properties?.['density'] || 0;
+        featuresWithDensity.push({ feature, density });
 
+        // Track highest density feature
         if (density > highestDensity) {
-          highestDensity = density;
-          highestDensityFeature = feature;
+            highestDensity = density;
+            highestDensityFeature = feature;
         }
-      }
     });
 
-    if (highestDensityFeature) {
-      const [longitude, latitude] = highestDensityFeature.geometry.coordinates;
-      this.getLocationName(latitude, longitude);
-    } else {
-      console.error('No features with density found');
+    // Sort features by density in descending order
+    const sortedFeatures = featuresWithDensity.sort((a, b) => b.density - a.density);
+
+    // Get top 5 unique densities
+    const topFeatures: Array<{ feature: GeoJSON.Feature; density: number }> = [];
+    const uniqueDensities = new Set<number>();
+
+    for (const { feature, density } of sortedFeatures) {
+        if (!uniqueDensities.has(density)) {
+            uniqueDensities.add(density);
+            topFeatures.push({ feature, density });
+        }
+        if (topFeatures.length === 5) {
+            break; // Stop once we have 5 unique densities
+        }
     }
-  }
 
-  getLocationName(latitude: number, longitude: number) {
-    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${environment.mapboxKey}`;
+    // Extract centroid coordinates from top features
+    const centroidCoordinates = topFeatures.map(({ feature }) => {
+        const centroid = feature.properties?.['centroid']; 
+        return centroid ? [centroid.longitude, centroid.latitude] : null;
+    }).filter(Boolean) as [number, number][]; // Filter out null values
 
-    this.http.get<any>(url).subscribe(
-      (response) => {
-        this.highestCrimeLocation =
-          response?.features?.[0]?.place_name || 'Unknown location';
-        console.log(
-          'Highest density location name:',
-          this.highestCrimeLocation
+    //Convert centroid coordinates to location names
+    const locationPromises = centroidCoordinates.map(async (coords) => {
+        return this.getLocationName(coords[1], coords[0]); // Note: latitude, longitude
+    });
+
+    const highestLocationNamePromise = highestDensityFeature
+        ? this.getLocationName(
+            (highestDensityFeature.geometry as GeoJSON.Point).coordinates[1],
+            (highestDensityFeature.geometry as GeoJSON.Point).coordinates[0]
+        )
+        : Promise.resolve('Unknown location');
+
+    // Wait for all location names to be fetched
+    const locationNames = await Promise.all(locationPromises);
+    this.highestCrimeLocation = await highestLocationNamePromise;
+    this.topLocations = locationNames;
+    this.topLocationCounts = topFeatures.map(({ density }) => density); // Get densities of top features
+
+    // console.log('Highest crime location:', this.highestCrimeLocation);
+    // console.log('Top 5 crime locations from logic', this.topLocations);
+    // console.log('Top 5 crime location Counts from logic', this.topLocationCounts);
+
+    this.createCrimeLocationPieChart(locationNames, this.topLocationCounts);
+    this.openCrimeAnalysisModal();
+}
+
+getLocationName(latitude: number, longitude: number): Promise<string> {
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${environment.mapboxKey}&types=locality,neighborhood&limit=1`;
+
+    return new Promise((resolve, reject) => {
+        this.http.get<any>(url).subscribe(
+            (response) => {
+                const features = response?.features || [];
+                let barangayName = 'Unknown location';
+
+                if (features.length > 0) {
+                    // Assuming the first feature is the barangay or closest locality
+                    barangayName = features[0].text || 'Unknown location';
+                }
+
+                resolve(barangayName);
+            },
+            (error) => {
+                console.error('Error fetching location name:', error);
+                reject('Unknown location');
+            }
         );
-      },
-      (error) => {
-        console.error('Error fetching location name:', error);
-      }
-    );
-  }
+    });
+}
 
-  async openCrimeAnalysisModal() {
-    this.isModalOpen = true;
-    console.log(this.highestCrimeLocation);
-    console.log(this.highestCrimeTime);
 
-    // Ensure that calculateHighestCrimeTime has been called
-    if (!this.topHours.length || !this.topCounts.length) {
-      // Provide a fallback or a loading state if needed
-      console.error('Top hours and counts are not available.');
+
+createCrimeLocationPieChart(locations: string[], counts: number[]) {
+
+
+    if (!Array.isArray(locations) || !Array.isArray(counts) || locations.length === 0 || counts.length === 0) {
+        // console.error('Invalid data for pie chart rendering. Please ensure both locations and counts are provided and are arrays with at least one element.');
+        // console.log('Top 5 locations pie chart recipient:', locations);
+        // console.log('Top Counts pie chart recipient:', counts);
+        return; 
+    }
+    // console.log('Top 5 locations pie chart recipient:', locations);
+    // console.log('Top Counts pie chart recipient:', counts);
+
+    const canvas = document.getElementById('crimeLocationPieChart') as HTMLCanvasElement | null;
+    if (!canvas) {
+        // console.error('Canvas element for pie chart not found');
+        return;
     }
 
-    // Wait for the modal to be presented and chart to be created
-    setTimeout(() => {
-      this.createCrimeTimeChart(this.topHours, this.topCounts);
-    }, 500); // Adjust timing as needed
-  }
+
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        // console.error('Failed to get 2D context from canvas');
+        return;
+    }
+
+    const backgroundColors = [
+      'rgba(255, 99, 132, 0.2)',
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(255, 206, 86, 0.2)',
+      'rgba(75, 192, 192, 0.2)',
+      'rgba(153, 102, 255, 0.2)',
+  ];
+    
+    // Create new pie chart
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: locations,
+            datasets: [{
+                label: 'Top 5 Crime Frequencies per Location',
+                data: counts, // Keep counts for the pie chart data
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                ],
+                borderWidth: 1,
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              title:{
+                  display: true,
+                  text: 'Top 5 Crime Frequencies per Location',
+              },
+                legend: {
+                  display: true,
+                    position: 'top',
+                    labels: {
+                      font: {
+                        size: 16
+                      },
+                      boxWidth: 20,
+                      padding: 15
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (tooltipItem) => {
+                            const dataset = tooltipItem.dataset;
+                            const currentValue = dataset.data[tooltipItem.dataIndex] as number;
+                            const total = dataset.data.reduce((acc, value) => {
+                                return (typeof acc === 'number' ? acc : 0) + (typeof value === 'number' ? value : 0);
+                            }, 0);
+                            const percentage = total > 0 ? ((currentValue / total) * 100).toFixed(2) : '0.00';
+                            return `${tooltipItem.label} (${percentage}%)`;
+                        }
+                    }
+                },
+                datalabels: {
+               
+                    formatter: (value, context) => {
+                     let total: any = 0;
+                    // Ensure we only reduce over numeric values
+                    total = context.dataset.data.reduce((acc, val) => {
+                        const numericAcc = typeof acc === 'number' ? acc : 0;
+                        const numericVal = typeof val === 'number' ? val : 0;
+                        return numericAcc + numericVal;
+                    }, 0);
+
+                    const validValue = typeof value === 'number' ? value : 0; 
+                    const validTotal = total > 0 ? total : 1; 
+
+                    const percentage = ((validValue / validTotal) * 100).toFixed(2);
+
+                   
+                    const label = context.chart.data.labels && context.chart.data.labels[context.dataIndex] 
+                        ? context.chart.data.labels[context.dataIndex] 
+                        : 'Unknown';
+
+                    return `${label} (${percentage}%)`; 
+                    },
+                    color: '#000',
+                    align: 'start', 
+                    anchor: 'end',
+                  
+                },
+            },
+        },
+    });
+   
+}
+
+
+
+
 
   closeCrimeAnalysisModal() {
     this.isModalOpen = false;

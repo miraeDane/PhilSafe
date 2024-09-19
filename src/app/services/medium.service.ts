@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class MediumService {
-  private  mediaUrl = 'https://localhost:5100/api/media'; 
+  private  mediaUrl = 'https://localhost:7108/api/media'; 
 
   constructor(private http: HttpClient) {}
 

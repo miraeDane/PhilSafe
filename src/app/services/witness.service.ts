@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class WitnessService {
-  private witnessUrl = 'http://localhost:5100/api/witness'; 
+  private witnessUrl = 'https://localhost:7108/api/witness'; 
 
   constructor(private http: HttpClient) {}
 

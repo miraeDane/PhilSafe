@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class CrimeService {
-  private crimeUrl = 'https://localhost:5100/api/case';
+  private crimeUrl = 'https://localhost:7108/api/case';
   private crimeLists = 'assets/crimes';
 
   constructor(private http: HttpClient) {}

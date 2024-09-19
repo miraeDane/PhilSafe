@@ -10,7 +10,7 @@ import { Nationalities } from '../models/description';
 export class DescriptionService {
 
   private nationalities = 'assets/nationalities.json';
-  private descriptionUrl = 'https://localhost:5100/api/description';
+  private descriptionUrl = 'https://localhost:7108/api/description';
 
   constructor(private http: HttpClient) {}
 

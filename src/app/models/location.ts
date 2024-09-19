@@ -23,22 +23,26 @@ export interface Location {
   }
 
 
+ export interface Centroid {
+    latitude: number;
+    longitude: number;
+    event_time?: string; // Optional, if it might not always be present
+  }
+  
+
+
   export interface Coordinates {
     longitude: number;
     latitude: number;
-    eventTime?: string;
+    event_time?: string;
   }
 
 
   export interface Cluster {
-    cluster_label: number;
+    cluster_label: string;
     density: number;
-    centroid: {
-        longitude: number;
-        latitude: number;
-        event_time: string;
-    };
-    coordinates: Coordinates[];
+    centroid?: Centroid;
+    coordinates?: Coordinates[];
   }
   
   

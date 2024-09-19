@@ -4,12 +4,12 @@ import { SuspectHasCrime } from './suspect-has-crime';
 
 export interface Suspect {
   suspectId: number;
-  personId: number;
+  personId?: number;
   gangAffiliation?: string;
   reward?: number;
-  isCaught: boolean;
+  isCaught?: boolean;
   datetimeOfCaught?: Date;
   descriptions?: Description[];
-  person: Person;
+  person?: Person;
   suspectHasCrimes?: SuspectHasCrime[];
 }

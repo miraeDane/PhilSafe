@@ -12,12 +12,12 @@
 <div class="container">
   <ion-label class="report-as">Report As</ion-label>
 
-  <div class="victim" routerLink="/report/1">
+  <div class="victim" (click)="onReporterSelect('victim')">
     <img src="assets/victim.png">
     <p>Victim</p>
   </div>
 
-  <div class="witness" routerLink="/witness">
+  <div class="witness" (click)="onReporterSelect('witness')">
     <img src="assets/witness.png">
     <p>Witness</p>
   </div>

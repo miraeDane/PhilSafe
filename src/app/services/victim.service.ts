@@ -8,7 +8,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class VictimService {
-  private victimUrl = 'http://localhost:5100/api/victim'; 
+  private victimUrl = 'http://localhost:7108/api/victim'; 
 
   constructor(private http: HttpClient) {}
 

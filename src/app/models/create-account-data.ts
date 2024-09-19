@@ -11,5 +11,5 @@ export interface CreateAccountData {
   workAddressId: number;
   personId?: number;
   role: string;
-
+  profile_pic?: string
 }

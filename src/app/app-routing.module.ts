@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './auth/auth.guard';
 
 const routes: Routes = [
   {
@@ -33,24 +34,21 @@ const routes: Routes = [
       import('./tabs/tabs.module').then((m) => m.TabsPageModule), 
   },
   {
-    path: 'home',
+    path: 'tabs/home',
     loadChildren: () =>
       import('./home/home.module').then((m) => m.HomePageModule),
-  },
-
-  {
-    path: 'inbox',
-    loadChildren: () =>
-      import('./inbox/inbox.module').then((m) => m.InboxPageModule),
+    
   },
   {
     path: 'report/:segment',
     loadChildren: () =>
       import('./report/report.module').then((m) => m.ReportPageModule),
+    
   },
   {
     path: 'map',
     loadChildren: () => import('./map/map.module').then((m) => m.MapPageModule),
+   
   },
   {
     path: 'article',
@@ -70,35 +68,43 @@ const routes: Routes = [
   
   {
     path: 'incident-details/:id',
-    loadChildren: () => import('./myreports/incident-details/incident-details.module').then( m => m.IncidentDetailsPageModule)
+    loadChildren: () => import('./myreports/incident-details/incident-details.module').then( m => m.IncidentDetailsPageModule),
+    canActivate: [AuthGuard],
   },
   {
     path: 'carousel',
-    loadChildren: () => import('./auth/get-started/carousel/carousel.module').then(m => m.CarouselPageModule)
+    loadChildren: () => import('./auth/get-started/carousel/carousel.module').then(m => m.CarouselPageModule),
+    canActivate: [AuthGuard],
   },
   {
     path: 'w-details',
-    loadChildren: () => import('./myreports/incident-details/w-details/w-details.module').then( m => m.WDetailsPageModule)
+    loadChildren: () => import('./myreports/incident-details/w-details/w-details.module').then( m => m.WDetailsPageModule),
+    canActivate: [AuthGuard],
   },
   {
     path: 'e-details',
-    loadChildren: () => import('./myreports/incident-details/e-details/e-details.module').then( m => m.EDetailsPageModule)
+    loadChildren: () => import('./myreports/incident-details/e-details/e-details.module').then( m => m.EDetailsPageModule),
+    canActivate: [AuthGuard],
   },
   {
     path: 's-details',
-    loadChildren: () => import('./myreports/incident-details/s-details/s-details.module').then( m => m.SDetailsPageModule)
+    loadChildren: () => import('./myreports/incident-details/s-details/s-details.module').then( m => m.SDetailsPageModule),
+    canActivate: [AuthGuard],
   },
   {
     path: 'add-evidence',
-    loadChildren: () => import('./report/add-evidence/add-evidence.module').then( m => m.AddEvidencePageModule)
+    loadChildren: () => import('./report/add-evidence/add-evidence.module').then( m => m.AddEvidencePageModule),
+    canActivate: [AuthGuard],
   },
   {
     path: 'add-suspect',
-    loadChildren: () => import('./report/add-suspect/add-suspect.module').then( m => m.AddSuspectPageModule)
+    loadChildren: () => import('./report/add-suspect/add-suspect.module').then( m => m.AddSuspectPageModule),
+    canActivate: [AuthGuard],
   },
   {
     path: 'add-witness',
-    loadChildren: () => import('./report/add-witness/add-witness.module').then( m => m.AddWitnessPageModule)
+    loadChildren: () => import('./report/add-witness/add-witness.module').then( m => m.AddWitnessPageModule),
+    canActivate: [AuthGuard],
   },
   {
     path: 'create-account',

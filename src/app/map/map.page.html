@@ -67,15 +67,18 @@
       <ion-list class="modal-analysis" lines="none">
         <ion-item class="modal-analysis">
           <ion-label class="modal-analysis">Highest Crime in Location:</ion-label>
-          <ion-label class="modal-analysis" style="text-align: end;">{{ highestCrimeLocation }}</ion-label>
+          <ion-label class="modal-name" style="font-weight:normal;text-align: end;">{{ highestCrimeLocation }}</ion-label>
         </ion-item>
+        <div class="chart-parent">
+          <canvas id="crimeLocationPieChart" class="crimeLocationPieChart" width="300" height="300"></canvas>
+        </div>
         <ion-item class="modal-analysis">
           <ion-label class="modal-analysis">Highest Crime per Time:</ion-label>
-          <ion-label class="modal-analysis" style="text-align: end;">{{ highestCrimeTime }}</ion-label>
+          <ion-label class="modal-name" style="font-weight:normal;text-align: end;">{{ highestCrimeTime }}</ion-label>
         </ion-item>
-        <ion-item class="modal-analysis">
+        <div>
           <canvas id="crimeTimeChart" style="height: 400px; width: 80%;"></canvas>
-        </ion-item>
+        </div>
       </ion-list>
     </ion-content>
   </ng-template>

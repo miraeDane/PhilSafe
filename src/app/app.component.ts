@@ -10,5 +10,7 @@ register();
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor() {}
+  constructor() {
+    console.log('AppComponent initialized');
+  }
 }

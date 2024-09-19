@@ -2,7 +2,7 @@
   <ion-header>
     <ion-toolbar>
       <ion-buttons slot="start">
-        <ion-back-button defaultHref="/tabs"></ion-back-button>
+        <ion-back-button defaultHref="/tabs/home"></ion-back-button>
       </ion-buttons>
       <ion-title>Edit Profile</ion-title>
     </ion-toolbar>
@@ -21,8 +21,8 @@
   
 
   <div class="top-details">
-    <ion-label class="name">Maria Leonora Theresa Vergara</ion-label>
-    <ion-label class="email">email</ion-label>
+    <ion-label class="name">{{personData.firstname}} {{personData.lastname}}</ion-label>
+    <ion-label class="email">Email: {{accountData.email}}</ion-label>
   </div>
 
 
@@ -34,15 +34,15 @@
 
   <ion-list class="info" lines="none">
     <ion-item>
-      <ion-input [(ngModel)]="person.firstname" id="fname" placeholder="First Name" disabled> </ion-input>
+      <ion-input [(ngModel)]="personData.firstname" id="fname" placeholder="First Name" disabled></ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-input [(ngModel)]="person.middlename" id="mname" placeholder="Middle Name" disabled> </ion-input>
+      <ion-input [(ngModel)]="personData.middlename" id="mname" placeholder="Middle Name" disabled> </ion-input>
     </ion-item>
 
     <ion-item>
-      <ion-input [(ngModel)]="person.lastname" id="lname" placeholder="Last Name" disabled> </ion-input>
+      <ion-input [(ngModel)]="personData.lastname" id="lname" placeholder="Last Name" disabled> </ion-input>
     </ion-item>
 
     <ion-item>
@@ -115,11 +115,11 @@
 
       <ion-label class="title-info">WORK ADDRESS</ion-label>
 
-      <div class="checkbox-container">
+      <!-- <div class="checkbox-container">
         <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="isSameAddress" (ionChange)="onAddressCheckboxChange($event)" disabled></ion-checkbox>
         <ion-label class="checkbox-label">Same as Home Address</ion-label>
 
-      </div>
+      </div> -->
 
       <ion-item>
         <ion-select [(ngModel)]="userWorkAddress.region" name="workregionName" placeholder="Region" (ionChange)="onWorkRegionChange($event)" disabled>

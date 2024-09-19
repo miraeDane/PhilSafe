@@ -15,15 +15,19 @@ import { DescriptionService } from 'src/app/services/description.service';
 import { MediumService } from 'src/app/services/medium.service';
 import { Suspect } from '../models/suspect';
 import { BasePerson } from '../models/0common.model';
-import { Complainant } from '../models/1complainant.model';
 import { SuspectCommon } from '../models/2suspect.model';
 import { VictimCommon } from '../models/3victim.model';
-import { CreateAccountPage } from '../auth/create-account/create-account.page';
 import { Medium } from '../models/medium';
 import { idLists } from 'src/assets/id-lists';
 import { Report } from '../models/report';
 import { AddSuspectPage } from './add-suspect/add-suspect.page';
 import { CrimeService } from '../services/crime.service';
+import { Complainant } from '../models/1witness.model';
+import { WitnessService } from '../services/witness.service';
+import { SuspectService } from '../services/suspect.service';
+import { VictimService } from '../services/victim.service';
+import { PersonService } from '../services/person.service';
+import { switchMap, concatMap, of, EMPTY, tap, catchError  } from 'rxjs';
 
 
 @Component({
@@ -36,7 +40,7 @@ export class ReportPage implements OnInit {
   @ViewChild('datePicker', { static: false }) datePicker: any;
   @ViewChild('canvas', { static: true }) signaturePadElement: any;
 
-  complainant: Complainant = {
+  witness: Complainant = {
     personId: 0,
     firstname: '',
     middlename: '',
@@ -45,8 +49,8 @@ export class ReportPage implements OnInit {
     birthdate: '',
     civilStatus: '',
     bioStatus: true,
-    description: {descriptionId: 0, ethnicity: ''},
-    contactDetails: { email: '', homePhone: '', mobileNum: '', telNum: '' },
+    description: {descriptionId: 0, ethnicity: '', occupationId: 0, personId: 0},
+    contactDetails: { email: '',  mobileNum: '', telNum: '' },
     homeAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', block:'', zipCode: 0 },
     workAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', zipCode: 0 },
     occupation: { occupationId: 0, name: '' },
@@ -61,12 +65,13 @@ export class ReportPage implements OnInit {
     birthdate: '',
     civilStatus: '',
     bioStatus: true,
-    contactDetails: { email: '', homePhone: '', mobileNum: '' },
+    contactDetails: { email: '',  mobileNum: '' },
     homeAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', zipCode: 0 },
     workAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '',block:'', zipCode: 0 },
-    description: { descriptionId: 0, ethnicity: '', height: 0, weight: 0, eyeColor: '', hairColor: '', drug: false, alcohol: false, distinguishingMark:'' },
+    description: { descriptionId: 0, ethnicity: '', height: 0, weight: 0, eyeColor: '', hairColor: '', drug: false, alcohol: false, distinguishingMark:'', personId: 0 },
     occupation: { occupationId: 0, name: '' },
     isUnidentified: false, 
+    suspect: {suspectId: 0, personId: 0, isCaught: false}
   };
 
   victim: VictimCommon = {
@@ -78,8 +83,8 @@ export class ReportPage implements OnInit {
     birthdate: '',
     civilStatus: '',
     bioStatus: true,
-    description: {descriptionId: 0, ethnicity: ''},
-    contactDetails: { email: '', homePhone: '', mobileNum: '' },
+    description: {descriptionId: 0, ethnicity: '', personId: 0},
+    contactDetails: { email: '',  mobileNum: '' },
     homeAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '',block:'', zipCode: 0 },
     workAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', block:'', zipCode: 0 },
     occupation: { occupationId: 0, name: '' },
@@ -93,7 +98,7 @@ export class ReportPage implements OnInit {
     filename: ''
   }
 
-  complainantData: CreateAccountData = {
+  witnessData: CreateAccountData = {
     
     email: '',
     password: '',
@@ -104,7 +109,7 @@ export class ReportPage implements OnInit {
     role: '',
   }
 
-  complainantLoc: Location = {
+  witnessLoc: Location = {
     locationId: 0,
     province: '',
     municipality: '',
@@ -157,11 +162,14 @@ export class ReportPage implements OnInit {
   vic_home_zip_code: string = '';
   vic_work_zip_code: string = '';
 
+  sus_height: string = '';
+  sus_weight: string = '';
+
   officenum: string = ''
   isEditing: boolean = false; 
   regions: any[] = [];
   nationalities: Nationalities = [];
-  complainantNationality: string = '';
+  witnessNationality: string = '';
   suspectNationality: string = '';
   victimtNationality: string = '';
   
@@ -197,19 +205,37 @@ export class ReportPage implements OnInit {
   nonIndexCrimes: any[] = [];
   selectedCrime: string = '';
   isIndexCrime: boolean = false;
+  isDataLoaded: boolean = false;
+  selectedReporterType: string = '';
+  
+  userData: any;
+  reporterType: string = '';
+  incidentDate: string = this.getCurrentDate();
 
+  private formatDecimal(value: number | null | undefined): number {
+    if (value == null) {
+      return 0;
+    }
+    return Number(value.toFixed(2));
+  }
   
   constructor(
     private route: ActivatedRoute,
     private modalController: ModalController,
     private locationService: LocationService,
     private nationalityService: DescriptionService,
+    private descriptionService: DescriptionService,
     private mediumService: MediumService,
     private router: Router,
     private crimeService: CrimeService,
+    private witnessService: WitnessService,
+    private suspectService: SuspectService,
+    private victimService: VictimService,
+    private personService: PersonService
     
   ) {
     this.dateOfBirth = new Date().toISOString().substring(0, 10);
+    //this.incidentDate = new Date().toISOString().substring(0, 10);
    }
 
   ngOnInit() {
@@ -223,26 +249,40 @@ export class ReportPage implements OnInit {
     });
 
     this.loadCrimes();
+    this.route.queryParams.subscribe(params => {
+      this.selectedReporterType = params['reporterType'];
+    });
+
+    this.route.queryParams.subscribe(params => {
+      this.reporterType = params['reporterType'];
+      console.log('Reporter Type:', this.reporterType);
+
+      if (this.reporterType === 'victim') {
+        this.selectedSegment = '2'; 
+      } else {
+        this.selectedSegment = '1'; 
+      }
+    });
   }
 
   /**************************************************************************************************/
   /***************************************LOCATION**************************************************/
   /*************************************************************************************************/
 
-  onAddressCheckboxChange(event: any, type: 'complainant' | 'suspect' | 'victim') {
+  onAddressCheckboxChange(event: any, type: 'witness' | 'suspect' | 'victim') {
     this.isSameAddress = event.detail.checked;
 
     if (this.isSameAddress) {
-      if (type === 'complainant') {
-        this.copyAddress(this.complainant.homeAddress, this.complainant.workAddress);
+      if (type === 'witness') {
+        this.copyAddress(this.witness.homeAddress, this.witness.workAddress);
       } else if (type === 'suspect') {
         this.copyAddress(this.suspect.homeAddress, this.suspect.workAddress);
       } else if (type === 'victim') {
         this.copyAddress(this.victim.homeAddress, this.victim.workAddress);
       }
     } else {
-      if (type === 'complainant') {
-        this.resetAddress(this.complainant.workAddress);
+      if (type === 'witness') {
+        this.resetAddress(this.witness.workAddress);
       } else if (type === 'suspect') {
         this.resetAddress(this.suspect.workAddress);
       } else if (type === 'victim') {
@@ -387,6 +427,47 @@ export class ReportPage implements OnInit {
     this.suspects.push(newSuspect);
   }
 
+  onSuspectIdentificationChange() {
+    if (this.suspect.isUnidentified) {
+      // Clear personal information and address fields
+      this.clearSuspectPersonalInfo();
+    }
+  }
+
+  clearSuspectPersonalInfo() {
+    this.suspect.firstname = '';
+    this.suspect.middlename = '';
+    this.suspect.lastname = '';
+    this.suspect.description.ethnicity = '';
+    this.suspect.sex = '';
+    this.suspect.civilStatus = '';
+    this.suspect.homeAddress = {
+      region: '',
+      province: '',
+      municipality: '',
+      barangay: '',
+      street: '',
+      block: '',
+      locationId: 0,
+      zipCode: 0
+    };
+    this.suspect.workAddress = {
+      region: '',
+      province: '',
+      municipality: '',
+      barangay: '',
+      street: '',
+      block: '',
+      locationId: 0,
+      zipCode: 0
+    };
+    this.suspect.occupation.name = '';
+    this.sus_home_zip_code = '';
+    this.sus_work_zip_code = '';
+  }
+
+
+
   async navigateToAddSuspect() {
     const modal = await this.modalController.create({
       component: AddSuspectPage, 
@@ -426,7 +507,7 @@ export class ReportPage implements OnInit {
   }
 
   setRoleBasedOnUpload(isUploaded: boolean) {
-    this.complainantData.role = isUploaded ? 'Certified' : 'Uncertified';
+    this.witnessData.role = isUploaded ? 'Certified' : 'Uncertified';
   }
 
 
@@ -435,8 +516,8 @@ export class ReportPage implements OnInit {
   }
 
   checkIfSamePerson() {
-    this.isSamePerson = this.complainant.firstname === this.victim.firstname &&
-                       this.complainant.lastname === this.victim.lastname;
+    this.isSamePerson = this.witness.firstname === this.victim.firstname &&
+                       this.witness.lastname === this.victim.lastname;
   }
 
   async openSignatureModal() {
@@ -453,8 +534,97 @@ export class ReportPage implements OnInit {
   }
 
 
+  retrieveSessionData() {
+    const userDataString = sessionStorage.getItem('userData');
+    if (userDataString) {
+      this.userData = JSON.parse(userDataString);
+      console.log('Retrieved user data:', this.userData);
+      
+      let targetObject: any;
+      if (this.reporterType === 'victim') {
+        targetObject = this.victim;
+      } else if (this.reporterType === 'witness') {
+        targetObject = this.witness;
+      } else {
+        console.log('Unknown reporter type:', this.reporterType);
+        return; 
+      }
+  
 
-
+      const genderMap: { [key: string]: string } = {
+        'M': 'Male',
+        'F': 'Female'
+      };
+  
+     
+      targetObject.firstname = this.userData.first_name || '';
+      targetObject.middlename = this.userData.middle_name || '';
+      targetObject.lastname = this.userData.last_name || '';
+      targetObject.birthdate = this.userData.birth_date || '';
+      targetObject.sex = genderMap[this.userData.sex] || this.userData.sex || '';
+      targetObject.contactDetails = {
+        telNum: this.userData.tel_num || '',
+        mobileNum: this.userData.contact_num || '',
+        email: this.userData.email || ''
+      };
+      targetObject.personId = this.userData.personId || 0;
+      targetObject.role = this.userData.role || '';
+      targetObject.civilStatus = this.userData.civilStatus || '';
+      targetObject.bioStatus = this.userData.bioStatus || false;
+  
+   
+      targetObject.description = {
+        descriptionId: 0,
+        ethnicity: ''
+      };
+  
+   
+      targetObject.occupation = {
+        occupationId: 0,
+        name: ''
+      };
+  
+    
+      if (this.userData.home_address_id) {
+        targetObject.homeAddressId = this.userData.home_address_id;
+        targetObject.homeAddress = {
+          locationId: 0,
+          province: '',
+          municipality: '',
+          street: '',
+          region: '',
+          barangay: '',
+          block: ''
+        };
+        
+      }
+      if (this.userData.work_address_id) {
+        targetObject.workAddressId = this.userData.work_address_id;
+        targetObject.workAddress = {
+          locationId: 0,
+          province: '',
+          municipality: '',
+          street: '',
+          region: '',
+          barangay: '',
+          block: ''
+        };
+        
+      }
+  
+      console.log('Populated data:', targetObject);
+  
+     
+      if (this.reporterType === 'victim') {
+        this.victim = { ...targetObject };
+      } else if (this.reporterType === 'witness') {
+        this.witness = { ...targetObject };
+      }
+      this.isDataLoaded = true;
+    } else {
+      console.log('No user data found in session');
+    }
+  }
 
 
 
@@ -465,14 +635,42 @@ export class ReportPage implements OnInit {
 
   segmentChanged(event: any) {
     console.log('Segment changed', event.detail.value);
-    const segmentValue = event.detail.value; 
-    this.selectedSegment = segmentValue; 
-    this.router.navigate(['/report', segmentValue]);
+    if (this.isSegmentDisabled(event.detail.value)) {
+      console.log('Segment is disabled, reverting to previous segment');
+      this.selectedSegment = this.getPreviousValidSegment();
+    } else {
+      this.selectedSegment = event.detail.value;
+    }
   }
 
-  goToNextSegment(segment: any) {
-    segment = (parseInt(this.selectedSegment, 10) + 1).toString();
-    this.selectedSegment = segment;
+  goToNextSegment(currentSegment: number) {
+    // Convert the current segment to a number
+    let nextSegment = currentSegment + 1;
+  
+    // Skip disabled segments
+    while (this.isSegmentDisabled(nextSegment.toString())) {
+      nextSegment++;
+    }
+  
+    // Ensure we don't go beyond the last segment
+    const lastSegment = 4; // Assuming you have 4 segments
+    if (nextSegment > lastSegment) {
+      nextSegment = lastSegment;
+    }
+  
+    // Update the selected segment
+    this.selectedSegment = nextSegment.toString();
+  
+    // Log the new segment for debugging
+    console.log('Moving to segment:', this.selectedSegment);
+  }
+
+  getPreviousValidSegment(): string {
+    const storedReporterType = localStorage.getItem('reporterType');
+    if (storedReporterType === 'victim') {
+      return this.selectedSegment === '1' ? '2' : this.selectedSegment;
+    }
+    return this.selectedSegment;
   }
 
   proceedToNextSegment() {
@@ -486,7 +684,9 @@ export class ReportPage implements OnInit {
       
     }
   
-  
+    isSegmentDisabled(segment: string): boolean {
+      return this.reporterType === 'victim' && segment === '1';
+    }
 
 
 
@@ -511,9 +711,16 @@ export class ReportPage implements OnInit {
   }
 
 
+  updateBirthdate() {
+    this.witness.birthdate = this.dateOfBirth;
+    this.suspect.birthdate = this.dateOfBirth;
+    this.victim.birthdate = this.dateOfBirth;
+  }
 
-
-
+  updateIncidentDate() {
+  
+    console.log('Incident date updated:', this.incidentDate);
+  }
 
   /**************************************************************************************************/
   /*****************************************REPORT***************************************************/
@@ -557,15 +764,210 @@ export class ReportPage implements OnInit {
 
 
 save(){
-  console.log(this.complainant);
+
+
+const heightNumber = parseFloat(this.sus_height);
+const weightNumber = parseFloat(this.sus_weight);
+
+const roundToDecimalPlaces = (number: number): number  => {
+  return Math.round(number * 100) / 100; 
+};
+this.suspect.description.height = roundToDecimalPlaces(heightNumber);
+this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
+
+  this.witness.homeAddress.zipCode = Number(this.comp_home_zip_code);
+  this.witness.workAddress.zipCode = Number(this.comp_work_zip_code);
+
+  this.suspect.homeAddress.zipCode = Number(this.sus_home_zip_code);
+  this.suspect.workAddress.zipCode = Number(this.sus_work_zip_code);
+
+  this.victim.homeAddress.zipCode = Number(this.vic_home_zip_code);
+  this.victim.workAddress.zipCode = Number(this.vic_work_zip_code);
+
+  const mapSexToLetter = (sex: string): string => {
+    switch (sex) {
+      case 'Male':
+        return 'M';
+      case 'Female':
+        return 'F';
+      case 'Prefer not to say':
+        return 'X';
+      default:
+        return 'X'; 
+    }
+  };
+ 
+  const descriptionData = {
+    descriptionId: 0,
+    ethnicity: this.suspect.description.ethnicity,
+    height: this.suspect.description.height, 
+    weight: this.suspect.description.weight, 
+    eyeColor: this.suspect.description.eyeColor,
+    hairColor: this.suspect.description.hairColor,
+    drug: this.suspect.description.drug,
+    alcohol: this.suspect.description.alcohol,
+    distinguishingMark: this.suspect.description.distinguishingMark,
+    
+  };
+
+
+  console.log("Height", descriptionData.height);
+  console.log("Type of Height", typeof descriptionData.height);
+  console.log("Weight", descriptionData.weight);
+  console.log("Type of Weight", typeof descriptionData.weight);
+  // this.witnessService.establishWitness(this.witness.personId).subscribe(
+  //   (response) => {
+  //     console.log('Witness saved successfully', this.witness)
+  //     console.log('Response:', response)
+  //   },
+  //   (error) => {
+  //     console.error('Failed to save witness:', error);
+  //   }
+  // )
+
+  // this.descriptionService.establishDescription(this.witness.description).subscribe(
+  //   (response) => {
+  //     console.log('Witness Description saved successfully', this.witness.description)
+  //     console.log('Response:', response)
+  //   },
+  //   (error) => {
+  //     console.error('Failed to save witness description:', error);
+  //   }
+  // )
+
+
+  const suspectPerson =  {
+    personId: this.suspect.personId,
+    firstname: this.suspect.firstname,
+    middlename: this.suspect.middlename,
+    lastname: this.suspect.lastname,
+    sex: mapSexToLetter(this.suspect.sex),
+    birthdate: this.suspect.birthdate,
+    civilStatus: this.suspect.civilStatus,
+    bioStatus: this.suspect.bioStatus
+  };
+
+ 
+  if (this.suspect.isUnidentified) {
+    // Unidentified suspect: Only save description
+    const descriptionData = {
+      descriptionId: 0,
+      ethnicity: this.suspect.description.ethnicity,
+      height: this.suspect.description.height,
+      weight: this.suspect.description.weight,
+      eyeColor: this.suspect.description.eyeColor,
+      hairColor: this.suspect.description.hairColor,
+      drug: this.suspect.description.drug,
+      alcohol: this.suspect.description.alcohol,
+      distinguishingMark: this.suspect.description.distinguishingMark,
+      personId: null // No personId because the person is unidentified
+    };
+  
+    this.descriptionService.establishDescription(descriptionData).pipe(
+      switchMap((descriptionResponse: any) => {
+        console.log('Description saved successfully for unidentified person:', descriptionResponse);
+  
+        // Send the description to the suspect service
+        const suspectData: SuspectCommon = {
+          ...this.suspect
+        };
+  
+        return this.suspectService.establishSuspect(suspectData);
+      })
+    ).subscribe(
+      (suspectResponse: any) => {
+        console.log('Suspect saved successfully', suspectResponse);
+      },
+      (error) => {
+        console.error('Failed to save suspect for unidentified person:', error);
+      }
+    );
+  } else {
+    // Identified suspect: Proceed with person, address, and suspect creation
+    this.personService.createPerson(suspectPerson).pipe(
+      switchMap((personResponse: any) => {
+        console.log('Suspect Person saved successfully', personResponse);
+        const personId = personResponse.id;
+  
+        const hasHomeAddress = this.suspect.homeAddress && this.suspect.homeAddress.zipCode;
+        const hasWorkAddress = this.suspect.workAddress && this.suspect.workAddress.zipCode;
+  
+        const homeLocation$ = hasHomeAddress
+          ? this.locationService.createOrRetrieveLocation(this.suspect.homeAddress, this.suspect.homeAddress.zipCode).pipe(
+              tap((homeLocationResponse) => {
+                console.log('Suspect Home location saved successfully:', homeLocationResponse);
+              }),
+              catchError((error) => {
+                console.error('Failed to save suspect home location:', error);
+                return EMPTY;
+              })
+            )
+          : of(null);
+  
+        const workLocation$ = hasWorkAddress
+          ? this.locationService.createOrRetrieveLocation(this.suspect.workAddress, this.suspect.workAddress.zipCode).pipe(
+              tap((workLocationResponse) => {
+                console.log('Suspect Work location saved successfully:', workLocationResponse);
+              }),
+              catchError((error) => {
+                console.error('Failed to save suspect work location:', error);
+                return EMPTY;
+              })
+            )
+          : of(null);
+  
+        return homeLocation$.pipe(
+          switchMap(() => workLocation$),
+          switchMap(() => {
+            const descriptionData = {
+              descriptionId: 0,
+              ethnicity: this.suspect.description.ethnicity,
+              height: this.suspect.description.height,
+              weight: this.suspect.description.weight,
+              eyeColor: this.suspect.description.eyeColor,
+              hairColor: this.suspect.description.hairColor,
+              drug: this.suspect.description.drug,
+              alcohol: this.suspect.description.alcohol,
+              distinguishingMark: this.suspect.description.distinguishingMark,
+              personId: personId // Use the personId for identified suspects
+            };
+  
+            return this.descriptionService.establishDescription(descriptionData).pipe(
+              switchMap((descriptionResponse: any) => {
+                console.log('Description saved successfully:', descriptionResponse);
+  
+                // Send the description and personId to the suspect service
+                const suspect: Suspect = {
+                  suspectId: this.suspect.suspect.suspectId,
+                  personId: personId,
+                  isCaught: this.suspect.suspect.isCaught,
+                  
+                };
+  
+                return this.suspectService.establishSuspect(suspect);
+              })
+            );
+          })
+        );
+      })
+    ).subscribe(
+      (suspectResponse: any) => {
+        console.log('Suspect saved successfully', suspectResponse);
+      },
+      (error) => {
+        console.error('Failed to save suspect:', error);
+      }
+    );
+  }
+  
+
+  console.log('Witness Data: ',this.witness);
   console.log(this.selectedCrime);
   console.log(this.reportData.media);
-  console.log(this.suspect);
+  console.log('Suspect Data: ', this.suspect);
+  console.log('Victim Data: ', this.victim);
 
 }
   
-
-
-
 
 }
