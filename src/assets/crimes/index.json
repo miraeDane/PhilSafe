@@ -1,34 +1,43 @@
 [
     {
         "crime_id": 1,
-        "crime_name": "Murder"
+        "crime_name": "Murder",
+        "reporCategoryID": 211
+        
     },
     {
         "crime_id": 2,
-        "crime_name": "Homicide"
+        "crime_name": "Homicide",
+        "reporCategoryID": 211
     },
     {
         "crime_id": 3,
-        "crime_name": "Physical Injury"
+        "crime_name": "Physical Injury",
+        "reporCategoryID": 211
     },
     {
         "crime_id": 4,
-        "crime_name": "Rape"
+        "crime_name": "Rape",
+        "reporCategoryID": 211
     },
     {
         "crime_id": 5,
-        "crime_name": "Robbery"
+        "crime_name": "Robbery",
+        "reporCategoryID": 211
     },
     {
         "crime_id": 6,
-        "crime_name": "Theft"
+        "crime_name": "Theft",
+        "reporCategoryID": 211
     },
     {
         "crime_id": 7,
-        "crime_name": "Carnapping"
+        "crime_name": "Carnapping",
+        "reporCategoryID": 211
     },
     {
         "crime_id": 8,
-        "crime_name": "Cattle Rustling"
+        "crime_name": "Cattle Rustling",
+        "reporCategoryID": 211
     }
 ]

@@ -27,7 +27,13 @@ import { WitnessService } from '../services/witness.service';
 import { SuspectService } from '../services/suspect.service';
 import { VictimService } from '../services/victim.service';
 import { PersonService } from '../services/person.service';
-import { switchMap, concatMap, of, EMPTY, tap, catchError  } from 'rxjs';
+import { switchMap, concatMap, of, EMPTY, tap, catchError, forkJoin  } from 'rxjs';
+import { Victim } from '../models/victim';
+import { OccupationService } from '../services/occupation.service';
+import { ReportService } from '../services/report.service';
+import { getItem } from 'localforage-cordovasqlitedriver';
+import { IncidentType } from '../models/incident-type';
+import { CitizenService } from '../services/citizen.service';
 
 
 @Component({
@@ -88,6 +94,9 @@ export class ReportPage implements OnInit {
     homeAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '',block:'', zipCode: 0 },
     workAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', block:'', zipCode: 0 },
     occupation: { occupationId: 0, name: '' },
+    victim: {victimId: 0, vicMethodId: 0, personId: 0, vicMethod: {
+      vicMethodId: 0, methodName: ''
+    }}
   };
 
   idData: Medium = {
@@ -95,7 +104,7 @@ export class ReportPage implements OnInit {
     content: new Uint8Array(),
     contentType: '',
     description: '',
-    filename: ''
+    filename: null as File | null
   }
 
   witnessData: CreateAccountData = {
@@ -134,10 +143,11 @@ export class ReportPage implements OnInit {
     reportId: 0,
     reportBody: '',
     citizenId: 0,
-    stationId: 0,
+    stationId: 1,
+    incidentDate: '',
     reportSubCategoryId: 0,
     reportedDate: '',
-    blotterNum: '',
+    blotterNum: '07601-0662456',
     eSignature: new Uint8Array,
     signatureExt: '',
     hasAccount: true,
@@ -147,9 +157,15 @@ export class ReportPage implements OnInit {
       contentType: '',
       description: '',
       filename: ''
-    }]
-
+    }],
+    reportSubCategory: {
+      reportSubCategoryId: 0,
+      reportCategoryId: 0,
+      subCategoryName:''
+    }
   }
+
+
 
   isSamePerson: boolean = false;
   height: string = '';
@@ -203,7 +219,7 @@ export class ReportPage implements OnInit {
 
   indexCrimes: any[] = [];
   nonIndexCrimes: any[] = [];
-  selectedCrime: string = '';
+  selectedCrime: number = 0;
   isIndexCrime: boolean = false;
   isDataLoaded: boolean = false;
   selectedReporterType: string = '';
@@ -211,14 +227,16 @@ export class ReportPage implements OnInit {
   userData: any;
   reporterType: string = '';
   incidentDate: string = this.getCurrentDate();
+  reportedDate: string = this.getCurrentDate();
+  modus: any[] = [];
+  selectedmodus: any = null;
+  isExpanded: boolean = false;
+  selectedIncidentID: number = 0;
+  incidentTypes: IncidentType[] = [];
+  incidentTypeMap: { [key: number]: string } = {};
 
-  private formatDecimal(value: number | null | undefined): number {
-    if (value == null) {
-      return 0;
-    }
-    return Number(value.toFixed(2));
-  }
-  
+
+
   constructor(
     private route: ActivatedRoute,
     private modalController: ModalController,
@@ -231,11 +249,15 @@ export class ReportPage implements OnInit {
     private witnessService: WitnessService,
     private suspectService: SuspectService,
     private victimService: VictimService,
-    private personService: PersonService
+    private personService: PersonService,
+    private occupationService: OccupationService,
+    private reportService: ReportService,
+    private citizenService: CitizenService
     
   ) {
     this.dateOfBirth = new Date().toISOString().substring(0, 10);
-    //this.incidentDate = new Date().toISOString().substring(0, 10);
+    this.incidentDate = new Date().toISOString().substring(0, 10);
+    this.reportedDate = new Date().toISOString().substring(0, 10);
    }
 
   ngOnInit() {
@@ -249,6 +271,8 @@ export class ReportPage implements OnInit {
     });
 
     this.loadCrimes();
+    this.loadModus();
+
     this.route.queryParams.subscribe(params => {
       this.selectedReporterType = params['reporterType'];
     });
@@ -263,7 +287,30 @@ export class ReportPage implements OnInit {
         this.selectedSegment = '1'; 
       }
     });
+    this.loadIncidentTypes();
+
+    const userData = sessionStorage.getItem('userData');
+    if (userData) {
+        const { personId } = JSON.parse(userData);
+        this.citizenService.getCitizens().subscribe(
+            (citizens) => {
+                const citizen = citizens.find((c: { person_id: any; }) => c.person_id === personId); 
+                if (citizen) {
+                    this.reportData.citizenId = citizen.citizen_id; 
+                    console.log('Retrieved citizenId:', citizen.citizen_id);
+                    console.log('Retrieved citizens', citizens)
+                } else {
+                    console.error('Citizen not found for personId:', personId);
+                    console.log('Retrieved citizens', citizens)
+                }
+            },
+            error => {
+                console.error('Error retrieving citizens:', error);
+            }
+        );
+    }
   }
+
 
   /**************************************************************************************************/
   /***************************************LOCATION**************************************************/
@@ -496,15 +543,24 @@ export class ReportPage implements OnInit {
 
   onFileSelected(event: Event) {
     const fileInput = event.target as HTMLInputElement;
+  
     if (fileInput.files && fileInput.files.length > 0) {
-      this.selectedFile = fileInput.files[0];
-      this.fileName = this.selectedFile.name; 
-      console.log('Selected file:', this.selectedFile);
-      this.setRoleBasedOnUpload(true); 
+      const selectedFile = fileInput.files[0];
+      this.idData.filename = selectedFile;
+       this.idData.contentType = selectedFile.type;
+      
+  
+      console.log('Selected file:', selectedFile);
+      console.log('Content Type:', this.idData.contentType);
+      console.log('Description:', this.idData.description);
+  
+    
+      this.setRoleBasedOnUpload(true);
     } else {
-      this.setRoleBasedOnUpload(false); 
+      this.setRoleBasedOnUpload(false);
     }
   }
+
 
   setRoleBasedOnUpload(isUploaded: boolean) {
     this.witnessData.role = isUploaded ? 'Certified' : 'Uncertified';
@@ -525,18 +581,38 @@ export class ReportPage implements OnInit {
       component: SignatureModalComponent,
     });
     await modal.present();
-
+  
     const { data } = await modal.onWillDismiss();
-    if (data) {
-      console.log('Signature Data:', data.signature);
-     
+    if (data && data.signatureData) {
+      const { mimeType, byteArray } = this.convertDataUrlToUint8Array(data.signatureData);
+  
+      // Directly store the byte array in reportData
+      this.reportData.eSignature = byteArray;
+      this.reportData.signatureExt = mimeType.split('/')[1];
+  
+      console.log('Signature captured as byte array:', this.reportData.eSignature);
+      console.log('Signature MIME type:', mimeType);
     }
   }
-
+  
+  convertDataUrlToUint8Array(dataUrl: string): { mimeType: string; byteArray: Uint8Array } {
+    const arr = dataUrl.split(',');
+    const mimeType = arr[0].match(/:(.*?);/)![1];
+    const binaryString = atob(arr[1]);
+    const byteArray = new Uint8Array(binaryString.length);
+  
+    for (let i = 0; i < binaryString.length; i++) {
+      byteArray[i] = binaryString.charCodeAt(i);
+    }
+  
+    return { mimeType, byteArray };
+  }
 
   retrieveSessionData() {
     const userDataString = sessionStorage.getItem('userData');
+
     if (userDataString) {
+
       this.userData = JSON.parse(userDataString);
       console.log('Retrieved user data:', this.userData);
       
@@ -613,8 +689,7 @@ export class ReportPage implements OnInit {
       }
   
       console.log('Populated data:', targetObject);
-  
-     
+      
       if (this.reporterType === 'victim') {
         this.victim = { ...targetObject };
       } else if (this.reporterType === 'witness') {
@@ -640,7 +715,16 @@ export class ReportPage implements OnInit {
       this.selectedSegment = this.getPreviousValidSegment();
     } else {
       this.selectedSegment = event.detail.value;
+      this.expandSegment();
     }
+  }
+
+  expandSegment() {
+    this.isExpanded = true;
+  }
+
+  collapseSegment() {
+    this.isExpanded = false;
   }
 
   goToNextSegment(currentSegment: number) {
@@ -722,6 +806,10 @@ export class ReportPage implements OnInit {
     console.log('Incident date updated:', this.incidentDate);
   }
 
+  updateReportedDate() {
+    console.log('Reported date updated:', this.reportedDate);
+  }
+
   /**************************************************************************************************/
   /*****************************************REPORT***************************************************/
   /**************************************************************************************************/
@@ -744,19 +832,80 @@ export class ReportPage implements OnInit {
 
   loadCrimes() {
     this.crimeService.getIndexCrimes().subscribe(data => {
-      this.indexCrimes = data;
+      this.indexCrimes = data.map(crime => ({
+        ...crime,
+        reportCategoryId: 211 
+      }));
     });
-
+  
     this.crimeService.getNonIndexCrimes().subscribe(data => {
-      this.nonIndexCrimes = data;
+      this.nonIndexCrimes = data.map(crime => ({
+        ...crime,
+        reportCategoryId: 212 
+      }));
     });
   }
+  
+
+  
+  loadModus() {
+    this.crimeService.getModus().subscribe(data => {
+      this.modus = data;
+    });
+
+
+  }
+
+  onModusChange(event: any) {
+    const selectedMethod = event.detail.value;
+  
+    
+    this.victim.victim.vicMethodId = selectedMethod.vicmethod_id;
+    this.victim.victim.vicMethod = {
+      vicMethodId: selectedMethod.vicmethod_id,
+      methodName: selectedMethod.method_name
+    };
+  }
+  
+
 
   onCrimeChange(event: any) {
-    this.selectedCrime = event.detail.value;
-    this.isIndexCrime = this.indexCrimes.some(crime => crime.crime_name === this.selectedCrime);
+    const selectedIncidentID = event.detail.value;
+  
+    // Find the selected incident type from the loaded incidentTypes
+    const selectedIncident = this.incidentTypes.find(
+      (incident) => incident.incident_id === selectedIncidentID
+    );
+  
+    if (selectedIncident) {
+      
+      this.reportData.reportSubCategory = {
+        reportSubCategoryId: selectedIncident.incident_id,  
+        reportCategoryId: selectedIncident.incident_id,     
+        subCategoryName: selectedIncident.name,             
+      };
+  
+      console.log("Selected Incident Name:", this.reportData.reportSubCategory.subCategoryName);
+      console.log("Selected Incident ID:", this.reportData.reportSubCategory.reportSubCategoryId);
+      console.log("Category ID (same as Incident ID):", this.reportData.reportSubCategory.reportCategoryId);
+    } else {
+      console.warn("Selected incident not found.");
+    }
   }
+  
 
+loadIncidentTypes() {
+  this.crimeService.loadIncidentTypes().subscribe((incidentData: IncidentType[]) => {
+    this.incidentTypes = incidentData;
+
+    this.incidentTypeMap = {};
+    incidentData.forEach(incident => {
+      this.incidentTypeMap[incident.incident_id] = incident.name;
+    });
+  }, error => {
+    console.error('Error loading incident types', error);
+  });
+}
   
   /**************************************************************************************************/
   /****************************************SERVICE***************************************************/
@@ -797,45 +946,53 @@ this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
     }
   };
  
-  const descriptionData = {
-    descriptionId: 0,
-    ethnicity: this.suspect.description.ethnicity,
-    height: this.suspect.description.height, 
-    weight: this.suspect.description.weight, 
-    eyeColor: this.suspect.description.eyeColor,
-    hairColor: this.suspect.description.hairColor,
-    drug: this.suspect.description.drug,
-    alcohol: this.suspect.description.alcohol,
-    distinguishingMark: this.suspect.description.distinguishingMark,
+  // const descriptionData = {
+  //   descriptionId: 0,
+  //   ethnicity: this.suspect.description.ethnicity,
+  //   height: this.suspect.description.height, 
+  //   weight: this.suspect.description.weight, 
+  //   eyeColor: this.suspect.description.eyeColor,
+  //   hairColor: this.suspect.description.hairColor,
+  //   drug: this.suspect.description.drug,
+  //   alcohol: this.suspect.description.alcohol,
+  //   distinguishingMark: this.suspect.description.distinguishingMark,
     
-  };
+  // };
 
 
-  console.log("Height", descriptionData.height);
-  console.log("Type of Height", typeof descriptionData.height);
-  console.log("Weight", descriptionData.weight);
-  console.log("Type of Weight", typeof descriptionData.weight);
-  // this.witnessService.establishWitness(this.witness.personId).subscribe(
-  //   (response) => {
-  //     console.log('Witness saved successfully', this.witness)
-  //     console.log('Response:', response)
-  //   },
-  //   (error) => {
-  //     console.error('Failed to save witness:', error);
-  //   }
-  // )
-
-  // this.descriptionService.establishDescription(this.witness.description).subscribe(
-  //   (response) => {
-  //     console.log('Witness Description saved successfully', this.witness.description)
-  //     console.log('Response:', response)
-  //   },
-  //   (error) => {
-  //     console.error('Failed to save witness description:', error);
-  //   }
-  // )
+  // console.log("Height", descriptionData.height);
+  // console.log("Type of Height", typeof descriptionData.height);
+  // console.log("Weight", descriptionData.weight);
+  // console.log("Type of Weight", typeof descriptionData.weight);
 
 
+  //WITNESS//
+
+  if(this.witness.personId){
+    this.witnessService.establishWitness(this.witness.personId).subscribe(
+      (response) => {
+        console.log('Witness saved successfully', this.witness)
+        console.log('Response:', response)
+      },
+      (error) => {
+        console.error('Failed to save witness:', error);
+      }
+    )
+  
+    this.descriptionService.establishDescription(this.witness.description).subscribe(
+      (response) => {
+        console.log('Witness Description saved successfully', this.witness.description)
+        console.log('Response:', response)
+      },
+      (error) => {
+        console.error('Failed to save witness description:', error);
+      }
+    )
+  }
+
+  
+
+//SUSPECT//
   const suspectPerson =  {
     personId: this.suspect.personId,
     firstname: this.suspect.firstname,
@@ -849,7 +1006,6 @@ this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
 
  
   if (this.suspect.isUnidentified) {
-    // Unidentified suspect: Only save description
     const descriptionData = {
       descriptionId: 0,
       ethnicity: this.suspect.description.ethnicity,
@@ -860,14 +1016,13 @@ this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
       drug: this.suspect.description.drug,
       alcohol: this.suspect.description.alcohol,
       distinguishingMark: this.suspect.description.distinguishingMark,
-      personId: null // No personId because the person is unidentified
+      personId: null
     };
   
     this.descriptionService.establishDescription(descriptionData).pipe(
       switchMap((descriptionResponse: any) => {
         console.log('Description saved successfully for unidentified person:', descriptionResponse);
   
-        // Send the description to the suspect service
         const suspectData: SuspectCommon = {
           ...this.suspect
         };
@@ -883,7 +1038,7 @@ this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
       }
     );
   } else {
-    // Identified suspect: Proceed with person, address, and suspect creation
+  
     this.personService.createPerson(suspectPerson).pipe(
       switchMap((personResponse: any) => {
         console.log('Suspect Person saved successfully', personResponse);
@@ -929,14 +1084,14 @@ this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
               drug: this.suspect.description.drug,
               alcohol: this.suspect.description.alcohol,
               distinguishingMark: this.suspect.description.distinguishingMark,
-              personId: personId // Use the personId for identified suspects
+              personId: personId 
             };
   
             return this.descriptionService.establishDescription(descriptionData).pipe(
               switchMap((descriptionResponse: any) => {
                 console.log('Description saved successfully:', descriptionResponse);
   
-                // Send the description and personId to the suspect service
+                
                 const suspect: Suspect = {
                   suspectId: this.suspect.suspect.suspectId,
                   personId: personId,
@@ -959,6 +1114,152 @@ this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
       }
     );
   }
+  
+
+  //VICTIM//
+  const victimPerson = {
+    personId: this.victim.personId,
+    firstname: this.victim.firstname,
+    middlename: this.victim.middlename,
+    lastname: this.victim.lastname,
+    sex: mapSexToLetter(this.victim.sex),
+    birthdate: this.victim.birthdate,
+    civilStatus: this.victim.civilStatus,
+    bioStatus: this.victim.bioStatus,
+  };
+  
+  this.personService.createPerson(victimPerson).pipe(
+    switchMap((personResponse: any) => {
+      console.log('Victim Person saved successfully', personResponse);
+      const personId = personResponse.id || this.victim.personId; 
+  
+      const hasHomeAddress = this.victim.homeAddress && this.victim.homeAddress.zipCode;
+      const hasWorkAddress = this.victim.workAddress && this.victim.workAddress.zipCode;
+  
+      const homeLocation$ = hasHomeAddress
+        ? this.locationService.createOrRetrieveLocation(this.victim.homeAddress, this.victim.homeAddress.zipCode).pipe(
+            tap((homeLocationResponse) => {
+              console.log('Victim Home location saved successfully:', homeLocationResponse);
+            }),
+            catchError((error) => {
+              console.error('Failed to save victim home location:', error);
+              return EMPTY;
+            })
+          )
+        : of(null);
+  
+      const workLocation$ = hasWorkAddress
+        ? this.locationService.createOrRetrieveLocation(this.victim.workAddress, this.victim.workAddress.zipCode).pipe(
+            tap((workLocationResponse) => {
+              console.log('Victim Work location saved successfully:', workLocationResponse);
+            }),
+            catchError((error) => {
+              console.error('Failed to save victim work location:', error);
+              return EMPTY;
+            })
+          )
+        : of(null);
+  
+      return forkJoin({
+        homeLocation: homeLocation$,
+        workLocation: workLocation$
+      }).pipe(
+        switchMap((results) => {
+          console.log('Additional data saved successfully:', results);
+  
+          const victim: Victim = {
+            victimId: this.victim.victim.victimId,
+            personId: personId,
+            vicMethodId: this.selectedmodus.vicmethod_id, 
+            vicMethod: {
+              vicMethodId: this.selectedmodus.vicmethod_id, 
+              methodName: this.selectedmodus.method_name
+            }
+          };
+  
+          return this.victimService.establishVictim(victim).pipe(
+            tap((victimResponse: any) => {
+              console.log('Victim saved successfully', victimResponse);
+            
+              if (victimResponse.vicMethod && victimResponse.vicMethod.VicMethodId) {
+                victim.vicMethod.vicMethodId = victimResponse.vicMethod.VicMethodId;
+              }
+            })
+          );
+        })
+      );
+    })
+  ).subscribe({
+    next: (victimResponse: any) => {
+      console.log('Victim saved successfully', victimResponse);
+      
+    },
+    error: (error) => {
+      console.error('Failed to save victim:', error);
+    }
+  });
+
+  
+  
+  const formData = new FormData();
+  formData.append('reportId', this.reportData.reportId.toString());
+  formData.append('reportBody', this.reportData.reportBody);
+  formData.append('citizenId', this.reportData.citizenId.toString());
+  formData.append('stationId', this.reportData.stationId.toString());
+  formData.append('incidentDate', this.incidentDate);
+  formData.append('reportedDate', this.reportedDate);
+  formData.append('blotterNum', this.reportData.blotterNum);
+  formData.append('hasAccount', this.reportData.hasAccount.toString());
+  formData.append('reportSubCategoryId', this.reportData.reportSubCategory?.reportCategoryId.toString() || '')
+
+  if (this.reportData.eSignature instanceof Uint8Array || Array.isArray(this.reportData.eSignature)) {
+    const blob = new Blob([new Uint8Array(this.reportData.eSignature)], { type: `image/${this.reportData.signatureExt}` });
+    
+   
+    formData.append('ESignature', blob, `signature.${this.reportData.signatureExt}`);
+  }
+  console.log('ReportData:', this.reportData);
+  this.reportService.establishReport(formData).subscribe(
+      (response) => {
+          console.log('ReportData:', this.reportData);
+          console.log('Report submitted successfully:', response);
+
+          console.log('Report submission response:', response);
+          const newReportId = response.report_id;
+          if (!newReportId) {
+              console.error('newReportId is undefined in the response.');
+              return;
+          }
+
+          const formDataMedium = new FormData();
+          const reportMedium = {
+              reportId: newReportId,
+              crime_id: this.selectedIncidentID
+          }; 
+
+          formDataMedium.append('File', this.idData.filename);
+          formDataMedium.append('Description', this.idData.description || '');
+          formDataMedium.append('ContentType', this.idData.contentType || '');
+
+          if (reportMedium.crime_id) {
+              this.mediumService.uploadItemWithDetails(formDataMedium, reportMedium.reportId, reportMedium.crime_id).subscribe(
+                  (response) => {
+                      console.log('ID Details:', formDataMedium);
+                      console.log('Media saved successfully', response);
+                  },
+                  (error) => {
+                      //console.error('Error Saving Media', error);
+                      console.log('ID Details:', formDataMedium);
+                  }
+              );
+          }
+      },
+      (error) => {
+          console.log('ReportData:', this.reportData);
+          console.error('Error submitting report:', error);
+      }
+  );
+  
   
 
   console.log('Witness Data: ',this.witness);

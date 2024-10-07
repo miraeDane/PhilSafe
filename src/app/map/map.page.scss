@@ -363,12 +363,12 @@ ion-modal {
 .modal-analysis ion-item ion-label {
 
   font-weight: bold;
-  color: #333; 
+  color: #000000 
 }
 
 .modal-name {
   font-weight: normal; 
-  color: #333; 
+  color: #000000 
 }
 
 .modal-analysis .modal-name {
@@ -428,4 +428,113 @@ ion-modal {
   margin-top: 30px;
 }
 
+.filter-data {
 
+  display: flex;
+  margin-left: 15px;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 1100px;
+  z-index: 2000;
+  position: fixed;
+  gap: 2%;
+  padding-right: 50px;
+  padding-left: 50px;
+  width: 470px;
+
+}
+
+.filter-data ion-select {
+  margin: auto;
+  color: #000000;
+  padding-right: 10px; 
+  width: 180px;
+  border-radius: 20px;
+}
+
+.filter ion-list {
+  --background: transparent;
+  display: flex;
+
+}
+
+.filter ion-select {
+  --background: transparent; 
+    --color: black; 
+}
+
+.filter ion-item{
+  --background: none;
+}
+.custom-modal {
+  --height: 35%;
+  --width: 80%; 
+  --padding: 0;
+}
+
+.custom-modal ion-header {
+  background-color: #f8f8f8;
+}
+
+.custom-modal ion-content {
+  padding: 16px;
+}
+
+.custom-modal ion-button {
+  --background: #007acc;
+    --color: #ffffff;
+    --border-width: 20px;
+    --border-radius: 50px;
+    width: 50%;
+    display: flex;
+    margin-left: 25%;
+    top: 10px;
+}
+
+.custom-modal ion-item{
+  margin: 20px;
+  --color: #000000;
+  --background: #ffffff;
+}
+
+.custom-modal ion-buttons {
+  --background: none;
+}
+
+.custom-modal button {
+  font-size: large;
+    color: #ffffff;
+    background: none;
+    margin: 15px;
+}
+
+//  ion-buttons#apply {
+//   --background: none;
+// }
+
+.mapboxgl-popup-content {
+  max-width: 300px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  background-color: rgb(8, 8, 8);
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  color: #ffffff
+}
+
+.mapboxgl-popup h3 {
+  font-size: 16px;
+  margin: 0 0 10px;
+  color: #000000
+}
+
+.mapboxgl-popup p {
+  margin: 0 0 5px;
+  color: #000000
+}
+
+.mapboxgl-popup p strong {
+  color: #000000
+}

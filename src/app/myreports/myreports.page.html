@@ -9,7 +9,7 @@
 
 <ion-content>
 <div class="incident-type">
-  <!-- <ion-list class="incident-list" lines="none" routerLink="/incident-details">
+  <ion-list class="incident-list" lines="none" routerLink="/incident-details">
     <ion-item class="item-class">
       <div class="incident-type-child">
         <div class="incident-item">
@@ -22,8 +22,8 @@
         </div>
       </div>
     </ion-item>
-  </ion-list> -->
-  <!-- <ion-list class="incident-list" lines="none" routerLink="/incident-details">
+  </ion-list> 
+  <ion-list class="incident-list" lines="none" routerLink="/incident-details">
     <ion-item class="item-class">
       <div class="incident-type-child">
         <div class="incident-item">
@@ -50,7 +50,7 @@
         </div>
       </div>
     </ion-item>
-  </ion-list> -->
+  </ion-list>
   <ion-list *ngFor="let incident of incidents" class="incident-list" lines="none"  routerLink="/tabs/incident-details">
     <ion-item class="item-class" [id]="incident.crime_id" (click)="goToDetails(incident.crime_id)">
       <div class="incident-type-child">
@@ -59,8 +59,8 @@
           <ion-label class="incident-detail">{{ incident.type }}</ion-label>
         </div>
         <div class="progress-bar-section">
-          <ion-label class="incident-status">{{ incident.status }}</ion-label>
-          <ion-progress-bar [value]="incident.progress" [class]="getStatusClass(incident.status)"></ion-progress-bar>
+      <ion-label class="incident-status">{{ incident.status }}</ion-label>
+        <ion-progress-bar [value]="incident.progress" [class]="getStatusClass(incident.status)"></ion-progress-bar> 
         </div>
       </div>
     </ion-item>

@@ -10,7 +10,7 @@ export interface UpgradeAccount {
     lastname: string;
     sex: string;
     birthdate: string; 
-    bioStatus: boolean;
+    bioStatus: boolean ;
     civilStatus?: string;
     deathDate?: string;
     email: string;
@@ -21,5 +21,5 @@ export interface UpgradeAccount {
     workAddressId: number;
     personId?: number;
     role: string;
-    profile_pic?: Uint16Array
+    profile_pic?: Uint8Array
 }

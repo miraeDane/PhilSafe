@@ -8,8 +8,8 @@ export interface Victim {
   personId: number;
   vicMethodId: number;
   datetimeOfDeath?: Date;
-  descriptions: Description[];
-  person: Person;
+  descriptions?: Description[];
+  person?: Person;
   vicMethod: VictimizationMethod;
-  crimeCrimes: Crime[];
+  crimeCrimes?: Crime[];
 }

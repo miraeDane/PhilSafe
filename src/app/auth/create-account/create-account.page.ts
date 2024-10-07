@@ -74,6 +74,7 @@ export class CreateAccountPage implements OnInit {
     workAddressId: 0,
     role: 'Certified',
     personId: 0,
+    profile_pic: new Uint8Array
 
   };
 
@@ -227,8 +228,10 @@ copyHomeToWorkAddress() {
       .then((homeResponse) => {
         if (homeResponse.locationFound) {
           this.upgraded.homeAddressId = homeResponse.locationId;
-          this.upgraded.workAddressId = homeResponse.locationId;
+          //this.upgraded.workAddressId = homeResponse.locationId;
           console.log('Home address exists with ID:', homeResponse.locationId);
+          console.log('Home Address ID data type: ', typeof(this.upgraded.homeAddressId))
+      
         } else {
           this.upgraded.homeAddressId = homeResponse.locationId;
           console.log('New home address created with ID:', homeResponse.locationId);
@@ -243,6 +246,7 @@ copyHomeToWorkAddress() {
             if (workResponse.locationFound) {
               this.upgraded.workAddressId = workResponse.locationId;
               console.log('Work address exists with ID:', workResponse.locationId);
+              console.log('Work Address ID Data Type: ', typeof(this.upgraded.workAddressId))
             } else {
               this.upgraded.workAddressId = workResponse.locationId;
               console.log('New work address created with ID:', workResponse.locationId);
@@ -256,13 +260,40 @@ copyHomeToWorkAddress() {
     }
 
 
+    
+    
+
   
     Promise.all([homeAddressPromise, workAddressPromise])
       .then(() => {
-        this.createAccountService.upgradeAccount(this.upgraded).subscribe(
+        const formDataUpgraded = new FormData();
+
+        formDataUpgraded.append('Firstname', this. upgraded.firstname);
+        formDataUpgraded.append('Middlename', this. upgraded.middlename);
+        formDataUpgraded.append('Lastname', this. upgraded.lastname);
+        formDataUpgraded.append('Password', this. upgraded.password);
+        formDataUpgraded.append('Sex', this. upgraded.sex);
+        formDataUpgraded.append('Birthdate', this. upgraded.birthdate);
+        formDataUpgraded.append('CivilStatus', this. upgraded.civilStatus || '');
+        formDataUpgraded.append('BioStatus', this. upgraded.bioStatus.toString());
+        formDataUpgraded.append('Email', this. upgraded.email);
+        formDataUpgraded.append('TelNum', this. upgraded.telNum?.toString() || '');
+        formDataUpgraded.append('ContactNum', this. upgraded.contactNum);
+        formDataUpgraded.append('HomeAddressId', this.upgraded.homeAddressId ?      this.upgraded.homeAddressId.toString() : '');
+        formDataUpgraded.append('WorkAddressId', this.upgraded.workAddressId ? this.upgraded.workAddressId.toString() : '');
+        
+        formDataUpgraded.append('Role', this.upgraded.role);
+        //formDataUpgraded.append('Person ID:', this. upgraded.personId?.toString() || '');
+      
+        console.log('Final Home Address ID:', this.upgraded.homeAddressId);
+        console.log('Final Work Address ID:', this.upgraded.workAddressId);
+      
+         
+
+        this.createAccountService.upgradeAccount(formDataUpgraded).subscribe(
           async (response) => {
             alert('Registration successful');
-            console.log(this.upgraded);
+            console.log(formDataUpgraded);
             this.citizenData.personId = this.upgraded.personId || 0;
             this.router.navigate(['/login']);
             console.log(this.upgraded);
@@ -282,8 +313,9 @@ copyHomeToWorkAddress() {
               console.log('Error Status:', error.status);
             } else {
               alert(`Error Code: ${error.status}\nMessage: ${error.message}`);
+              console.log(formDataUpgraded);
               console.log('Error Message:', error);
-              console.log(this.upgraded);
+              // console.log(this.upgraded);
             }
           }
         );
@@ -291,6 +323,7 @@ copyHomeToWorkAddress() {
       .catch((err) => {
         console.error('Error in address creation/retrieval:', err);
         this.loading = false;
+        
       });
   }
   

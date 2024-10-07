@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { Province, Region, Municipality, Barangay } from '../models/location-data';
 import { Cluster, Coordinates } from '../models/location';
+import { environment } from 'src/environments/environment';
 
 
 
@@ -16,8 +17,14 @@ export class LocationService {
   private municipalityUrl = 'assets/location/table_municipality.json';
   private barangayUrl = 'assets/location/table_barangay.json';
   private cebuBarangays = 'assets/location/cebu_barangay.json';
-  private locationURL = 'https://192.168.120.11:7108/api';
+  private locationURL = environment.ipAddUrl;
   // private coordinates = 'https://localhost:7108/api';
+  private options = { 
+    headers: new HttpHeaders({ 
+      'Content-Type': 'application/json' 
+    })
+  };
+
 
   constructor(private http: HttpClient) {}
 
@@ -42,32 +49,40 @@ export class LocationService {
   }
 
   getCoordinates(): Observable<Cluster[]> {
-    return this.http.get<Cluster[]>(`${this.locationURL}/location/retrieve/mapcoordinates`);
+    return this.http.get<Cluster[]>(`${this.locationURL}api/location/retrieve/mapcoordinates`);
+    
+  }
+
+  getFullCoordinates(incidentID: number): Observable<Cluster[]> {
+    return this.http.get<Cluster[]>(`${this.locationURL}api/location/retrieve/mapcoordinates/${incidentID}`);
   }
 
 
 
 
+
   createOrRetrieveLocation(locationData: any, zipCode: number): Observable<any> {
-    return this.http.post(`${this.locationURL}/location/create/${zipCode}`, locationData, { observe: 'response' })
-      .pipe(
-        map((response: HttpResponse<any>) => {
-          if (response.status === 200) {
-            return { locationFound: true, locationId: response.body.id }; 
-          } else if (response.status === 302) {
-            console.warn('Location found, but redirected:', response);
-            return { locationFound: true, locationId: response.headers.get('Location') };
-          } else {
-            return { locationFound: false, locationId: null };
-          }
-        }),
-        catchError(this.handleError)
-      );
-  
-    }
+    return this.http.post(
+      `${this.locationURL}api/location/create/${zipCode}`, 
+      locationData, 
+      { ...this.options, observe: 'response' }
+    ).pipe(
+      map((response: HttpResponse<any>) => {
+        if (response.status === 200) {
+          return { locationFound: true, locationId: response.body.id }; 
+        } else if (response.status === 302) {
+          console.warn('Location found, but redirected:', response);
+          return { locationFound: true, locationId: response.headers.get('Location') };
+        } else {
+          return { locationFound: false, locationId: null };
+        }
+      }),
+      catchError(this.handleError)
+    );
+  }
 
     getLocation(locationId: number): Observable<any> {
-      return this.http.get(`${this.locationURL}/retrieve/${locationId}`, { observe: 'response' })
+      return this.http.get(`${this.locationURL}api/retrieve/${locationId}`, { observe: 'response' })
         .pipe(
           map((response: HttpResponse<any>) => {
             if (response.status === 200) {
@@ -82,8 +97,23 @@ export class LocationService {
         );
     }
 
+    getAllLocation(): Observable<Location[]> {
+      return this.http.get<Location[]>(`${this.locationURL}api/location/retrieve/all`, { observe: 'response' })
+        .pipe(
+          map((response: HttpResponse<Location[]>) => {
+            if (response.status === 200) {
+              return response.body || [];
+            } else {
+              return [];
+            }
+          }),
+          catchError(this.handleError)
+        );
+    }
+    
+
     updateLocation(id: number, data: any): Observable<any> {
-      const url = `${this.locationURL}/up/${id}`;
+      const url = `${this.locationURL}api/up/${id}`;
       return this.http.put(url, data).pipe(
         catchError(this.handleError)
       );
@@ -91,7 +121,7 @@ export class LocationService {
   
 
     deleteLocation(id: number): Observable<any> {
-      const url = `${this.locationURL}/del/${id}`;
+      const url = `${this.locationURL}api/del/${id}`;
       return this.http.delete(url).pipe(
         catchError(this.handleError)
       );

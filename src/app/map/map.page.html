@@ -4,11 +4,89 @@
       <ion-back-button defaultHref="/tabs"></ion-back-button>
     </ion-buttons>
     <ion-title>Crime Map</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="openFilterModal()">
+        <ion-icon slot="icon-only" name="funnel"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+   
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div id="main-content" class="main-content">
+    <ion-modal
+      class="custom-modal"
+      [isOpen]="isFilterModalOpen"
+      (willDismiss)="closeFilterModal()"
+    >
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Filter Crimes</ion-title>
+            <ion-buttons class="apply" slot="end">
+              <button id="apply" class="apply" (click)="closeFilterModal()">
+                Close
+              </button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+
+        <ion-content>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <ion-buttons style="display: flex; align-items: center;">
+                <button (click)="refreshAllCrimes()">
+                  <ion-icon style="color: #007acc" slot="icon-only" name="refresh"></ion-icon>
+                </button>
+                <ion-label style="color: #007acc; margin-left: 5px;">Load All Crimes</ion-label>
+              </ion-buttons>
+          
+              <ion-buttons class="apply" style="display: flex; align-items: center;">
+                <button id="apply" style="color: #007acc" (click)="clearSelection()">
+                  Clear All
+                </button>
+              </ion-buttons>
+            </div>      
+  
+          <ion-item>
+            <ion-select
+              [(ngModel)]="selectedIncidentID"
+              placeholder="Choose Incident Type"
+              (ionChange)="onChangeIncident()"
+            >
+              <ion-select-option
+                *ngFor="let incident of incidentTypes"
+                [value]="incident.incident_id"
+              >
+                {{ incident.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-select
+              [(ngModel)]="selectedBarangays"
+              multiple="true"
+              placeholder="Choose Barangay"
+            >
+              <ion-select-option
+                *ngFor="let barangay of barangays"
+                [value]="barangay"
+              >
+                {{ barangay }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+        
+
+          <ion-button (click)="applyFilter()">Apply Filter</ion-button>
+         
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+
 
     <div class="percentage">
       <ion-label class="percent">10%</ion-label>
@@ -22,74 +100,113 @@
       <div class="alert" (click)="levelChanged('2')"></div>
       <div class="risk" (click)="levelChanged('3')"></div>
       <div class="risky" (click)="levelChanged('4')"></div>
-  </div>
+    </div>
 
+    <div *ngIf="selectedLevel === '1'" class="level">
+      <ion-label class="level1">LOW RISK (10%)</ion-label>
+      <p>Minimal crime levels. Continue with general awareness and caution.</p>
+    </div>
 
-   
-    
-  <div *ngIf="selectedLevel === '1'" class="level">
-    <ion-label class="level1">LOW RISK (10%)</ion-label>
-    <p>Minimal crime levels. Continue with general awareness and caution.</p>
-  </div>
+    <div *ngIf="selectedLevel === '2'" class="level">
+      <ion-label class="level2">REMAIN AWARE (40%)</ion-label>
+      <p>
+        Noticeable crime activity. Stay cautious and watch your surroundings.
+      </p>
+    </div>
 
-  <div *ngIf="selectedLevel === '2'" class="level">
-    <ion-label class="level2">REMAIN AWARE (40%)</ion-label>
-    <p>Noticeable crime activity. Stay cautious and watch your surroundings.</p>
-  </div>
+    <div *ngIf="selectedLevel === '3'" class="level">
+      <ion-label class="level3">MODERATE CONCERN (70%)</ion-label>
+      <p>Significant crime presence. Maintain heightened awareness.</p>
+    </div>
 
-  <div *ngIf="selectedLevel === '3'" class="level">
-    <ion-label class="level3">MODERATE CONCERN (70%)</ion-label>
-    <p>Significant crime presence. Maintain heightened awareness.</p>
-  </div>
+    <div *ngIf="selectedLevel === '4'" class="level">
+      <ion-label class="level4">ELEVATED RISK (100%)</ion-label>
+      <p>
+        Severe crime levels. Be highly vigilant and avoid unnecessary risks.
+      </p>
+    </div>
 
-  <div *ngIf="selectedLevel === '4'" class="level">
-    <ion-label class="level4">ELEVATED RISK (100%)</ion-label>
-    <p>Severe crime levels. Be highly vigilant and avoid unnecessary risks.</p>
-  </div>
+    <ion-buttons class="crime-analysis" slot="end">
+      <ion-button (click)="openCrimeAnalysisModal()">View Analysis</ion-button>
+    </ion-buttons>
 
+    <ion-modal
+      class="modal-analysis"
+      [isOpen]="isModalOpen"
+      (willDismiss)="closeCrimeAnalysisModal()"
+    >
+      <ng-template>
+        <ion-header class="modal-analysis">
+          <ion-toolbar class="modal-analysis">
+            <ion-title class="modal-analysis">Crime Analysis</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="closeCrimeAnalysisModal()">Close</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content>
+          <ion-label class="inclusive-date" id="inclusive-date"
+            >1st Quarter 2024</ion-label
+          >
+          <ion-list class="modal-analysis" lines="none">
 
-  <ion-buttons class="crime-analysis" slot="end">
-    <ion-button (click)="openCrimeAnalysisModal()">View Analysis</ion-button>
-  </ion-buttons>
- 
-  <ion-modal class="modal-analysis" [isOpen]="isModalOpen" (willDismiss)="closeCrimeAnalysisModal()">
-    <ng-template>
-    <ion-header class="modal-analysis">
-      <ion-toolbar class="modal-analysis">
-        <ion-title class="modal-analysis">Crime Analysis</ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="closeCrimeAnalysisModal()">Close</ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content >
-      <ion-label class="inclusive-date" id="inclusive-date">1st Quarter 2024</ion-label>
-      <ion-list class="modal-analysis" lines="none">
-        <ion-item class="modal-analysis">
-          <ion-label class="modal-analysis">Highest Crime in Location:</ion-label>
-          <ion-label class="modal-name" style="font-weight:normal;text-align: end;">{{ highestCrimeLocation }}</ion-label>
-        </ion-item>
-        <div class="chart-parent">
-          <canvas id="crimeLocationPieChart" class="crimeLocationPieChart" width="300" height="300"></canvas>
-        </div>
-        <ion-item class="modal-analysis">
-          <ion-label class="modal-analysis">Highest Crime per Time:</ion-label>
-          <ion-label class="modal-name" style="font-weight:normal;text-align: end;">{{ highestCrimeTime }}</ion-label>
-        </ion-item>
-        <div>
-          <canvas id="crimeTimeChart" style="height: 400px; width: 80%;"></canvas>
-        </div>
-      </ion-list>
-    </ion-content>
-  </ng-template>
-  </ion-modal> 
-
+            <ion-item class="modal-analysis">
+              <ion-label class="modal-analysis"
+                >Total No. of Crimes:</ion-label
+              >
+              <ion-label
+                class="modal-name"
+                style="font-weight: normal; text-align: end"
+                >{{ totalCrimes }}</ion-label
+              >
+            </ion-item>
+            <ion-item class="modal-analysis">
+              <ion-label class="modal-analysis">No. of incident per location:</ion-label>
+              <ion-label class="modal-name" style="font-weight: normal; text-align: end">
+                <ng-container *ngFor="let barangay of selectedBarangays">
+                  {{ barangay }}: {{ incidentCountPerBarangay[barangay] || 0 }}<br>
+                </ng-container>
+              </ion-label>
+            </ion-item>
+            
+            <ion-item class="modal-analysis">
+              <ion-label class="modal-analysis"
+                >Highest Crime in Location:</ion-label
+              >
+              <ion-label
+                class="modal-name"
+                style="font-weight: normal; text-align: end"
+                >{{ highestCrimeLocation }}</ion-label
+              >
+            </ion-item>
+            <div class="chart-parent">
+              <canvas
+                id="crimeLocationPieChart"
+                class="crimeLocationPieChart"
+                width="300"
+                height="300"
+              ></canvas>
+            </div>
+            <ion-item class="modal-analysis">
+              <ion-label class="modal-analysis"
+                >Highest Crime per Time:</ion-label
+              >
+              <ion-label
+                class="modal-name"
+                style="font-weight: normal; text-align: end"
+                >{{ highestCrimeTime }}</ion-label
+              >
+            </ion-item>
+            <div>
+              <canvas
+                id="crimeTimeChart"
+                style="height: 400px; width: 80%"
+              ></canvas>
+            </div>
+          </ion-list>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
   </div>
   <div id="map" class="map"></div>
- 
 </ion-content>
-
-
-
-
-

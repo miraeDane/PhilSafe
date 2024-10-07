@@ -2,25 +2,26 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WitnessService {
-  private witnessUrl = 'https://localhost:7108/api/witness'; 
+  private witnessUrl = environment.ipAddUrl; 
 
   constructor(private http: HttpClient) {}
 
  
   establishWitness(personId: number): Observable<any> {
-    return this.http.post(`${this.witnessUrl}/establish/${personId}`, {}).pipe(
+    return this.http.post(`${this.witnessUrl}api/witness/establish/${personId}`, {}).pipe(
       catchError(this.handleError)
     );
   }
 
   
   collectWitness(id: number): Observable<any> {
-    return this.http.get(`${this.witnessUrl}/select/${id}`).pipe(
+    return this.http.get(`${this.witnessUrl}api/witness/select/${id}`).pipe(
       catchError(this.handleError)
     );
   }

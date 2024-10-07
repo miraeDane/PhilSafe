@@ -17,8 +17,10 @@ ion-title {
     height: auto; 
     padding: 10px 0;
     width: auto;
-
+   
   }
+
+  
 
 .custom-segment {
     --background: #ffffff; 
@@ -43,6 +45,21 @@ ion-title {
     --background-checked: #004AAD;
     --color-checked: white;
     text-align: center;
+    width: 150px;
+    font-size: 40px;
+  
+  }
+
+  .segment-button ion-label {
+    display: block;        
+    font-size: 9px;       
+    line-height: 1.2;      
+    padding: 0 5px;
+    text-wrap: pretty;      
+}
+
+  .segment-button.expanded {
+    width: 100px;
   }
 
   ion-segment, ion-label {
@@ -63,6 +80,7 @@ ion-title {
     padding: 5px;
     margin-top: 10px;
     //box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    
   }
 
   .segment-content ion-list {
@@ -84,7 +102,7 @@ ion-title {
   .segment-content ion-item {
     color: #000000; 
     --background: #ffffff;
-    border-radius: 50px;
+    border-radius: 50px; 
     border: solid 0.1px #b4b1b1;
    
   }

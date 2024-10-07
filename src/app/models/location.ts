@@ -38,11 +38,20 @@ export interface Location {
   }
 
 
-  export interface Cluster {
-    cluster_label: string;
+export interface Cluster {
+    cluster_label: number;
     density: number;
-    centroid?: Centroid;
-    coordinates?: Coordinates[];
+    centroid: {
+      longitude: number;
+      latitude: number;
+    };
+    coordinates?: {
+      longitude: number;
+      latitude: number;
+      event_time?: string;
+    }[];
+    incident_id?: number;
   }
+  
   
   

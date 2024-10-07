@@ -229,15 +229,15 @@
 
       <div class="checkbox-container">
         <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="termsAccepted" required></ion-checkbox>
-        <ion-label class="checkbox-label"
-          >I hereby certify to the correctness of the foregoing to the best of my knowledge and belief</ion-label
-        >
-      </div>
-
+        <ion-label class="checkbox-label">I hereby certify to the correctness of the foregoing to the best of my knowledge and belief</ion-label>
+        </div>
+        <ion-item>
+          <ion-input type="file" [(ngModel)]="upgraded.profile_pic" placeholder="Profile Picture"> </ion-input>
+        </ion-item>
       <div class="next-container">
         <ion-button id="register" class="confirm" (click)="register()">Proceed to Register</ion-button
         >
-        <ion-loading class="custom-loading" trigger="register" message="Logging in.." [duration]="5000"></ion-loading>
+        <ion-loading class="custom-loading" trigger="register" message="Creating Account.." [duration]="5000"></ion-loading>
         </div>
         <div class="sign-in-here">
           <ion-label class="sign-in">Already have an account?</ion-label>

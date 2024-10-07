@@ -2,52 +2,55 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class VictimService {
-  private victimUrl = 'http://localhost:7108/api/victim'; 
+  private victimUrl = environment.ipAddUrl; 
 
   constructor(private http: HttpClient) {}
 
   collectVictims(): Observable<any> {
-    return this.http.get(`${this.victimUrl}/retrieve/all`).pipe(
+    return this.http.get(`${this.victimUrl}api/victim/retrieve/all`).pipe(
       catchError(this.handleError)
     );
   }
 
  
   ascertainVictim(id: number): Observable<any> {
-    return this.http.get(`${this.victimUrl}/retrieve/${id}`).pipe(
+    return this.http.get(`${this.victimUrl}api/victim/retrieve/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
  
   collectAffectedCases(id: number): Observable<any> {
-    return this.http.get(`${this.victimUrl}/retrieve/cases/${id}`).pipe(
+    return this.http.get(`${this.victimUrl}api/victim/retrieve/cases/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
 
   establishVictim(victim: any): Observable<any> {
-    return this.http.post(`${this.victimUrl}`, victim).pipe(
+    const fullUrl = `${this.victimUrl}api/victim`
+    console.log('Full URL', fullUrl);
+    return this.http.post(fullUrl, victim).pipe(
       catchError(this.handleError)
     );
   }
 
   editVictim(id: number, victim: any): Observable<any> {
-    return this.http.put(`${this.victimUrl}/edit/${id}`, victim).pipe(
+    return this.http.put(`${this.victimUrl}api/victim/edit/${id}`, victim).pipe(
       catchError(this.handleError)
     );
   }
 
 
   discardVictim(id: number): Observable<any> {
-    return this.http.delete(`${this.victimUrl}/discard/${id}`).pipe(
+    return this.http.delete(`${this.victimUrl}api/victim/discard/${id}`).pipe(
       catchError(this.handleError)
     );
   }

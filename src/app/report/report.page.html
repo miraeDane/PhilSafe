@@ -17,30 +17,30 @@
       padding: 25px;
       font-size: 20px;
     "
-    >INCIDENT REPORT FORM</ion-label
+    >INCIDENT RECORD FORM</ion-label
   >
 
-  <div class="segment-container">
+  <div class="segment-container"  [ngClass]="{'expanded': isExpanded}">
     <ion-segment
       [(ngModel)]="selectedSegment"
       (ionChange)="segmentChanged($event)"
       class="custom-segment"
     >
       <ion-segment-button value="1" class="segment-button" [disabled]="isSegmentDisabled('1')">
-        <ion-label>Item A</ion-label>
-        <ion-label style="font-size: 7px">Reporting Person</ion-label>
+        <ion-label >Reporter Data</ion-label>
+        <!-- <ion-label style="font-size: 7px">Reporting Person</ion-label> -->
       </ion-segment-button>
       <ion-segment-button value="2" class="segment-button">
-        <ion-label>Item B</ion-label>
-        <ion-label style="font-size: 7px">Suspect Data</ion-label>
+        <ion-label>Suspect Data</ion-label>
+        <!-- <ion-label style="font-size: 7px">Suspect Data</ion-label> -->
       </ion-segment-button>
       <ion-segment-button value="3" class="segment-button">
-        <ion-label>Item C</ion-label>
-        <ion-label style="font-size: 7px">Victim Data</ion-label>
+        <ion-label >Victim Data</ion-label>
+        <!-- <ion-label style="font-size: 7px">Victim Data</ion-label> -->
       </ion-segment-button>
       <ion-segment-button value="4" class="segment-button">
-        <ion-label>Item D</ion-label>
-        <ion-label style="font-size: 7px">Narrative</ion-label>
+        <ion-label style="font-size: 8px">Narrative Data</ion-label>
+        <!-- <ion-label style="font-size: 7px">Narrative</ion-label> -->
       </ion-segment-button>
     </ion-segment>
   </div>
@@ -50,16 +50,18 @@
       <ion-list class="incident" lines="none">
         <ion-item class="incident-item">
           <ion-select
-          [(ngModel)]="selectedCrime"
+          [(ngModel)]="selectedIncidentID"
             class="custom-select"
             placeholder="Type of incident"
             interface="popover"
             (ionChange)="onCrimeChange($event)"
           >
-          <ion-select-option disabled>INDEX CRIMES</ion-select-option>
-            <ion-select-option *ngFor="let crime of indexCrimes">{{ crime.crime_name }}</ion-select-option>
-            <ion-select-option disabled>NON-INDEX CRIMES</ion-select-option>
-            <ion-select-option *ngFor="let crime of nonIndexCrimes" >{{ crime.crime_name }}</ion-select-option>
+          <ion-select-option
+                *ngFor="let incident of incidentTypes"
+                [value]="incident.incident_id"
+              >
+                {{ incident.name }}
+              </ion-select-option>
           </ion-select>
         </ion-item>
       </ion-list>
@@ -282,7 +284,7 @@
         <ion-label class="title-info">ID DETAILS</ion-label>
 
         <ion-item>
-          <ion-select [(ngModel)]="idData.contentType"  placeholder="ID Presented">
+          <ion-select placeholder="ID Presented">
             <ion-select-option *ngFor="let id of idOptions">
               {{ id }}
             </ion-select-option>
@@ -296,7 +298,7 @@
 
       <div id="uploadfile" class="uploadfile">
        <ion-label class="title-info">Upload your valid ID</ion-label>
-          <input type="file" class="file" id="actual-btn" (change)="onFileSelected($event)" hidden/>
+          <input type="file" class="file" id="actual-btn"  (change)="onFileSelected($event)"  hidden/>
           <div class="icon-label">
             <ion-icon src="assets/upload.svg" class="upload-icon"></ion-icon>
             <label for="actual-btn">Upload file/s</label>
@@ -623,6 +625,21 @@
         >
       </div> -->
 
+      <ion-list class="incident" lines="none">
+        <ion-item class="incident-item">
+          <ion-select
+          [(ngModel)]="selectedmodus"
+            class="custom-select"
+            placeholder="Modus Operandi"
+            interface="popover"
+            (ionChange)="onModusChange($event)"
+          >
+          
+            <ion-select-option *ngFor="let method of modus" [value]="method">{{ method.method_name }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
+
       <div class="anonymous-person-info">
         <ion-label class="title-info-personal">PERSONAL INFORMATION</ion-label>
         <ion-buttons slot="end" *ngIf="reporterType === 'victim'">
@@ -843,7 +860,7 @@
         <ion-button class="next" (click)="goToNextSegment(3)"
           >Next</ion-button
         >
-       <ion-button style="--background: blue;" (click)="save()">Save</ion-button>
+       <!-- <ion-button style="--background: blue;" (click)="save()">Save</ion-button> -->
       </div>
     </div>
 
@@ -880,7 +897,7 @@
       <ion-item class="incident-date">
         <ion-icon name="calendar" color="black"></ion-icon>
         <ion-input
-          [(ngModel)]="reportData.reportedDate"
+          [(ngModel)]="reportData.incidentDate"
           name="dateOfIncident"
           [ngModelOptions]="{standalone: true}"
           placeholder="Date of Incident"
@@ -895,6 +912,29 @@
               [(ngModel)]="incidentDate"
               locale="en"
               (ionChange)="updateIncidentDate()"
+            ></ion-datetime>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
+
+      <ion-item class="incident-date">
+        <ion-icon name="calendar" color="black"></ion-icon>
+        <ion-input
+          [(ngModel)]="reportData.reportedDate"
+          name="reportedDate"
+          [ngModelOptions]="{standalone: true}"
+          placeholder="Reported Date"
+          value="{{ reportedDate | date: 'yyyy.MM.dd' }}"
+          id="reportedDate"
+          class="ion-text-end"
+        ></ion-input>
+        <ion-popover trigger="reportedDate">
+          <ng-template>
+            <ion-datetime
+              presentation="date"
+              [(ngModel)]="reportedDate"
+              locale="en"
+              (ionChange)="updateReportedDate()"
             ></ion-datetime>
           </ng-template>
         </ion-popover>
@@ -927,9 +967,9 @@
       
     </ion-list>
     <div class="next-container">
-      <ion-button style="--background: blue;" (click)="save()">Save</ion-button>
-      <ion-button class="next" style="width: 200px; font-size: small;" 
-        >Proceed to payment</ion-button
+      <!-- <ion-button style="--background: blue;" (click)="save()">Save</ion-button> -->
+      <ion-button class="next" style="width: 200px; font-size: small;"  (click)="save()"
+        >Submit Report</ion-button
       >
     </div>
   </div>

@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { IncidentType } from '../models/incident-type';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CrimeService {
-  private crimeUrl = 'https://localhost:7108/api/case';
+  private crimeUrl = environment.ipAddUrl;
   private crimeLists = 'assets/crimes';
+  private modusLists = 'assets/modus';
 
   constructor(private http: HttpClient) {}
 
@@ -22,9 +25,21 @@ export class CrimeService {
     return this.http.get<any[]>(`${this.crimeLists}/non-index.json`); 
   }
 
+  getModus(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.modusLists}/modus.json`); 
+  }
+
+  loadIncidentTypes(): Observable<IncidentType[]> {
+    return this.http.get<IncidentType[]>(`${this.crimeUrl}api/case/load/incidenttypes`)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+  
+  
 
   establishCase(data: any): Observable<any> {
-    const url = `${this.crimeUrl}`;
+    const url = `${this.crimeUrl}api/case`;
     return this.http.post(url, data).pipe(
       catchError(this.handleError)
     );

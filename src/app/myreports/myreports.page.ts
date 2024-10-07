@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ReportService } from '../services/report.service';
 
 @Component({
   selector: 'app-myreports',
@@ -8,10 +9,28 @@ import { Router } from '@angular/router';
 })
 export class MyreportsPage implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private reportService: ReportService
+  
+  ) { }
 
   ngOnInit() {
+    this.loadCitizenReports();
   }
+
+   loadCitizenReports() {
+    this.reportService.getReports().subscribe(
+      (reports) => {
+        this.incidents = reports; // Store the reports
+        console.log('Reports retrieved:', reports);
+      },
+      (error) => {
+        console.error('Error retrieving reports:', error);
+      }
+    );
+  }
+
 
   incidents = [
     { crime_id:'1',type: 'Rape', status: 'Reviewing', progress: 0.2 },

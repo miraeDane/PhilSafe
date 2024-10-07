@@ -3,7 +3,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import * as mapboxgl from 'mapbox-gl';
 import { LocationService } from '../services/location.service';
-import { Cluster, Coordinates } from '../models/location';
+import { Cluster, Coordinates, Location } from '../models/location';
 import { ModalController } from '@ionic/angular';
 import { map } from 'rxjs';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -22,6 +22,8 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
+import { CrimeService } from '../services/crime.service';
+import { IncidentType } from '../models/incident-type';
 
 
 @Component({
@@ -41,13 +43,67 @@ export class MapPage implements OnInit, AfterViewInit {
   highestCrimeLocation: any = '';
   highestCrimeTime = '';
   crimeTimeChart: Chart | undefined;
+  barangays: string[] = [];
+  categories: string[] = [];
+  incidentTypes: IncidentType[] = [];
+  selectedBarangays: string[] = [];
+  selectedCrimes: IncidentType[] = [];
+  crimesAlertOptions: any = {
+    header: 'Select Crimes',
+    subHeader: 'Choose one or more',
+    message: 'Select your options',
+    translucent: true,
+    cssClass: 'custom-alert',
+    buttons: [
+      {
+        text: 'Clear'
+      },
+      {
+        text: 'Cancel',
+        role: 'cancel'
+      },
+      {
+        text: 'OK'
+      }
+    ]
+  };
+  barangayAlertOptions: any = {
+  header: 'Select Barangays',
+  subHeader: 'Choose one or more',
+  message: 'Select your options',
+  translucent: true,
+  cssClass: 'custom-alert',
+  buttons: [
+    {
+      text: 'Clear'
+    },
+    {
+      text: 'Cancel',
+      role: 'cancel'
+    },
+    {
+      text: 'OK'
+    }
+  ]
+};
+incidentTypeMap: { [key: number]: string } = {};
+incidentTypeCountMap: any = {}
+selectedIncidentID: number = 0;
+isFilterModalOpen = false; // Control modal visibility
+totalCrimes: number = 0;
+total_incidents: number = 0
+incidentName: string = '';
+
+
   private locationCache: { [key: string]: string } = {};
+  incidentCountPerBarangay: { [key: string]: number; } = {};
 
   constructor(
     private http: HttpClient,
     private locationService: LocationService,
     private coordinateService: LocationService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private crimeService: CrimeService
   ) {
     Chart.register(
       
@@ -69,39 +125,185 @@ export class MapPage implements OnInit, AfterViewInit {
 
   ngOnInit() {
     (mapboxgl as any).accessToken = environment.mapboxKey;
+    this.loadBarangays();
+    this.loadIncidentTypes();
+    this.loadTotalCrimeDensity();
   }
 
   ngAfterViewInit() {
     setTimeout(() => {
-      this.initializeMap();
+      const applyFilter = this.selectedIncidentID ? true : false; 
+        this.initializeMap(applyFilter);
     }, 1000);
   }
 
-  initializeMap() {
-    this.map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mimsh23/clzxshvrk004g01rb21e17pa5',
-      center: [123.880283, 10.324278],
-      zoom: 12,
-    });
+// initializeMap() {
+//     this.map = new mapboxgl.Map({
+//       container: 'map',
+//       style: 'mapbox://styles/mimsh23/clzxshvrk004g01rb21e17pa5',
+//       center: [123.880283, 10.324278],
+//       zoom: 12,
+//     });
 
-    this.map.addControl(new mapboxgl.NavigationControl());
+//     this.map.addControl(new mapboxgl.NavigationControl());
 
-    this.map.on('load', () => {
+//     this.map.on('load', () => {
      
-      this.coordinateService.getCoordinates().subscribe(
-        (responses: Cluster[]) => {
-          const geoJSONData = this.convertToGeoJSON(responses);
-          this.addGeoJSONSource(geoJSONData);
-          this.calculateCrimeAnalysis(geoJSONData);
-          this.calculateHighestCrimeTime(geoJSONData);
-        },
-        (error) => {
-          console.error('Error fetching coordinates:', error);
+  
+//       this.coordinateService.getCoordinates().subscribe(
+//         (responses: Cluster[]) => {
+//           const geoJSONData = this.convertToGeoJSON(responses);
+//           this.addGeoJSONSource(geoJSONData);
+//           this.calculateCrimeAnalysis(geoJSONData);
+//           this.calculateHighestCrimeTime(geoJSONData);
+//           console.log('Response Fetched', responses)
+//         },
+//         (error) => {
+//           console.error('Error fetching coordinates:', error);
+//         }
+//       );
+//     });
+//   }
+
+// initializeMap(applyFilter: boolean) {
+//   this.map = new mapboxgl.Map({
+//       container: 'map',
+//       style: 'mapbox://styles/mimsh23/clzxshvrk004g01rb21e17pa5',
+//       center: [123.880283, 10.324278],
+//       zoom: 12,
+//   });
+
+//   this.map.addControl(new mapboxgl.NavigationControl());
+
+//   this.map.on('load', () => {
+//       const locationService = applyFilter
+//           ? this.locationService.getFullCoordinates(this.selectedIncidentID) 
+//           : this.locationService.getCoordinates();
+
+//       locationService.subscribe(
+//           (responses: Cluster[]) => {
+//               const geoJSONData = this.convertToGeoJSON(responses);
+//               this.addGeoJSONSource(geoJSONData);
+//               this.calculateCrimeAnalysis(geoJSONData); 
+//               this.calculateHighestCrimeTime(geoJSONData);
+//               console.log('Coordinates data received:', responses);
+//           },
+//           (error) => {
+//               console.error('Error fetching coordinates:', error);
+//           }
+//       );
+//   });
+// }
+
+initializeMap(applyFilter: boolean) {
+  this.map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mimsh23/clzxshvrk004g01rb21e17pa5',
+    center: [123.880283, 10.324278],
+    zoom: 12,
+  });
+
+  this.map.addControl(new mapboxgl.NavigationControl());
+
+  this.map.on('load', () => {
+    const locationService = applyFilter
+      ? this.locationService.getFullCoordinates(this.selectedIncidentID)
+      : this.locationService.getCoordinates();
+
+    locationService.subscribe(
+      async (responses: Cluster[]) => {
+        let filteredResponses: Cluster[] = responses;
+
+        if (applyFilter && this.selectedBarangays && this.selectedBarangays.length > 0) {
+          // Use Promise.all to resolve all location name promises
+          const promises = responses.map(async (cluster) => {
+            if (cluster.coordinates) {
+              const matchedCoordinates = await Promise.all(
+                cluster.coordinates.map(async (coord) => {
+                  const barangayName = await this.getLocationName(coord.latitude, coord.longitude);
+                  return this.selectedBarangays.includes(barangayName) ? coord : null;
+                })
+              );
+
+              // Only keep coordinates that matched the selected barangays
+              const filteredCoordinates = matchedCoordinates.filter((coord) => coord !== null) as { longitude: number; latitude: number; event_time?: string | undefined; }[];
+
+              // Ensure the returned cluster has the correct type
+              return {
+                ...cluster,
+                coordinates: filteredCoordinates,
+              };
+            }
+            return cluster;
+          });
+
+          // Await all promises and filter out clusters with no valid coordinates
+          filteredResponses = await Promise.all(promises);
+          filteredResponses = filteredResponses.filter(cluster => cluster.coordinates && cluster.coordinates.length > 0) as Cluster[];
         }
-      );
-    });
+
+        // Convert the filtered responses to GeoJSON and render the heatmap
+        const geoJSONData = this.convertToGeoJSON(filteredResponses);
+        this.addGeoJSONSource(geoJSONData);
+        this.calculateCrimeAnalysis(geoJSONData);
+        this.calculateHighestCrimeTime(geoJSONData);
+
+
+        this.map.on('click', 'crimes', async (e) => {
+  if (e.features && e.features.length > 0) {
+    const geometry = e.features[0].geometry;
+
+    // Check if the geometry type is Point
+    if (geometry.type === 'Point') {
+      const coordinates: [number, number] = geometry.coordinates as [number, number];
+      const properties = e.features[0].properties;
+
+      // Log the properties to verify what data is present
+      console.log('Clicked feature properties:', properties);
+
+      if (properties) {
+       
+        const barangayName = await this.getLocationName(coordinates[1], coordinates[0]);
+        const eventTime = properties['event_time'] || 'Event Time Not Available';
+         // Check if the map is filtered and retrieve the incident name accordingly
+         const incidentName = applyFilter
+         ? this.incidentTypeMap[this.selectedIncidentID] || 'Incident Name Not Available'
+         : 'Incident Not Filtered'; // Message when not filtered
+
+
+
+        // Display the popup with incident, barangay, and event details
+        new mapboxgl.Popup()
+          .setLngLat(coordinates)
+          .setHTML(`
+            <h3 style="color: #000000">${incidentName}</h3>
+            <p style="color: #000000"><strong>Barangay:</strong> ${barangayName}</p>
+            <p style="color: #000000" ><strong>Time Committed:</strong> ${eventTime}</p>
+          `)
+          .addTo(this.map);
+      } else {
+        console.warn('Properties are undefined or null.');
+      }
+    } else {
+      console.warn('The geometry type is not a Point:', geometry.type);
+    }
+  } else {
+    console.warn('No features found at the clicked location.');
   }
+});
+
+
+        console.log('Filtered coordinates data:', filteredResponses);
+      },
+      (error) => {
+        console.error('Error fetching coordinates:', error);
+      }
+    );
+  });
+}
+
+
+
 
   async openCrimeAnalysisModal() {
     this.isModalOpen = true;
@@ -121,7 +323,7 @@ export class MapPage implements OnInit, AfterViewInit {
       if (this.topLocations.length && this.topLocationCounts.length) {
         this.createCrimeLocationPieChart(this.topLocations, this.topLocationCounts);
       } else {
-        console.error('Top locations and counts are not available.');
+        console.log('Top locations and counts are not available.');
         // console.log(
         //   'Heres the top location and topcounts',
         //   this.topLocations,
@@ -193,10 +395,12 @@ export class MapPage implements OnInit, AfterViewInit {
       features: validFeatures,
     };
 
-  //  console.log('Converted GeoJSON:', JSON.stringify(geoJSONResult, null, 2));
+  // console.log('Converted GeoJSON:', JSON.stringify(geoJSONResult, null, 2));
 
     return geoJSONResult;
   }
+  
+  
 
   addGeoJSONSource(geoJSONData: GeoJSON.FeatureCollection) {
     if (this.map.getSource('my-data')) {
@@ -216,7 +420,7 @@ export class MapPage implements OnInit, AfterViewInit {
       minzoom: 11,
       slot: 'middle',
       paint: {
-        'heatmap-radius': 5,
+        'heatmap-radius': 8,
         'heatmap-opacity': 0.63,
         'heatmap-color': [
           'interpolate',
@@ -459,7 +663,7 @@ getLocationName(latitude: number, longitude: number): Promise<string> {
                 let barangayName = 'Unknown location';
 
                 if (features.length > 0) {
-                    // Assuming the first feature is the barangay or closest locality
+    
                     barangayName = features[0].text || 'Unknown location';
                 }
 
@@ -646,4 +850,150 @@ createCrimeLocationPieChart(locations: string[], counts: number[]) {
     this.selectedLevel = value;
     console.log(this.selectedLevel);
   }
+
+
+  loadBarangays() {
+    this.locationService.getAllLocation().subscribe((locations: any[]) => {
+      if (locations) {
+        this.barangays = [...new Set(locations.map(location => location.barangay))];
+      }
+    }, error => {
+      console.error('Error loading locations', error);
+    });
+  }
+
+  // Load distinct incident types
+  loadIncidentTypes() {
+
+    this.crimeService.loadIncidentTypes().subscribe((incidentData: IncidentType[]) => {
+      this.incidentTypes = incidentData;
+      let incidentFound = false;
+
+      this.incidentTypeMap = {};
+      incidentData.forEach(incident => {
+        this.incidentTypeMap[incident.incident_id] = incident.name;
+        if (this.selectedIncidentID === incident.incident_id) {
+          this.incidentName = incident.name;
+          incidentFound = true; 
+          console.log('Incident Name Filtered:', this.incidentName)
+        }
+      });
+
+      // if (!incidentFound) {
+      //   this.incidentName = 'unknown';
+      // }
+    }, error => {
+      console.error('Error loading incident types', error);
+    });
+
+
+  }
+
+  loadTotalCrimeDensity() {
+    let totalDensity = 0;
+  
+    this.locationService.getCoordinates().subscribe((coordinatesData: any[]) => {
+      coordinatesData.forEach((data) => {
+        totalDensity += data.density;  
+        console.log('Total Density', totalDensity)
+      });
+      this.totalCrimes = totalDensity;
+      
+    }, error => {
+      console.error('Error loading coordinates and density', error);
+      console.log('Total Density', totalDensity)
+    });
+  }
+
+  
+clearSelection(){
+  this.selectedBarangays = [];
+  console.log('Selected Barangays cleared');
+  this.selectedIncidentID = 0; 
+  console.log('Selected Crimes cleared');
+  this.total_incidents = 0;
+
+}
+
+refreshAllCrimes(){
+  const applyFilter = false;
+  this.initializeMap(applyFilter);
+  this.total_incidents = 0;
+
+  this.closeFilterModal();
+}
+
+
+openFilterModal() {
+  this.isFilterModalOpen = true;
+}
+
+closeFilterModal() {
+  this.isFilterModalOpen = false;
+}
+
+applyFilter() {
+  console.log('Selected Incident ID:', this.selectedIncidentID);
+
+  // Check if an incident ID is selected
+  if (!this.selectedIncidentID) {
+    console.warn('No incident ID selected');
+    return; // Exit if no incident is selected
+  }
+
+
+  const applyFilter = true;
+  this.initializeMap(applyFilter);
+
+ 
+  this.closeFilterModal();
+}
+
+onChangeIncident() {
+
+  if (!this.selectedIncidentID) {
+    console.warn('No incident ID selected');
+    return;
+  }else {
+    console.log ('Selected Incident:', this.selectedIncidentID)
+  }
+
+  this.barangays = [];
+
+let barangayIncidentCountMap: { [key: string]: number } = {}; // Map to store incident count per barangay
+
+  this.locationService.getFullCoordinates(this.selectedIncidentID).subscribe(
+    async (responses: Cluster[]) => {
+      console.log('Coordinates fetched for incident:', responses);
+
+      const barangaySet: Set<string> = new Set();
+
+      for (const cluster of responses) {
+        if (cluster.coordinates) {
+          for (const coord of cluster.coordinates) {
+            const barangayName = await this.getLocationName(coord.latitude, coord.longitude);
+
+            if (barangayName) {
+              barangaySet.add(barangayName);
+
+              if (!barangayIncidentCountMap[barangayName]) {
+                barangayIncidentCountMap[barangayName] = 0;
+              }
+              barangayIncidentCountMap[barangayName]++;
+            }
+          }
+        }
+      }
+
+      this.barangays = Array.from(barangaySet);
+      this.incidentCountPerBarangay = barangayIncidentCountMap;
+      console.log('Incident Count per Barangay:', this.incidentCountPerBarangay);
+    },
+    (error) => {
+      console.error('Error fetching coordinates:', error);
+    }
+  );
+  }
+
+
 }

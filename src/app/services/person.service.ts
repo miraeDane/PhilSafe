@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -8,13 +9,13 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 export class PersonService {
 
   // private personURL = 'https://localhost:7108/api/person';
-  private personURL = 'https://192.168.120.11:7108/api/person';
+  private personURL = environment.ipAddUrl;
 
   constructor(private http: HttpClient) { }
 
 
   createPerson(data: any): Observable<any> {
-    return this.http.post(this.personURL, data).pipe(
+    return this.http.post(`${this.personURL}api/person`, data).pipe(
       catchError(this.handleError)
     );
   }
@@ -22,7 +23,7 @@ export class PersonService {
 
 
   getPerson(personId: number): Observable<any> {
-    return this.http.get(`${this.personURL}/retrieve/${personId}`, { observe: 'response' })
+    return this.http.get(`${this.personURL}api/person/retrieve/${personId}`, { observe: 'response' })
       .pipe(
         map((response: HttpResponse<any>) => {
           if (response.status === 200) {
@@ -38,13 +39,13 @@ export class PersonService {
   }
 
 update(id: number, pDto: any): Observable<any> {
-  return this.http.put(`${this.personURL}/up/${id}`, pDto).pipe(
+  return this.http.put(`${this.personURL}api/person/up/${id}`, pDto).pipe(
     catchError(this.handleError)
   );
 }
 
 delete(id: number): Observable<any> {
-  return this.http.delete(`${this.personURL}/delete/${id}`).pipe(
+  return this.http.delete(`${this.personURL}api/person/delete/${id}`).pipe(
     catchError(this.handleError)
   );
 }

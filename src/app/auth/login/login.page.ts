@@ -41,6 +41,7 @@ export class LoginPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    
   }
 
   togglePasswordVisibility() {

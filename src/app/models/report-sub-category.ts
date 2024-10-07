@@ -5,6 +5,6 @@ export interface ReportSubCategory {
   reportSubCategoryId: number;
   subCategoryName?: string;
   reportCategoryId: number;
-  reportCategory: ReportCategory;
+  reportCategory?: ReportCategory;
   reports?: Report[];
 }

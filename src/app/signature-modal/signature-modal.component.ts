@@ -30,9 +30,13 @@ export class SignatureModalComponent {
   saveSignature() {
     this.signatureData = this.signaturePad.toDataURL();
     console.log('Signature Data URL:', this.signatureData);
+    this.dismiss();
   }
 
   dismiss() {
-    this.modalController.dismiss();
+    this.modalController.dismiss({
+      signatureData: this.signatureData
+    });
   }
+  
 }

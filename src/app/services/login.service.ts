@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, throwError, map } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 
 
@@ -11,7 +12,7 @@ export class LoginService {
 
   
   // private accountURL = 'https://localhost:7108/api/account';
-  private accountURL = 'https://192.168.120.11:7108/api/account';
+  private accountURL = environment.ipAddUrl;
   private loggedIn = false;
   private tokenKey = 'auth_token';
   private options = { 
@@ -32,7 +33,7 @@ export class LoginService {
   
    loginByEmail(data: any): Observable<any> {
     this.loggedIn = true;
-    const url = `${this.accountURL}/login`;
+    const url = `${this.accountURL}api/account/login`;
     return this.http.post<{ token: string, personId: number }>(url, data, this.options).pipe(
       catchError(this.handleError),
       map(response => {
@@ -48,7 +49,7 @@ export class LoginService {
  
   loginByContactNumber(data: any): Observable<any> {
     this.loggedIn = true;
-    const url = `${this.accountURL}/login`;
+    const url = `${this.accountURL}api/account/login`;
     return this.http.post<{ token: string, personId: number }>(url, data, this.options).pipe(
       catchError(this.handleError),
       map(response => {
@@ -64,14 +65,14 @@ export class LoginService {
 
 
   verifyPasswordByEmail(data: any): Observable<any> {
-    const url = `${this.accountURL}/verify/email`;
+    const url = `${this.accountURL}api/account/verify/email`;
     return this.http.post(url, data).pipe(
       catchError(this.handleError)
     );
   }
 
   verifyPasswordByContact(data: any): Observable<any> {
-    const url = `${this.accountURL}/verify/contact`;
+    const url = `${this.accountURL}api/account/verify/contact`;
     return this.http.post(url, data).pipe(
       catchError(this.handleError)
     );
@@ -79,7 +80,7 @@ export class LoginService {
 
   signOut(): Observable<any> {
     this.loggedIn = false; 
-    const url = `${this.accountURL}/signout`;
+    const url = `${this.accountURL}api/account/signout`;
     return this.http.post(url, {}).pipe(
       catchError(this.handleError),
       map(response =>{

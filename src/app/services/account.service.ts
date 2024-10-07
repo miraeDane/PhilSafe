@@ -1,6 +1,7 @@
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,9 +10,14 @@ export class AccountService {
 
 
   // private accountURL = 'https://localhost:7108/api/account';
-  private accountURL = 'https://192.168.120.11:7108/api/account';
+  private accountURL = environment.ipAddUrl;
   private loggedIn = false;
   private tokenKey = 'auth_token';
+  private options = { 
+    headers: new HttpHeaders({ 
+      'Content-Type': 'multipart/form-data' 
+    })
+  };
 
   
   constructor(private http: HttpClient) { }
@@ -31,7 +37,7 @@ export class AccountService {
 
  
   signUp(data: any): Observable<any> {
-    const url = `${this.accountURL}/signup`;
+    const url = `${this.accountURL}api/account/signup`;
     return this.http.post(url, data).pipe(
       catchError(this.handleError)
     );
@@ -39,14 +45,14 @@ export class AccountService {
 
 
   upgradeAccount(data: any): Observable<any> {
-    const url = `${this.accountURL}/signup/upgrade`;
+    const url = `${this.accountURL}api/account/signup/upgrade`;
     return this.http.post(url, data).pipe(
       catchError(this.handleError)
     );
   }
 
   getAccount(): Observable<any> {
-    return this.http.get(`${this.accountURL}`, { observe: 'response' })
+    return this.http.get(`${this.accountURL}api/account`, { observe: 'response' })
       .pipe(
         map((response: HttpResponse<any>) => {
           if (response.status === 200) {
@@ -64,7 +70,7 @@ export class AccountService {
 
  
   updateAccount(id: number, data: any): Observable<any> {
-    const url = `${this.accountURL}/up/${id}`;
+    const url = `${this.accountURL}api/account/up/${id}`;
     return this.http.put(url, data).pipe(
       catchError(this.handleError)
     );
@@ -72,7 +78,7 @@ export class AccountService {
 
  
   deleteAccount(id: number): Observable<any> {
-    const url = `${this.accountURL}/discard/${id}`;
+    const url = `${this.accountURL}api/account/discard/${id}`;
     return this.http.delete(url).pipe(
       catchError(this.handleError)
     );

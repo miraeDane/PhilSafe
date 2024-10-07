@@ -1,58 +1,72 @@
 [
     {
-        "crime_id": 1,
-        "crime_name": "Illegal Drugs"
-    },
-    {
-        "crime_id": 2,
-        "crime_name": "Illegal Gambling"
-    },
-    {
-        "crime_id": 3,
-        "crime_name": "Illegal Possession of Firearms"
-    },
-    {
-        "crime_id": 4,
-        "crime_name": "Violation of Environmental Laws"
-    },
-    {
-        "crime_id": 5,
-        "crime_name": "Cybercrimes"
-    },
-    {
-        "crime_id": 6,
-        "crime_name": "Traffic Violations"
-    },
-    {
-        "crime_id": 7,
-        "crime_name": "Violations of Local Ordinances"
-    },
-    {
-        "crime_id": 8,
-        "crime_name": "Smuggling"
-    },
-    {
         "crime_id": 9,
-        "crime_name": "Human Trafficking"
+        "crime_name": "Illegal Drugs",
+        "reporCategoryID": 212
     },
     {
         "crime_id": 10,
-        "crime_name": "Illegal Logging"
+        "crime_name": "Illegal Gambling",
+        "reporCategoryID": 212
     },
     {
         "crime_id": 11,
-        "crime_name": "Estafa"
+        "crime_name": "Illegal Possession of Firearms",
+        "reporCategoryID": 212
     },
     {
         "crime_id": 12,
-        "crime_name": "Falsification of Documents"
+        "crime_name": "Violation of Environmental Laws",
+        "reporCategoryID": 212
     },
     {
         "crime_id": 13,
-        "crime_name": "Libel"
+        "crime_name": "Cybercrimes",
+        "reporCategoryID": 212
     },
     {
         "crime_id": 14,
-        "crime_name": "Adultery and Concubinage"
+        "crime_name": "Traffic Violations",
+        "reporCategoryID": 212
+    },
+    {
+        "crime_id": 15,
+        "crime_name": "Violations of Local Ordinances",
+        "reporCategoryID": 212
+    },
+    {
+        "crime_id": 16,
+        "crime_name": "Smuggling",
+        "reporCategoryID": 212
+    },
+    {
+        "crime_id": 17,
+        "crime_name": "Human Trafficking",
+        "reporCategoryID": 212
+    },
+    {
+        "crime_id": 18,
+        "crime_name": "Illegal Logging",
+        "reporCategoryID": 212
+    },
+    {
+        "crime_id": 19,
+        "crime_name": "Estafa",
+        "reporCategoryID": 212
+    },
+    {
+        "crime_id": 20,
+        "crime_name": "Falsification of Documents",
+        "reporCategoryID": 212
+    },
+    {
+        "crime_id": 21,
+        "crime_name": "Libel",
+        "reporCategoryID": 212
+    },
+    {
+        "crime_id": 22,
+        "crime_name": "Adultery and Concubinage",
+        "reporCategoryID": 212
     }
 ]

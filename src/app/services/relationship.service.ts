@@ -2,43 +2,44 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RelationshipService {
-  private relUrl = 'https://localhost:7108/api/relationship'; 
+  private relUrl = environment.ipAddUrl; 
 
   constructor(private http: HttpClient) {}
 
 
   getConnection(id: number): Observable<any> {
-    return this.http.get(`${this.relUrl}/single/${id}`).pipe(
+    return this.http.get(`${this.relUrl}api/relationship/single/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
   getConnections(personId: number): Observable<any> {
-    return this.http.get(`${this.relUrl}/multiple/${personId}`).pipe(
+    return this.http.get(`${this.relUrl}api/relationship/multiple/${personId}`).pipe(
       catchError(this.handleError)
     );
   }
 
   establishConnection(relDto: any): Observable<any> {
-    return this.http.post(`${this.relUrl}`, relDto).pipe(
+    return this.http.post(`${this.relUrl}api/relationship`, relDto).pipe(
       catchError(this.handleError)
     );
   }
 
   
   changeConnection(id: number, relDto: any): Observable<any> {
-    return this.http.put(`${this.relUrl}/update/${id}`, relDto).pipe(
+    return this.http.put(`${this.relUrl}api/relationship/update/${id}`, relDto).pipe(
       catchError(this.handleError)
     );
   }
 
   cutConnection(id: number): Observable<any> {
-    return this.http.delete(`${this.relUrl}/delete/${id}`).pipe(
+    return this.http.delete(`${this.relUrl}api/relationship/delete/${id}`).pipe(
       catchError(this.handleError)
     );
   }

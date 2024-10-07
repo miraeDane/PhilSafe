@@ -1,4 +1,5 @@
 import { BasePerson, ContactDetails, Address, Description, Occupation } from './0common.model';
+import { Victim } from './victim';
 
 export interface VictimCommon extends BasePerson {
   contactDetails: ContactDetails;
@@ -6,4 +7,5 @@ export interface VictimCommon extends BasePerson {
   workAddress: Address;
   description: Description
   occupation: Occupation;
+  victim: Victim
 }

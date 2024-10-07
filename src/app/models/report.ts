@@ -8,13 +8,14 @@ export interface Report {
     reportId: number;
     reportBody: string;
     citizenId: number;
+    incidentDate: string,
     reportSubCategoryId: number;
     locationId?: number; 
     stationId: number;
     crimeId?: number; 
     reportedDate: string; 
     blotterNum: string;
-    eSignature: Uint8Array; 
+    eSignature: number[] | Uint8Array | Blob; 
     signatureExt: string;
     hasAccount: boolean;
   
