@@ -24,16 +24,21 @@
         <ion-input [(ngModel)]="upgraded.firstname" [ngModelOptions]="{standalone: true}"
         name="first" id="fname" placeholder="First Name"> </ion-input>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !upgraded.firstname" color="danger">Please fill out this item</ion-label>
+      
+      
 
       <ion-item>
         <ion-input [(ngModel)]="upgraded.middlename"
         name="middle" id="mname" placeholder="Middle Name"> </ion-input>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !upgraded.middlename" color="danger">Please fill out this item</ion-label>
 
       <ion-item>
         <ion-input [(ngModel)]="upgraded.lastname"
         name="last" id="lname" placeholder="Last Name"> </ion-input>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !upgraded.lastname" color="danger">Please fill out this item</ion-label>
       
       <div class="detail-select">
         <ion-item class="dob">
@@ -57,7 +62,7 @@
             </ng-template>
           </ion-popover>
         </ion-item>
-
+       
         <ion-item>
   <ion-select [(ngModel)]="selectedGender" (ionChange)="updateGender()" placeholder="Gender">
     <ion-select-option value="M">Male</ion-select-option>
@@ -66,6 +71,12 @@
   </ion-select>
 </ion-item>
       </div>
+      <div class="detail-select">
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !upgraded.birthdate" color="danger">Please fill out this item</ion-label>
+<ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !upgraded.sex" color="danger">Please fill out this item</ion-label>
+
+      </div>
+      
 
       <ion-item>
         <ion-select [(ngModel)]="upgraded.civilStatus" placeholder="Civil Status">
@@ -76,7 +87,8 @@
           <ion-select-option >Widowed</ion-select-option>
         </ion-select>
       </ion-item>
-     
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !upgraded.civilStatus" color="danger">Please fill out this item<br><br></ion-label>
+
       <ion-label class="title-info">HOME ADDRESS</ion-label>
 
       <ion-item>
@@ -86,6 +98,7 @@
           </ion-select-option>
         </ion-select>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userHomeAddress.region" color="danger">Please fill out this item</ion-label>
       
       <ion-item>
         <ion-select [(ngModel)]="userHomeAddress.province" name="homeprovinceName" placeholder="Province" (ionChange)="onHomeProvinceChange($event)">
@@ -94,6 +107,7 @@
           </ion-select-option>
         </ion-select>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userHomeAddress.province" color="danger">Please fill out this item</ion-label>
       
       <ion-item>
         <ion-select [(ngModel)]="userHomeAddress.municipality" name="homemunicipalName" placeholder="Municipality" (ionChange)="onHomeMunicipalityChange($event)">
@@ -102,6 +116,7 @@
           </ion-select-option>
         </ion-select>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userHomeAddress.municipality" color="danger">Please fill out this item</ion-label>
       
       <ion-item>
         <ion-select [(ngModel)]="userHomeAddress.barangay" name="homebrgyName" placeholder="Barangay" >
@@ -110,18 +125,22 @@
           </ion-select-option>
         </ion-select>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userHomeAddress.barangay" color="danger">Please fill out this item</ion-label>
 
       <ion-item>
         <ion-input [(ngModel)]="userHomeAddress.street" name="homestreetName" placeholder="Street"></ion-input>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userHomeAddress.street" color="danger">Please fill out this item</ion-label>
 
       <ion-item>
         <ion-input [(ngModel)]="userHomeAddress.block" name="homeblockName" placeholder="Block/Lot/Unit Number"></ion-input>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userHomeAddress.block" color="danger">Please fill out this item</ion-label>
 
       <ion-item>
         <ion-input [(ngModel)]="home_zip_code" name="homezip" placeholder="Zip Code"></ion-input>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !home_zip_code" color="danger">Please fill out this item<br><br></ion-label>
 
       <ion-label class="title-info">WORK ADDRESS</ion-label>
 
@@ -138,6 +157,7 @@
           </ion-select-option>
         </ion-select>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.region" color="danger">Please fill out this item</ion-label>
       
 
       <ion-item>
@@ -154,6 +174,7 @@
           </ng-template>
         </ion-select>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.province" color="danger">Please fill out this item</ion-label>
       
       <ion-item>
         <ion-select [(ngModel)]="userWorkAddress.municipality" name="workmunicipalName" placeholder="Municipality" (ionChange)="onWorkMunicipalityChange($event)">
@@ -169,6 +190,7 @@
           </ng-template>
         </ion-select>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.municipality" color="danger">Please fill out this item</ion-label>
       
       <ion-item>
         <ion-select [(ngModel)]="userWorkAddress.barangay" name="workbrgyName" placeholder="Barangay">
@@ -184,18 +206,23 @@
           </ng-template>
         </ion-select>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.barangay" color="danger">Please fill out this item</ion-label>
 
       <ion-item>
         <ion-input [(ngModel)]="userWorkAddress.street" name="workstreetName" placeholder="Street"></ion-input>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.street" color="danger">Please fill out this item</ion-label>
+
 
       <ion-item>
         <ion-input [(ngModel)]="userWorkAddress.block" name="workblockName" placeholder="Office/Bldg Name"></ion-input>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.block" color="danger">Please fill out this item</ion-label>
 
       <ion-item>
         <ion-input [(ngModel)]="work_zip_code" name="workzip" placeholder="Zip Code"></ion-input>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !work_zip_code" color="danger">Please fill out this item<br><br></ion-label>
 
       
       <ion-label class="title-info">ACCOUNT INFORMATION</ion-label>
@@ -204,40 +231,64 @@
         <ion-input [(ngModel)]="upgraded.email"
         name="emailAdd" id="email" placeholder="Email"> </ion-input>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !upgraded.email" color="danger">Please fill out this item<br></ion-label>
+      <ion-label *ngIf="showValidationMessages && !isValidEmail(upgraded.email)" color="danger" style="margin-left:20px;" >Invalid email address</ion-label>
 
       <ion-item>
         <ion-input [(ngModel)]="upgraded.contactNum"
         name="contactNum" id="contactNum" placeholder="Contact Number"> </ion-input>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !upgraded.contactNum" color="danger">Please fill out this item<br></ion-label>
+      <ion-label *ngIf="showValidationMessages && (!upgraded.contactNum.startsWith('09'))" color="danger" style="margin-left:20px;">Contact number must start with 09</ion-label>
 
       <ion-item>
         <ion-input [(ngModel)]="upgraded.telNum"
         name="tel_num" id="telNum" placeholder="Telephone Number"> </ion-input>
       </ion-item>
-
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !upgraded.telNum" color="danger">Please fill out this item</ion-label>
 
       
       <ion-item>
-        <ion-input type="password" [(ngModel)]="upgraded.password"
-        name="pwd" id="pass" placeholder="Password"><ion-icon name="eye" slot="end"></ion-icon> </ion-input>
+        <ion-input [type]="passwordVisible ? 'text' : 'password'"  [(ngModel)]="upgraded.password"
+        name="pwd" id="pass" placeholder="Password"></ion-input>
+        <ion-icon 
+          [name]="passwordVisible ? 'eye-outline' : 'eye-off-outline'" 
+          slot="end" 
+          (click)="togglePasswordVisibility()">
+        </ion-icon>
       </ion-item>
+      <ion-label  *ngIf="showValidationMessages && upgraded.password && upgraded.password.length < 8" color="danger" style="margin-left:20px;">Password must be minimum of 8 characters</ion-label>
+      <ion-label *ngIf="showValidationMessages && !upgraded.password" color="danger" style="margin-left:20px;">Please fill out this item</ion-label>
+
 
       <ion-item>
         <ion-input [(ngModel)]="confirmPassword"
-        name="confirmPwd" type="password" id="confirmpass" placeholder="Confirm Password"><ion-icon name="eye" slot="end"></ion-icon> </ion-input>
+        name="confirmPwd" [type]="confirmPasswordVisible ? 'text' : 'password'"  id="confirmpass" placeholder="Confirm Password"></ion-input>
+        <ion-icon 
+          [name]="confirmPasswordVisible ? 'eye-outline' : 'eye-off-outline'" 
+          slot="end" 
+          (click)="toggleConfirmPasswordVisibility()">
+        </ion-icon>
       </ion-item>
+      <ion-label *ngIf="showValidationMessages && confirmPassword !== upgraded.password" color="danger" style="margin-left:20px;">Passwords do not match</ion-label>
+      <ion-label *ngIf="showValidationMessages && !confirmPassword" color="danger" style="margin-left:20px;">Please fill out this item</ion-label>
 
       <div class="checkbox-container">
         <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="termsAccepted" required></ion-checkbox>
         <ion-label class="checkbox-label">I hereby certify to the correctness of the foregoing to the best of my knowledge and belief</ion-label>
         </div>
+        <ion-label *ngIf="showValidationMessages && !termsAccepted" color="danger" style="margin-left:20px;">Please accept the terms</ion-label>
         <ion-item>
           <ion-input type="file" [(ngModel)]="upgraded.profile_pic" placeholder="Profile Picture"> </ion-input>
         </ion-item>
       <div class="next-container">
         <ion-button id="register" class="confirm" (click)="register()">Proceed to Register</ion-button
         >
-        <ion-loading class="custom-loading" trigger="register" message="Creating Account.." [duration]="5000"></ion-loading>
+        <ion-loading 
+        class="custom-loading" 
+        [isOpen]="loading" 
+        message="Creating Account..">
+    </ion-loading>
         </div>
         <div class="sign-in-here">
           <ion-label class="sign-in">Already have an account?</ion-label>

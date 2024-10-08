@@ -37,20 +37,20 @@ export class MediumService {
     );
   }
 
-  uploadItemWithDetails(formData: FormData, reportId: number, crimeId: number): Observable<any> {
-    return this.http.post(`${this.mediaUrl}api/media/upload/item/${reportId}/${crimeId}`, formData).pipe(
+  uploadItemWithDetails(formData: FormData, reportId: number): Observable<any> {
+    return this.http.post(`${this.mediaUrl}api/media/upload/item/${reportId}`, formData).pipe(
       catchError(this.handleError)
     );
   }
 
  
-  uploadItemsWithDetails(items: any[], reportId: number, crimeId: number): Observable<any> {
+  uploadItemsWithDetails(items: any[], reportId: number): Observable<any> {
     const formData = new FormData();
     items.forEach((item, index) => {
       formData.append(`item_${index}`, item);
     });
 
-    return this.http.post(`${this.mediaUrl}api/media/upload/items/${reportId}/${crimeId}`, formData).pipe(
+    return this.http.post(`${this.mediaUrl}api/media/upload/items/${reportId}`, formData).pipe(
       catchError(this.handleError)
     );
   }

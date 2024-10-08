@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccountSignInFromContactDto, AccountSignInFromEmailDto } from 'src/app/models/login';
 import { LoginService } from 'src/app/services/login.service';
@@ -16,9 +16,11 @@ export class LoginPage implements OnInit {
   contactNumString: string = ''
   SignInType: string = 'Email';
   email: string = '';
-  password: string = '';
+  em_password: string = '';
+  con_password: string = '';
   loading: boolean = false;
   passwordVisible: boolean = false;
+  showValidationMessages = false;
   
 
   withContactNum: AccountSignInFromContactDto = {
@@ -37,7 +39,8 @@ export class LoginPage implements OnInit {
 
   constructor(
     private loginService: LoginService,
-    private router: Router
+    private router: Router,
+    private changeDetectorRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -49,22 +52,41 @@ export class LoginPage implements OnInit {
   }
 
   async login() {
-    
+    this.showValidationMessages = true;
+
     if (this.SignInType === 'Email') {
+
+      if (!this.isValidEmail(this.email)) {
+        console.error('Invalid email address');
+        return;
+    }
       if (!this.email) {
         alert('Please provide your username (email).');
         return;
       }
-      if (!this.password) {
+      if (this.em_password.length < 8) {
+        console.error('Password must be at least 8 characters');
+        return;
+    }
+  
+      if (!this.em_password) {
         alert('Please provide your password.');
         return;
       }
     } else if (this.SignInType === 'Contact_Number') {
+      if (!this.contactNum.startsWith('09')) {
+        console.error('Contact number must start with 09');
+        return;
+    }
+    if (this.con_password.length < 8) {
+      console.error('Password must be at least 8 characters');
+      return;
+  }
       if (!this.contactNumString) {
         alert('Please provide your contact number.');
         return;
       }
-      if (!this.password) {
+      if (!this.con_password) {
         alert('Please provide your password.');
         return;
       }
@@ -81,22 +103,26 @@ export class LoginPage implements OnInit {
 
         this.withEmail.email = this.email;
         this.withEmail.SignInType = 'Email';
-        this.withEmail.password = this.password;
+        this.withEmail.password = this.em_password;
 
         response = await this.loginService.loginByEmail(this.withEmail).toPromise();
+     
 
       } else if (this.SignInType === 'Contact_Number') {
 
         this.withContactNum.SignInType = 'Contact_Number';
         this.withContactNum.contactNum = this.contactNumString;
-        this.withContactNum.password = this.password;
+        this.withContactNum.password = this.con_password;
 
         response = await this.loginService.loginByContactNumber(this.withContactNum).toPromise();
         console.log("Contact Number Log in details", this.withContactNum)
+      
       }
 
       
       console.log('Login Successful:', response);
+    
+   
       // sessionStorage.setItem('userData', JSON.stringify(response));
   
       // localStorage.setItem('authenticated', '1');
@@ -112,44 +138,63 @@ export class LoginPage implements OnInit {
           sessionStorage.setItem('userData', JSON.stringify(response));
           localStorage.setItem('authenticated', '1');
           localStorage.setItem('personId', response.personId.toString());
+          this.loading = false;
+          
           
               if (sessionStorage.getItem('userData')) {
                 console.log('UserData stored successfully');
                 alert("Login Successful");
+              
+                
                 this.router.navigate(['/tabs']);
               } else {
                 console.error('Failed to store session data');
                 alert('Login Failed: Unable to store session data');
+           
+                
               }
 
           } else {
             console.error('Response does not contain personId:', response);
             alert('Login Failed: Missing person ID');
+     
+        
           }
       } else {
         console.error('Response is undefined or null');
         alert('Login Failed: No response from server');
+
       }
   
     } catch (error: any) {
       console.error('Login error:', error);
       alert(`Login Failed: ${error.message || 'An unknown error occurred'}`);
+    
     } finally {
-      this.loading = false;
+      setTimeout(() => {
+        this.loading = false;
+        this.changeDetectorRef.detectChanges();
+      }, 0);
     }
   }
 
-  storeSession(sessionId: string) {
-    const expirationTime = new Date().getTime() + 30 * 60 * 1000;
-    const sessionData = { sessionId, expirationTime };
-    localStorage.setItem('sessionData', JSON.stringify(sessionData));
-  }
+  // storeSession(sessionId: string) {
+  //   const expirationTime = new Date().getTime() + 30 * 60 * 1000;
+  //   const sessionData = { sessionId, expirationTime };
+  //   localStorage.setItem('sessionData', JSON.stringify(sessionData));
+  // }
 
-  clearSession() {
-    localStorage.removeItem('sessionData');
-  }
+  // clearSession() {
+  //   localStorage.removeItem('sessionData');
+  // }
 
+  isValidEmail(email: string): boolean {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
 }
+}
+
+
 
 
 

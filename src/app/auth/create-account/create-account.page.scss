@@ -65,9 +65,9 @@ ion-content {
   ion-item {
     color: #000000;
     --background: #ffffff;
-    // border-radius: 50px;
-    // border: solid 0.3px #b4b1b1;
-    margin: 10px;
+    border-radius: 50px;
+    border: solid 0.3px #b4b1b1;
+    margin: 15px;
   }
 
   
@@ -182,3 +182,9 @@ ion-content {
   
     color: #1c6dff;
   }
+
+  .error {
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  

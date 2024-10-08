@@ -8,7 +8,7 @@
     <ion-content>
       <div class="profile-container">
         <ion-avatar class="side-avatar">
-          <img [src]="accountData.profile_pic && accountData.profile_pic.trim() !== '' ? accountData.profile_pic : 'assets/user-default.jpg'" alt="Profile Picture" />
+          <img [src]="avatarUrl" alt="Profile Picture" />
         
         </ion-avatar>
       </div>
@@ -79,7 +79,7 @@
       <ion-buttons slot="end" class="user-home-button">
         <ion-menu-button menu="first" >
           <ion-avatar class="user-home-avatar">
-            <img [src]="accountData.profile_pic && accountData.profile_pic.trim() !== '' ? accountData.profile_pic : 'assets/user-default.jpg'" alt="Profile Picture" />
+            <img [src]="avatarUrl" alt="Profile Picture" />
             <!-- <img src="assets/user-default.jpg" alt="Profile Picture" /> -->
           </ion-avatar>
         </ion-menu-button>

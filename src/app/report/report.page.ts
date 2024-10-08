@@ -1242,7 +1242,7 @@ this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
           formDataMedium.append('ContentType', this.idData.contentType || '');
 
           if (reportMedium.crime_id) {
-              this.mediumService.uploadItemWithDetails(formDataMedium, reportMedium.reportId, reportMedium.crime_id).subscribe(
+              this.mediumService.uploadItemWithDetails(formDataMedium, reportMedium.reportId).subscribe(
                   (response) => {
                       console.log('ID Details:', formDataMedium);
                       console.log('Media saved successfully', response);

@@ -27,6 +27,7 @@ export interface Location {
     latitude: number;
     longitude: number;
     event_time?: string; // Optional, if it might not always be present
+    incident?: string;
   }
   
 
@@ -35,6 +36,7 @@ export interface Location {
     longitude: number;
     latitude: number;
     event_time?: string;
+    incident?: string;
   }
 
 
@@ -49,8 +51,10 @@ export interface Cluster {
       longitude: number;
       latitude: number;
       event_time?: string;
+      incident?: string;
     }[];
     incident_id?: number;
+    
   }
   
   

@@ -35,8 +35,10 @@ export class HomePage implements OnInit, AfterViewInit {
     workAddressId: 0,
     role: 'user',
     personId: 0,
-    profile_pic: ''
+    profile_pic: new Uint16Array
   };
+
+  avatarUrl: string = 'assets/user-default.jpg';
 
   personId: number = 0;
   constructor(
@@ -73,36 +75,37 @@ export class HomePage implements OnInit, AfterViewInit {
   }
   
 
-  loadUserProfile() {
 
-    setTimeout(()=>{
+  loadUserProfile() {
+    setTimeout(() => {
       const userData = sessionStorage.getItem('userData');
       if (userData) {
         try {
           const parsedData = JSON.parse(userData);
           this.personData = {
             personId: parsedData.personId || 0,
-            firstname: this.capitalizeFirstLetter(parsedData.first_name || ''),
+            firstname: this.capitalizeWords(parsedData.first_name || ''),
             middlename: parsedData.middle_name || '',
-            lastname: this.capitalizeFirstLetter(parsedData.last_name || ''),
-            sex: '', 
-            birthdate: '', 
-            civilStatus: '', 
-            bioStatus: true, 
+            lastname: this.capitalizeWords(parsedData.last_name || ''),
+            sex: '',
+            birthdate: '',
+            civilStatus: '',
+            bioStatus: true,
           };
-    
+
           this.accountData = {
             email: parsedData.email || '',
-            password: '', 
-            telNum: '', 
-            contactNum: '', 
-            homeAddressId: 0, 
-            workAddressId: 0, 
-            role: '', 
+            password: '',
+            telNum: '',
+            contactNum: '',
+            homeAddressId: 0,
+            workAddressId: 0,
+            role: '',
             personId: parsedData.personId || 0,
-            profile_pic: '', 
+            profile_pic: new Uint16Array(),
           };
-    
+
+        
           // console.log('Person Data from Session:', this.personData);
           // console.log('Account Data from Session:', this.accountData);
         } catch (e) {
@@ -111,11 +114,7 @@ export class HomePage implements OnInit, AfterViewInit {
       } else {
         console.log('No userData found in session storage.');
       }
-    
-
-    },100);
-    
-    
+    }, 100);
   }
 
   resetUserData() {
@@ -140,13 +139,17 @@ export class HomePage implements OnInit, AfterViewInit {
       workAddressId: 0,
       role: 'user',
       personId: 0,
-      profile_pic: ''
+      profile_pic: new Uint16Array
     };
   }
 
-  capitalizeFirstLetter(string: string): string {
-    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  capitalizeWords(string: string): string {
+    return string
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
   }
+
 
   disableScroll() {
     document.body.classList.add('no-scroll');

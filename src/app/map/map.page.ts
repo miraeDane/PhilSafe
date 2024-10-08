@@ -137,61 +137,111 @@ incidentName: string = '';
     }, 1000);
   }
 
-// initializeMap() {
-//     this.map = new mapboxgl.Map({
-//       container: 'map',
-//       style: 'mapbox://styles/mimsh23/clzxshvrk004g01rb21e17pa5',
-//       center: [123.880283, 10.324278],
-//       zoom: 12,
-//     });
-
-//     this.map.addControl(new mapboxgl.NavigationControl());
-
-//     this.map.on('load', () => {
-     
-  
-//       this.coordinateService.getCoordinates().subscribe(
-//         (responses: Cluster[]) => {
-//           const geoJSONData = this.convertToGeoJSON(responses);
-//           this.addGeoJSONSource(geoJSONData);
-//           this.calculateCrimeAnalysis(geoJSONData);
-//           this.calculateHighestCrimeTime(geoJSONData);
-//           console.log('Response Fetched', responses)
-//         },
-//         (error) => {
-//           console.error('Error fetching coordinates:', error);
-//         }
-//       );
-//     });
-//   }
 
 // initializeMap(applyFilter: boolean) {
 //   this.map = new mapboxgl.Map({
-//       container: 'map',
-//       style: 'mapbox://styles/mimsh23/clzxshvrk004g01rb21e17pa5',
-//       center: [123.880283, 10.324278],
-//       zoom: 12,
+//     container: 'map',
+//     style: 'mapbox://styles/mimsh23/clzxshvrk004g01rb21e17pa5',
+//     center: [123.880283, 10.324278],
+//     zoom: 12,
 //   });
 
 //   this.map.addControl(new mapboxgl.NavigationControl());
 
 //   this.map.on('load', () => {
-//       const locationService = applyFilter
-//           ? this.locationService.getFullCoordinates(this.selectedIncidentID) 
-//           : this.locationService.getCoordinates();
+//     const locationService = applyFilter
+//       ? this.locationService.getFullCoordinates(this.selectedIncidentID)
+//       : this.locationService.getCoordinates();
 
-//       locationService.subscribe(
-//           (responses: Cluster[]) => {
-//               const geoJSONData = this.convertToGeoJSON(responses);
-//               this.addGeoJSONSource(geoJSONData);
-//               this.calculateCrimeAnalysis(geoJSONData); 
-//               this.calculateHighestCrimeTime(geoJSONData);
-//               console.log('Coordinates data received:', responses);
-//           },
-//           (error) => {
-//               console.error('Error fetching coordinates:', error);
-//           }
-//       );
+//     locationService.subscribe(
+//       async (responses: Cluster[]) => {
+//         let filteredResponses: Cluster[] = responses;
+
+//         if (applyFilter && this.selectedBarangays && this.selectedBarangays.length > 0) {
+//           // Use Promise.all to resolve all location name promises
+//           const promises = responses.map(async (cluster) => {
+//             if (cluster.coordinates) {
+//               const matchedCoordinates = await Promise.all(
+//                 cluster.coordinates.map(async (coord) => {
+//                   const barangayName = await this.getLocationName(coord.latitude, coord.longitude);
+//                   return this.selectedBarangays.includes(barangayName) ? coord : null;
+//                 })
+//               );
+
+//               // Only keep coordinates that matched the selected barangays
+//               const filteredCoordinates = matchedCoordinates.filter((coord) => coord !== null) as { longitude: number; latitude: number; event_time?: string | undefined; }[];
+
+//               // Ensure the returned cluster has the correct type
+//               return {
+//                 ...cluster,
+//                 coordinates: filteredCoordinates,
+//               };
+//             }
+//             return cluster;
+//           });
+
+//           // Await all promises and filter out clusters with no valid coordinates
+//           filteredResponses = await Promise.all(promises);
+//           filteredResponses = filteredResponses.filter(cluster => cluster.coordinates && cluster.coordinates.length > 0) as Cluster[];
+//         }
+
+//         // Convert the filtered responses to GeoJSON and render the heatmap
+//         const geoJSONData = this.convertToGeoJSON(filteredResponses);
+//         this.addGeoJSONSource(geoJSONData);
+//         this.calculateCrimeAnalysis(geoJSONData);
+//         this.calculateHighestCrimeTime(geoJSONData);
+
+
+//         this.map.on('click', 'crimes', async (e) => {
+//   if (e.features && e.features.length > 0) {
+//     const geometry = e.features[0].geometry;
+
+//     // Check if the geometry type is Point
+//     if (geometry.type === 'Point') {
+//       const coordinates: [number, number] = geometry.coordinates as [number, number];
+//       const properties = e.features[0].properties;
+
+//       // Log the properties to verify what data is present
+//       console.log('Clicked feature properties:', properties);
+
+//       if (properties) {
+       
+//         const barangayName = await this.getLocationName(coordinates[1], coordinates[0]);
+//         const eventTime = properties['event_time'] || 'Event Time Not Available';
+//          // Check if the map is filtered and retrieve the incident name accordingly
+//          const incidentName = applyFilter
+//          ? this.incidentTypeMap[this.selectedIncidentID] || 'Incident Name Not Available'
+//          : 'Incident Not Filtered'; // Message when not filtered
+
+
+
+//         // Display the popup with incident, barangay, and event details
+//         new mapboxgl.Popup()
+//           .setLngLat(coordinates)
+//           .setHTML(`
+//             <h3 style="color: #000000">${incidentName}</h3>
+//             <p style="color: #000000"><strong>Barangay:</strong> ${barangayName}</p>
+//             <p style="color: #000000" ><strong>Time Committed:</strong> ${eventTime}</p>
+//           `)
+//           .addTo(this.map);
+//       } else {
+//         console.warn('Properties are undefined or null.');
+//       }
+//     } else {
+//       console.warn('The geometry type is not a Point:', geometry.type);
+//     }
+//   } else {
+//     console.warn('No features found at the clicked location.');
+//   }
+// });
+
+
+//         console.log('Filtered coordinates data:', filteredResponses);
+//       },
+//       (error) => {
+//         console.error('Error fetching coordinates:', error);
+//       }
+//     );
 //   });
 // }
 
@@ -215,7 +265,6 @@ initializeMap(applyFilter: boolean) {
         let filteredResponses: Cluster[] = responses;
 
         if (applyFilter && this.selectedBarangays && this.selectedBarangays.length > 0) {
-          // Use Promise.all to resolve all location name promises
           const promises = responses.map(async (cluster) => {
             if (cluster.coordinates) {
               const matchedCoordinates = await Promise.all(
@@ -225,10 +274,13 @@ initializeMap(applyFilter: boolean) {
                 })
               );
 
-              // Only keep coordinates that matched the selected barangays
-              const filteredCoordinates = matchedCoordinates.filter((coord) => coord !== null) as { longitude: number; latitude: number; event_time?: string | undefined; }[];
+              const filteredCoordinates = matchedCoordinates.filter((coord) => coord !== null) as {
+                longitude: number;
+                latitude: number;
+                event_time?: string;
+                incident?: string;
+              }[];
 
-              // Ensure the returned cluster has the correct type
               return {
                 ...cluster,
                 coordinates: filteredCoordinates,
@@ -237,61 +289,52 @@ initializeMap(applyFilter: boolean) {
             return cluster;
           });
 
-          // Await all promises and filter out clusters with no valid coordinates
           filteredResponses = await Promise.all(promises);
           filteredResponses = filteredResponses.filter(cluster => cluster.coordinates && cluster.coordinates.length > 0) as Cluster[];
         }
 
-        // Convert the filtered responses to GeoJSON and render the heatmap
         const geoJSONData = this.convertToGeoJSON(filteredResponses);
         this.addGeoJSONSource(geoJSONData);
         this.calculateCrimeAnalysis(geoJSONData);
         this.calculateHighestCrimeTime(geoJSONData);
 
-
         this.map.on('click', 'crimes', async (e) => {
-  if (e.features && e.features.length > 0) {
-    const geometry = e.features[0].geometry;
+          if (e.features && e.features.length > 0) {
+            const geometry = e.features[0].geometry;
 
-    // Check if the geometry type is Point
-    if (geometry.type === 'Point') {
-      const coordinates: [number, number] = geometry.coordinates as [number, number];
-      const properties = e.features[0].properties;
+            if (geometry.type === 'Point') {
+              const coordinates: [number, number] = geometry.coordinates as [number, number];
+              const properties = e.features[0].properties;
 
-      // Log the properties to verify what data is present
-      console.log('Clicked feature properties:', properties);
+              if (properties) {
+                const barangayName = await this.getLocationName(coordinates[1], coordinates[0]);
+                const eventTime = properties['event_time'] || 'Event Time Not Available';
+                const incidentName = properties['incident'] || 'Incident Not Available';
 
-      if (properties) {
-       
-        const barangayName = await this.getLocationName(coordinates[1], coordinates[0]);
-        const eventTime = properties['event_time'] || 'Event Time Not Available';
-         // Check if the map is filtered and retrieve the incident name accordingly
-         const incidentName = applyFilter
-         ? this.incidentTypeMap[this.selectedIncidentID] || 'Incident Name Not Available'
-         : 'Incident Not Filtered'; // Message when not filtered
+                // Adjust based on the filtering context
+                const incidentType = applyFilter
+                  ? this.incidentTypeMap[this.selectedIncidentID] || 'Incident Type Not Available'
+                  : incidentName; // Use incident from properties if not filtered
 
-
-
-        // Display the popup with incident, barangay, and event details
-        new mapboxgl.Popup()
-          .setLngLat(coordinates)
-          .setHTML(`
-            <h3 style="color: #000000">${incidentName}</h3>
-            <p style="color: #000000"><strong>Barangay:</strong> ${barangayName}</p>
-            <p style="color: #000000" ><strong>Time Committed:</strong> ${eventTime}</p>
-          `)
-          .addTo(this.map);
-      } else {
-        console.warn('Properties are undefined or null.');
-      }
-    } else {
-      console.warn('The geometry type is not a Point:', geometry.type);
-    }
-  } else {
-    console.warn('No features found at the clicked location.');
-  }
-});
-
+                new mapboxgl.Popup()
+                  .setLngLat(coordinates)
+                  .setHTML(`
+                    <h3 style="color: #000000">${incidentName}</h3>
+                    <p style="color: #000000"><strong>Barangay:</strong> ${barangayName}</p>
+                    <p style="color: #000000"><strong>Time Committed:</strong> ${eventTime}</p>
+                    
+                  `)
+                  .addTo(this.map);
+              } else {
+                console.warn('Properties are undefined or null.');
+              }
+            } else {
+              console.warn('The geometry type is not a Point:', geometry.type);
+            }
+          } else {
+            console.warn('No features found at the clicked location.');
+          }
+        });
 
         console.log('Filtered coordinates data:', filteredResponses);
       },
@@ -301,6 +344,13 @@ initializeMap(applyFilter: boolean) {
     );
   });
 }
+
+
+
+
+
+
+
 
 
 
@@ -360,7 +410,7 @@ initializeMap(applyFilter: boolean) {
    
       if (item.coordinates && Array.isArray(item.coordinates)) {
         item.coordinates.forEach((coord) => {
-          const { longitude, latitude, event_time } = coord;
+          const { longitude, latitude, event_time, incident } = coord;
           if (longitude !== undefined && latitude !== undefined) {
             features.push({
               type: 'Feature',
@@ -368,6 +418,7 @@ initializeMap(applyFilter: boolean) {
                 cluster_label: item.cluster_label,
                 density: item.density,
                 event_time,
+                incident: incident || 'Incident Not Available'
               },
               geometry: {
                 type: 'Point',
@@ -862,32 +913,31 @@ createCrimeLocationPieChart(locations: string[], counts: number[]) {
     });
   }
 
-  // Load distinct incident types
-  loadIncidentTypes() {
-
-    this.crimeService.loadIncidentTypes().subscribe((incidentData: IncidentType[]) => {
-      this.incidentTypes = incidentData;
-      let incidentFound = false;
-
-      this.incidentTypeMap = {};
-      incidentData.forEach(incident => {
-        this.incidentTypeMap[incident.incident_id] = incident.name;
-        if (this.selectedIncidentID === incident.incident_id) {
-          this.incidentName = incident.name;
-          incidentFound = true; 
-          console.log('Incident Name Filtered:', this.incidentName)
-        }
+  loadIncidentTypes(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.crimeService.loadIncidentTypes().subscribe((incidentData: IncidentType[]) => {
+        this.incidentTypes = incidentData;
+        let incidentFound = false;
+  
+        this.incidentTypeMap = {};
+        incidentData.forEach(incident => {
+          this.incidentTypeMap[incident.incident_id] = incident.name;
+          if (this.selectedIncidentID === incident.incident_id) {
+            this.incidentName = incident.name;
+            incidentFound = true; 
+            console.log('Incident Name Filtered:', this.incidentName);
+          }
+        });
+  
+        resolve(); // Resolve the promise when done
+      }, error => {
+        console.error('Error loading incident types', error);
+        reject(error); // Reject the promise on error
       });
-
-      // if (!incidentFound) {
-      //   this.incidentName = 'unknown';
-      // }
-    }, error => {
-      console.error('Error loading incident types', error);
     });
-
-
   }
+
+  
 
   loadTotalCrimeDensity() {
     let totalDensity = 0;

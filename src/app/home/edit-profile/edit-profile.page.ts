@@ -61,6 +61,7 @@ export class EditProfilePage implements OnInit {
     workAddressId: 0,
     role: 'user',
     personId: 0,
+    profile_pic: new Uint16Array
   };
 
   personData: Person = {
@@ -144,9 +145,9 @@ export class EditProfilePage implements OnInit {
         const parsedData = JSON.parse(userData);
         this.personData = {
           personId: parsedData.personId || 0,
-          firstname: this.capitalizeFirstLetter(parsedData.first_name || ''),
-          middlename: this.capitalizeFirstLetter(parsedData.middle_name || ''),
-          lastname: this.capitalizeFirstLetter(parsedData.last_name || ''),
+          firstname: this.capitalizeWords(parsedData.first_name || ''),
+          middlename: this.capitalizeWords(parsedData.middle_name || ''),
+          lastname: this.capitalizeWords(parsedData.last_name || ''),
           sex: parsedData.sex, 
           birthdate: parsedData.birthdate, 
           civilStatus: parsedData.civil_status, 
@@ -160,10 +161,13 @@ export class EditProfilePage implements OnInit {
           contactNum: parsedData.contact_num, 
           homeAddressId: parsedData.home_address_id, 
           workAddressId: parsedData.work_address_id, 
-          role: '', 
+          role: 'Certified', 
           personId: parsedData.personId || 0,
-          profile_pic: '', 
+          profile_pic: new Uint16Array, 
         };
+        if (parsedData.profile_pic) {
+          this.avatarUrl = parsedData.profile_pic; 
+        }
 
 
         if(this.accountData.homeAddressId){
@@ -220,10 +224,12 @@ export class EditProfilePage implements OnInit {
     }
   }
 
-  capitalizeFirstLetter(string: string): string {
-    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  capitalizeWords(string: string): string {
+    return string
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
   }
-
 
   loadNationalities() {
     this.nationalityService.getNationalities().subscribe(
@@ -242,23 +248,45 @@ export class EditProfilePage implements OnInit {
     if (file) {
       this.selectedFile = file; 
       const reader = new FileReader();
+      
       reader.onload = (e) => {
-        this.avatarUrl = e.target?.result as string; 
+        this.avatarUrl = e.target?.result as string;
       };
-      reader.readAsDataURL(file); 
-
-      this.uploadAvatar(file);
+      reader.readAsDataURL(file);
     }
   }
-  uploadAvatar(file: File) {
-    this.mediumService.uploadItem(file).subscribe(
-      (response) => {
-        console.log('File uploaded successfully:', response);
-      },
-      (error) => {
-        console.error('Error uploading file:', error);
-      }
-    );
+
+  convertFileToBinary(file: File) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const binaryData = reader.result as ArrayBuffer; // Binary data
+      this.uploadAvatar(binaryData); // Pass binary data to updateAccount
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  uploadAvatar(binaryData: ArrayBuffer) {
+    const accountFormData = new FormData();
+
+    if (this.selectedFile) {
+      accountFormData.append('ProfilePicUrl', this.selectedFile, this.selectedFile.name); // Append the file
+    }
+    this.appendFormData(accountFormData, this.accountData);
+    
+    // Call the service to upload the account data
+    const personId = this.accountData.personId;
+    if (personId) {
+      this.accountService.updateAccount(personId, accountFormData).subscribe({
+        next: (res) => {
+          console.log('Account data updated successfully', res);
+        },
+        error: (err) => {
+          console.error('Error updating account data', err);
+        }
+      });
+    } else {
+      console.error('Error: personId is undefined.');
+    }
   }
 
   edit() {
@@ -275,6 +303,11 @@ export class EditProfilePage implements OnInit {
   }
 
   save() {
+
+    if (!this.accountData.password) {
+      alert("Please input password before updating");
+      return; // Stop further execution if password is not provided
+    }
 
     this.description.ethnicity = this.selectedNationality;
     this.userHomeAddress.zipCode = Number(this.home_zip_code);
@@ -332,8 +365,21 @@ export class EditProfilePage implements OnInit {
 
 
   updateData() {
-    
-    this.personService.update(this.person.personId, this.personData).subscribe({
+    // Convert `accountData` to FormData
+    const accountFormData = new FormData();
+    this.appendFormData(accountFormData, this.accountData);
+  
+    const personFormData = new FormData();
+    this.appendFormData(personFormData, this.personData);
+  
+    const homeAddressFormData = new FormData();
+    this.appendFormData(homeAddressFormData, this.userHomeAddress);
+  
+    const workAddressFormData = new FormData();
+    this.appendFormData(workAddressFormData, this.userWorkAddress);
+  
+    // Updating Person Data
+    this.personService.update(this.person.personId, personFormData).subscribe({
       next: (res) => {
         console.log('Person data updated successfully', res);
       },
@@ -342,8 +388,8 @@ export class EditProfilePage implements OnInit {
       }
     });
   
-  
-    this.locationService.updateLocation(this.userHomeAddress.locationId, this.userHomeAddress).subscribe({
+    // Updating Home Address
+    this.locationService.updateLocation(this.userHomeAddress.locationId, homeAddressFormData).subscribe({
       next: (res) => {
         console.log('Home address updated successfully', res);
       },
@@ -352,7 +398,8 @@ export class EditProfilePage implements OnInit {
       }
     });
   
-    this.locationService.updateLocation(this.userWorkAddress.locationId, this.userWorkAddress).subscribe({
+    // Updating Work Address
+    this.locationService.updateLocation(this.userWorkAddress.locationId, workAddressFormData).subscribe({
       next: (res) => {
         console.log('Work address updated successfully', res);
       },
@@ -363,7 +410,7 @@ export class EditProfilePage implements OnInit {
   
     const personId = this.accountData.personId;
     if (personId) {
-      this.accountService.updateAccount(personId, this.accountData).subscribe({
+      this.accountService.updateAccount(personId, accountFormData).subscribe({
         next: (res) => {
           console.log('Account data updated successfully', res);
         },
@@ -375,7 +422,16 @@ export class EditProfilePage implements OnInit {
       console.error('Error: personId is undefined.');
     }
   }
-
+  
+ 
+  appendFormData(formData: FormData, dataObject: any) {
+    for (const key in dataObject) {
+      if (dataObject.hasOwnProperty(key)) {
+        formData.append(key, dataObject[key]);
+      }
+    }
+  }
+  
   onAddressCheckboxChange(event: any) {
     this.isSameAddress = event.detail.checked;
 

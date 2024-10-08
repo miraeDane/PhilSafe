@@ -183,9 +183,15 @@
         <ion-input [(ngModel)]="userWorkAddress.block" name="workblockName" placeholder="Office/Bldg Name" disabled></ion-input>
       </ion-item>
 
+      <ion-label class="title-info" >Please input password before updating</ion-label>
+      <ion-item *ngIf="isEditing">
+        <ion-input [(ngModel)]="accountData.password" type="password" placeholder="Enter Password"></ion-input>
+      </ion-item>
+
   </ion-list>
 
   <div class="save">
+    
     <ion-button class="save" (click)="save()" *ngIf="isEditing">Save</ion-button>
   </div>
   

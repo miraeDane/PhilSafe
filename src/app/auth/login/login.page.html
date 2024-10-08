@@ -26,12 +26,22 @@
             <ion-icon name="person" slot="start"></ion-icon>
             <ion-icon slot="end"></ion-icon>
           </ion-item>
+          <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !email" color="danger">Please fill out this item<br></ion-label>
+      <ion-label *ngIf="showValidationMessages && !isValidEmail(email)" color="danger" style="margin-left:20px;" >Invalid email address</ion-label>
+
           
-          <ion-item>
-            <ion-input type="password" [(ngModel)]="password" id="pass" placeholder="Password"></ion-input>
-            <ion-icon src="assets/lock.svg" slot="start"></ion-icon>
-            <ion-icon name="eye" slot="end"></ion-icon>
-          </ion-item>
+      <ion-item>
+        <ion-input [type]="passwordVisible ? 'text' : 'password'" [(ngModel)]="em_password" id="pass" placeholder="Password"></ion-input>
+        <ion-icon src="assets/lock.svg" slot="start"></ion-icon>
+        <ion-icon 
+          [name]="passwordVisible ? 'eye-outline' : 'eye-off-outline'" 
+          slot="end" 
+          (click)="togglePasswordVisibility()">
+        </ion-icon>
+      </ion-item>
+      
+          <ion-label  *ngIf="showValidationMessages && em_password && em_password.length < 8" color="danger" style="margin-left:20px;">Password must be minimum of 8 characters</ion-label>
+      <ion-label *ngIf="showValidationMessages && !em_password" color="danger" style="margin-left:20px;">Please fill out this item</ion-label>
         </div>
         
         <div *ngIf="SignInType === 'Contact_Number'">
@@ -40,12 +50,20 @@
             <ion-icon name="call" slot="start"></ion-icon>
             <ion-icon slot="end"></ion-icon>
           </ion-item>
+          <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !contactNum" color="danger">Please fill out this item<br></ion-label>
+      <ion-label *ngIf="showValidationMessages && (!contactNum.startsWith('09'))" color="danger" style="margin-left:20px;">Contact number must start with 09</ion-label>
 
-          <ion-item>
-            <ion-input [type]="passwordVisible ? 'text' : 'password'" [(ngModel)]="password" id="pass" placeholder="Password"></ion-input>
-            <ion-icon src="assets/lock.svg" slot="start"></ion-icon>
-            <ion-icon name="eye" slot="end" (click)="togglePasswordVisibility()"></ion-icon>
-          </ion-item>
+      <ion-item>
+        <ion-input [type]="passwordVisible ? 'text' : 'password'" [(ngModel)]="con_password" id="pass" placeholder="Password"></ion-input>
+        <ion-icon src="assets/lock.svg" slot="start"></ion-icon>
+        <ion-icon 
+          [name]="passwordVisible ? 'eye-outline' : 'eye-off-outline'" 
+          slot="end" 
+          (click)="togglePasswordVisibility()">
+        </ion-icon>
+      </ion-item>
+          <ion-label  *ngIf="showValidationMessages && con_password && con_password.length < 8" color="danger" style="margin-left:20px;">Password must be minimum of 8 characters</ion-label>
+      <ion-label *ngIf="showValidationMessages && !con_password" color="danger" style="margin-left:20px;">Please fill out this item</ion-label>
         </div>
 
       
@@ -53,7 +71,11 @@
 
         <div class="next-container">
           <ion-button id="login" class="confirm" (click)="login()">Sign in</ion-button>
-          <ion-loading class="custom-loading" trigger="login" message="Logging in.." [duration]="5000"></ion-loading>
+          <ion-loading 
+        class="custom-loading" 
+        [isOpen]="loading" 
+        message="Logging in..">
+    </ion-loading>
           
         </div>
 
