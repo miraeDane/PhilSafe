@@ -86,49 +86,88 @@ export class HomePage implements OnInit, AfterViewInit {
 
     this.loadUserProfile();
     this.cdr.detectChanges();
-    this.getCurrentLocation();
-    this.getSolvedCrimes(7);
-    this.getTotalSolvedCrimes();
-    this.loadPoliceStations();
+    this.getCurrentLocation().then(() => {
+      this.loadPoliceStations().then(() => {
+          this.getSolvedCrimesForLocation(); // Call this only after police stations are loaded
+      });
+  });
+  this.getTotalSolvedCrimes();
     
   }
 
  
 
-  getCurrentLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          this.latitude = position.coords.latitude;
-          this.longitude = position.coords.longitude;
-          console.log('Latitude:', this.latitude);
-          console.log('Longitude:', this.longitude);
-          this.getLocationName(this.latitude, this.longitude).then((name) => {
-            this.locationName = name; // Set the location name
-          }).catch((error) => {
-            console.error(error);
-            this.locationName = 'Could not retrieve location name.';
-          });
-        },
-        (error) => {
-          console.error('Error getting location:', error);
-          this.locationName = this.handleLocationError(error);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0,
+  // getCurrentLocation() {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         this.latitude = position.coords.latitude;
+  //         this.longitude = position.coords.longitude;
+  //         console.log('Latitude:', this.latitude);
+  //         console.log('Longitude:', this.longitude);
+  //         this.getLocationName(this.latitude, this.longitude).then((name) => {
+  //           this.locationName = name; // Set the location name
+  //         }).catch((error) => {
+  //           console.error(error);
+  //           this.locationName = 'Could not retrieve location name.';
+  //         });
+  //       },
+  //       (error) => {
+  //         console.error('Error getting location:', error);
+  //         this.locationName = this.handleLocationError(error);
+  //       },
+  //       {
+  //         enableHighAccuracy: true,
+  //         timeout: 5000,
+  //         maximumAge: 0,
+  //       }
+  //     );
+  //   } else {
+  //     this.locationName = 'Geolocation is not supported by this browser.';
+  //     console.error(this.locationName);
+  //   }
+  // }
+
+  getCurrentLocation(): Promise<void> {
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    this.latitude = position.coords.latitude;
+                    this.longitude = position.coords.longitude;
+                    console.log('Latitude:', this.latitude);
+                    console.log('Longitude:', this.longitude);
+                    this.getLocationName(this.latitude, this.longitude).then((name) => {
+                        this.locationName = name; // Set the location name
+                        resolve(); // Resolve the promise
+                    }).catch((error) => {
+                        console.error(error);
+                        this.locationName = 'Could not retrieve location name.';
+                        resolve(); // Resolve even on error to avoid blocking
+                    });
+                },
+                (error) => {
+                    console.error('Error getting location:', error);
+                    this.locationName = this.handleLocationError(error);
+                    resolve(); // Resolve even on error to avoid blocking
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0,
+                }
+            );
+        } else {
+            this.locationName = 'Geolocation is not supported by this browser.';
+            console.error(this.locationName);
+            resolve(); // Resolve if geolocation is not supported
         }
-      );
-    } else {
-      this.locationName = 'Geolocation is not supported by this browser.';
-      console.error(this.locationName);
-    }
-  }
+    });
+}
 
 
   async getSolvedCrimes(stationId: number): Promise<number> { // Change return type to Promise<number>
-    const url = `https://172.30.8.253:7108/api/case/retrieve/local/${stationId}`;
+    const url = `${environment.ipAddUrl}api/case/retrieve/local/${stationId}`;
     return this.http.get<any[]>(url).toPromise().then((cases) => {
         if (cases) {
             const count = cases.filter(c => c.status.trim() === 'Solved').length;
@@ -188,19 +227,22 @@ export class HomePage implements OnInit, AfterViewInit {
 }
 
 
-loadPoliceStations() {
-  this.http.get<any[]>('assets/location/jurisdiction.json').subscribe(
-    (data) => {
-      this.policeStations = data; 
-      console.log('Loaded police stations:', this.policeStations);
-      this.getSolvedCrimesForLocation(); 
-    },
-    (error) => {
-      console.error('Error loading police stations:', error);
-    }
-  );
-}
+loadPoliceStations(): Promise<void> {
+  return new Promise((resolve, reject) => {
+      this.http.get<any[]>('assets/location/jurisdiction.json').subscribe(
+          (data) => {
+              this.policeStations = data; 
+              console.log('Loaded police stations:', this.policeStations);
+              resolve(); // Resolve when data is loaded
+          },
+          (error) => {
+              console.error('Error loading police stations:', error);
+              resolve(); // Resolve even on error to avoid blocking
+          }
+      );
+  });
 
+}
 async getSolvedCrimesForLocation() {
   const locationName = this.locationName; 
   const station = this.policeStations.find(station => 
@@ -211,9 +253,12 @@ async getSolvedCrimesForLocation() {
   if (station) {
     console.log(`Found station: ${station.stationName} with ID: ${station.stationId}`);
     const totalSolvedCrimes = await this.getSolvedCrimes(station.stationId);
+    this.solvedCrimesPerStation = totalSolvedCrimes;
+    this.stationName = station.stationName;
     console.log(`Total solved crimes for ${station.stationName}: ${totalSolvedCrimes}`);
   } else {
     console.log('No station found for the current location.');
+   
   }
 }
 
