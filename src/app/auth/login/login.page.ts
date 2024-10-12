@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccountSignInFromContactDto, AccountSignInFromEmailDto } from 'src/app/models/login';
+import { LoadingService } from 'src/app/services/loading.service';
 import { LoginService } from 'src/app/services/login.service';
 
 @Component({
@@ -40,7 +41,8 @@ export class LoginPage implements OnInit {
   constructor(
     private loginService: LoginService,
     private router: Router,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private loadingService: LoadingService 
   ) { }
 
   ngOnInit() {
@@ -138,6 +140,7 @@ export class LoginPage implements OnInit {
           sessionStorage.setItem('userData', JSON.stringify(response));
           localStorage.setItem('authenticated', '1');
           localStorage.setItem('personId', response.personId.toString());
+          this.loadingService.triggerRefresh();
           this.loading = false;
           
           

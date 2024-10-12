@@ -86,6 +86,7 @@ export class LoginService {
       map(response =>{
         if (response) {
           localStorage.removeItem('sessionData');
+          localStorage.removeItem('citizenId');
           console.log('Sign-out response:', response);
         }
         return response;

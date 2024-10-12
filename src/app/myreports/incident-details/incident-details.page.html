@@ -7,121 +7,28 @@
   </ion-toolbar>
 </ion-header>
 
-  <ion-content>
-    <div class="incident-type">
-    <!-- <div *ngIf="incident" class="incident-type"> -->
-      <!-- <h1>{{ incident.type }}</h1>
-      <p>Status: {{ incident.status }}</p>
-      <p>Progress: {{ incident.progress }}</p>
-      Add more details as needed -->
-      <div class="incident-type-child">
-        <ion-label class="incident-title">Incident Type</ion-label>
-        <ion-label class="incident-detail">Rape</ion-label>
-      </div>
-      
-      <!-- <div class="progress-bar-section">
-      <ion-label class="incident-status">Reviewing</ion-label>
-      <ion-progress-bar value="0.2" class="reviewing"></ion-progress-bar>
-    </div> -->
+<ion-content>
+  <div class="incident-type">
+    <ion-label>Report Details</ion-label>
+  </div>
+  <div class="report">
+    <div class="report-title">
+      <ion-label>Report ID:</ion-label>
+    <ion-label>Incident Name:</ion-label>
+    <ion-label>Report Category:</ion-label>
+    <ion-label>Incident Date:</ion-label>
+    <ion-label>Station Name:</ion-label>
+    <ion-label>Narrative:</ion-label>
+    <ion-label>E-Signature</ion-label>
     </div>
-    
-
-    <div class="segment-container">
-      <ion-segment
-        [(ngModel)]="selectedSegment"
-        (ionChange)="segmentChanged($event)"
-        class="custom-segment"
-      >
-        <ion-segment-button value="case-details" class="segment-button">
-          <ion-label>Case Details</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="witness" class="segment-button">
-          <ion-label>Witness</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="evidence" class="segment-button">
-          <ion-label>Evidence</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="suspect" class="segment-button">
-          <ion-label>Suspect</ion-label>
-        </ion-segment-button>
-      </ion-segment>
+    <div class="report-data">
+      <ion-label>{{ report.reportId }}</ion-label>
+      <ion-label>{{ report.subcategory_name }}</ion-label>
+      <ion-label>{{ report.category_name }}</ion-label>
+      <ion-label>{{ report.incident_date | date: 'medium' }}</ion-label>
+      <ion-label>{{ report.jurisdiction_id }}</ion-label>
+      <ion-label>{{ report.report_body }}</ion-label>
+      <ion-label>{{ report.e_signature }}</ion-label>
     </div>
-
-    <div *ngIf="selectedSegment === 'case-details'" class="segment-content" >
-      <ion-list lines="none">
-        <ion-item>
-          <ion-label>Blotter Number:</ion-label>
-          <ion-label>num</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label>Date Reported:</ion-label>
-          <ion-label>date</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label>Date of incident:</ion-label>
-          <ion-label>date</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label>Place of incident:</ion-label>
-          <ion-label>string</ion-label>
-        </ion-item>
-        <ion-item>
-          <ion-label>Investigated By:</ion-label>
-          <ion-label>string</ion-label>
-        </ion-item>
-      </ion-list>
-    </div>
-
-
-
-    <div *ngIf="selectedSegment === 'witness'" class="segment-content" >
-      <ion-list lines="none" class="incidenSt-list" routerLink="/w-details">
-        <ion-item >
-          <ion-label>Witness 1</ion-label>
-          <ion-label>Juan Dela Cruz</ion-label>
-        </ion-item>
-      </ion-list>
-      <ion-button class="add-btn"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add Witness</ion-button>
-    </div>
-
-
-    <div *ngIf="selectedSegment === 'evidence'" class="segment-content" >
-      <ion-list lines="none" class="incident-list"  routerLink="/e-details">
-        <ion-item>
-          <ion-label>Evidence 1</ion-label>
-          <ion-label>Image</ion-label>
-        </ion-item>
-      </ion-list>
-      <ion-button class="add-btn"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add Evidence</ion-button>
-      
-      <!-- <ion-list lines="none">
-      <div id="uploadfile" class="uploadfile">
-        <ion-label class="title-info">Upload new evidence</ion-label>
-        <ion-item>
-          <ion-input id="e-description" placeholder="Evidence/s' Description"> </ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-input id="location-collected" placeholder="Location Collected"> </ion-input>
-        </ion-item>
-           <input type="file" class="file" id="actual-btn" hidden/>
-           <div class="icon-label">
-             <ion-icon src="assets/upload.svg" class="upload-icon"></ion-icon>
-             <label for="actual-btn">Upload file/s</label>
-           </div>  
-           <p class="max-size">Maximum size up to 2GB</p>
-       </div>
-      </ion-list> -->
-    </div>
-
-
-    <div *ngIf="selectedSegment === 'suspect'" class="segment-content">
-      <ion-list lines="none" class="incident-list" routerLink="/s-details"> 
-        <ion-item>
-          <ion-label>Suspect 1</ion-label>
-          <ion-label>Daniel Padilla</ion-label>
-        </ion-item>
-      </ion-list>
-      <ion-button class="add-btn"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add Suspect</ion-button>
-    
-    </div>
-  </ion-content>
+  </div>
+</ion-content>

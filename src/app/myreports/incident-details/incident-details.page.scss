@@ -213,6 +213,40 @@ ion-toolbar {
     font-size: 15px;
   }
 
+  .report {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .report-title {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    flex-direction: column;
+  }
+
+  .report-data {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    flex-direction: column;
+  }
+
+
+  .report-title ion-label {
+    font-weight: bold;
+    color:#000000;
+    margin: 20px;
+
+  }
+
+  .report-data ion-label {
+    font-weight: normal;
+    color: #000000;
+  }
+
 
 
   

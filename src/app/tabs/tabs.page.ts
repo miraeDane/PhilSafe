@@ -43,6 +43,7 @@ export class TabsPage implements OnInit {
       this.loading = loading;
       this.changeDetectorRef.detectChanges();
     });
+    
   }
   navigateToReport() {
     this.router.navigate(['/tabs/report-as']); 

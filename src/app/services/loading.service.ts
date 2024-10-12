@@ -9,11 +9,20 @@ export class LoadingService {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   loading$ = this.loadingSubject.asObservable();
 
+  private refreshSubject = new BehaviorSubject<void>(undefined);
+  refresh$ = this.refreshSubject.asObservable();
+
   show() {
     this.loadingSubject.next(true);
   }
 
   hide() {
     this.loadingSubject.next(false);
+  }
+
+  triggerRefresh() {
+    setTimeout(() => {
+      this.refreshSubject.next();
+    }, 3000);
   }
 }

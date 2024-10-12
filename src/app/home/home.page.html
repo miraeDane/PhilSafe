@@ -105,18 +105,33 @@
       <ion-label id="solvedTitle" class="solvedTitle">
         Number of solved crimes </ion-label
       ><br />
-
+      
+      <ion-label id="province" class="province">
+        <ion-icon name="location" style="color:red" slot="start"></ion-icon> 
+        Current Location: {{ locationName }}
+      </ion-label>
       <div class="numbers">
-        <ion-label id="solvedNum" class="solvedNum"> 2,719 </ion-label>
+        <ion-label id="solvedNum" class="solvedNum"> {{solvedCrimesCount}} </ion-label>
         <ion-label id="solvedNumNation" class="solvedNumNation">
-          289
+          {{ solvedCrimesPerStation}}
         </ion-label>
       </div>
+<!-- 
+      <div class="location">
+        <ion-label id="province" class="province"> Your current location is: </ion-label>
+        <ion-label id="nation" class="nation"> Current location: </ion-label>
+      </div> -->
 
       <div class="location">
-        <ion-label id="province" class="province"> Cebu City Police Office </ion-label>
-        <ion-label id="nation" class="nation"> PS02 Abellana </ion-label>
+        <ion-label id="province" class="province">
+          Nearby Station: {{stationName}}
+        </ion-label>
+        <ion-label id="province" class="province">
+          Total Solved
+        </ion-label>
       </div>
+     
+      
     </div>
 
     <div class="articles">

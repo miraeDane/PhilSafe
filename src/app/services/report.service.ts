@@ -26,8 +26,8 @@ export class ReportService {
   }
 
  
-  getReports(): Observable<any> {
-    return this.http.get(`${this.reportUrl}api/report/retrieve/citizen`).pipe(
+  getReports(citizenId: any): Observable<any> {
+    return this.http.get(`${this.reportUrl}api/report/retrieve/citizen/${citizenId}`).pipe(
       catchError(this.handleError)
     );
   }

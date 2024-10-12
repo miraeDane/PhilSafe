@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ReportService } from '../services/report.service';
 import { CitizenService } from '../services/citizen.service';
+import { Report } from '../models/report';
+import { Subscription } from 'rxjs';
+import { LoadingService } from '../services/loading.service';
 
 @Component({
   selector: 'app-myreports',
@@ -12,18 +15,50 @@ export class MyreportsPage implements OnInit {
 
   incidents: any[] = []; 
   citizenId: string | null = null; 
+  reports: any[] = [];
+  crimeID: number = 1;
+  status: string = 'Reviewing';
+  progress: any = 0.2;
+  private refreshSubscription: Subscription | undefined;
+
+
+
 
   constructor(
     private router: Router,
     private reportService: ReportService,
-    private citizenService: CitizenService 
+    private citizenService: CitizenService,
+    private loadingService: LoadingService 
   
   ) { }
 
   ngOnInit() {
     this.loadCitizenReports();
     this.loadCitizenId();
+    this.checkUserDataAndLoadReports();
+
+    this.refreshSubscription = this.loadingService.refresh$.subscribe(() => {
+      this.checkUserDataAndLoadReports();
+    });
+    
   }
+
+  ngOnDestroy() {
+    // Unsubscribe to avoid memory leaks
+    if (this.refreshSubscription) {
+      this.refreshSubscription.unsubscribe();
+    }
+  }
+
+  checkUserDataAndLoadReports() {
+    const userData = sessionStorage.getItem('userData');
+    if (userData) {
+      this.loadCitizenId();
+    } else {
+      console.warn('No userData found in session storage. Please log in.');
+    }
+  }
+
 
   loadCitizenId() {
     const userData = sessionStorage.getItem('userData');
@@ -49,9 +84,10 @@ export class MyreportsPage implements OnInit {
 
   loadCitizenReports() {
     if (this.citizenId) {
-      this.reportService.getReports().subscribe(
+      this.reportService.getReports(this.citizenId).subscribe(
         (reports) => {
-          this.incidents = reports; // Store the reports
+          this.reports = reports; // Store the reports
+          this.reports
           console.log('CitizenID in reports', this.citizenId)
           console.log('Reports retrieved:', reports);
         },
@@ -61,16 +97,18 @@ export class MyreportsPage implements OnInit {
         }
       );
     } else {
-      console.warn('No citizenId available to load reports.');
+      console.log('No citizenId available to load reports.');
       //console.log('CitizenID in reports', this.citizenId)
     }
   }
 
-  // incidents = [
-  //   { crime_id:'1',type: 'Rape', status: 'Reviewing', progress: 0.2 },
-  //   { crime_id:'2',type: 'Assault', status: 'Progressing', progress: 0.5 },
-  //   { crime_id:'3',type: 'Robbery', status: 'Solved', progress: 1.0 }
-  // ];
+  
+
+  incident: any = {
+    crime_id: this.crimeID,
+    status: this.status, 
+    progress: this.progress 
+  }
   
   getStatusClass(status: string): string {
     if (status === 'Reviewing') {
@@ -83,8 +121,8 @@ export class MyreportsPage implements OnInit {
     return '';
   }
 
-  goToDetails(crime_id: string) {
-    this.router.navigate(['/incident-details', crime_id]);
+  goToDetails(reportId: string) {
+    this.router.navigate(['/incident-details', reportId]);
   }
 
 }

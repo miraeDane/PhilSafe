@@ -20,7 +20,7 @@ ion-toolbar {
     border: none;
     background-color: #ffffff;
     color: #000000;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    //box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-bottom: 10px;
     border-radius: 20px;
   }
@@ -43,6 +43,16 @@ ion-toolbar {
       padding: 10px;
       margin-left: 10px;
   }
+
+  .incident-type ion-item {
+    margin: 0 auto;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    padding-bottom: 30px;
+    border: 0.2px solid #0001;
+    padding-top: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
   
   .incident-type-child {
     display: flex;
@@ -51,6 +61,9 @@ ion-toolbar {
     width: 100%;
   }
   
+  .incident-type-child ion-label {
+    margin: 20px;
+  }
   .incident-item {
     flex: 1;
   }

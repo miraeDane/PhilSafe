@@ -1,0 +1,132 @@
+[
+    {
+        "stationId": 0,
+        "stationName": "Police Station 1 (PARI-AN)",
+        "jurisdiction": [
+            "Day-as",
+            "Kamagayan (Pob)",
+            "Lorega (San Miguel)",
+            "Pari-an",
+            "San Antonio (Pob)",
+            "T. Padilla",
+            "Zapatera"
+        ]
+    },
+    {
+        "stationId": 1,
+        "stationName": "Police Station 2 (FUENTE->ABELLANA)",
+        "jurisdiction": [
+            "Camputhaw (Pob)",
+            "Capitol Site (Pob)",
+            "Cogon Ramos (Pob)",
+            "Sambag I (Pob)",
+            "Sambag II (Pob)",
+            "Santa Cruz (Pob)"
+        ]
+    },
+    {
+        "stationId": 2,
+        "stationName": "Police Station 3 (WATERFRONT)",
+        "jurisdiction": [
+            "Carreta (Station 3)",
+            "San Roque (Ciudad)",
+            "Santo Nino",
+            "Tejero"
+        ]
+    },
+    {
+        "stationId": 3,
+        "stationName": "Police Station 4 (MABOLO)",
+        "jurisdiction": [
+            "Apas",
+            "Banilad",
+            "Carreta (Station 4)",
+            "Hippodromo",
+            "Kasambagan",
+            "Lahug",
+            "Luz",
+            "Mabolo"
+        ]
+    },
+    {
+        "stationId": 4,
+        "stationName": "Police Station 5 (CARBON)",
+        "jurisdiction": [
+            "Ermita",
+            "Kalubihan",
+            "Pahina Central"
+        ]
+    },
+    {
+        "stationId": 5,
+        "stationName": "Police Station 6 (PASIL)",
+        "jurisdiction": [
+            "Calamba",
+            "Pahina San Nicolas",
+            "Pasil",
+            "San Nicolas Proper",
+            "Sawang Calero",
+            "Suba"
+        ]
+    },
+    {
+        "stationId": 6,
+        "stationName": "Police Station 7 (PARDO)",
+        "jurisdiction": [
+            "Basak Pardo",
+            "Bulacao",
+            "Cogon Pardo",
+            "Inayawan",
+            "Kinasang-an",
+            "Pardo (Pob)"
+        ]
+    },
+    {
+        "stationId": 7,
+        "stationName": "Police Station 8 (TALAMBAN)",
+        "jurisdiction": [
+            "Adlaon",
+            "Agsungot",
+            "Bacayan",
+            "Binaliw",
+            "Cambinocot",
+            "Guba",
+            "Mabini",
+            "Pit-os",
+            "Pulangbato",
+            "San Jose",
+            "Sirao",
+            "Talamban"
+        ]
+    },
+    {
+        "stationId": 8,
+        "stationName": "Police Station 9 (GUADALUPE)",
+        "jurisdiction": [
+            "Guadalupe",
+            "Kalunasan",
+            "Sapang-Dako"
+        ]
+    },
+    {
+        "stationId": 9,
+        "stationName": "Police Station 10 (PUNTA PRINCESA)",
+        "jurisdiction": [
+            "Buhisan",
+            "Labangon",
+            "Punta Princesa",
+            "Quiot Pardo",
+            "Tisa",
+            "Toong"
+        ]
+    },
+    {
+        "stationId": 10,
+        "stationName": "Police Station 11 (MAMBALING)",
+        "jurisdiction": [
+            "Basak San Nicolas",
+            "Duljo (Pob)",
+            "Mambaling"
+        ]
+    }
+]

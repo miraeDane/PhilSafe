@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class SessionService {
+  private userData: any;
   
   setSessionData(key: string, data: any) {
     sessionStorage.setItem(key, JSON.stringify(data));
@@ -20,5 +21,13 @@ export class SessionService {
 
   clearAllSessionData() {
     sessionStorage.clear();
+  }
+
+  setUserData(data: any) {
+    this.userData = data;
+  }
+
+  getUserData() {
+    return this.userData;
   }
 }
