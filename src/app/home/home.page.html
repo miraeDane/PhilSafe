@@ -90,7 +90,7 @@
   </ion-toolbar>
 
   <div id="main-content" class="main-content">
-    <div class="segment-container">
+    <!-- <div class="segment-container">
       <ion-segment value="custom" class="custom-segment">
         <ion-segment-button id="duration" value="recent">
           <ion-label>Recent</ion-label>
@@ -99,7 +99,7 @@
           <ion-label>Previous</ion-label>
         </ion-segment-button>
       </ion-segment>
-    </div>
+    </div> -->
 
     <div class="solved">
       <ion-label id="solvedTitle" class="solvedTitle">
@@ -123,12 +123,19 @@
       </div> -->
 
       <div class="location">
-        <ion-label id="province" class="province">
-          Nearby Station: {{stationName}}
-        </ion-label>
-        <ion-label id="province" class="province">
-          Total Solved
-        </ion-label>
+        <div>
+          <ion-label id="province" class="province">
+            Nearby Station: <br>
+            {{stationName}}
+          </ion-label>
+        </div>
+        <div>
+          <ion-label id="province" class="province">
+            Total Solved in Region
+          </ion-label>
+        </div>
+        
+        
       </div>
      
       

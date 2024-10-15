@@ -51,6 +51,9 @@ export class HomePage implements OnInit, AfterViewInit {
   totalSolvedCrimesCount: number = 0;
   solvedCrimesPerStation: number = 0;
   policeStations: any[] = [];
+  isLoadingLocation: boolean = true; 
+  isLoadingCrimes: boolean = true; 
+  loadingMessage: string = '';
 
 
 
@@ -129,6 +132,8 @@ export class HomePage implements OnInit, AfterViewInit {
   // }
 
   getCurrentLocation(): Promise<void> {
+    this.isLoadingLocation = true; // Set loading state to true
+    this.loadingMessage = 'Loading your current location...'; // Set loading message
     return new Promise((resolve, reject) => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -140,6 +145,7 @@ export class HomePage implements OnInit, AfterViewInit {
                     this.getLocationName(this.latitude, this.longitude).then((name) => {
                         this.locationName = name; // Set the location name
                         resolve(); // Resolve the promise
+                        this.isLoadingLocation = false; 
                     }).catch((error) => {
                         console.error(error);
                         this.locationName = 'Could not retrieve location name.';
@@ -149,6 +155,7 @@ export class HomePage implements OnInit, AfterViewInit {
                 (error) => {
                     console.error('Error getting location:', error);
                     this.locationName = this.handleLocationError(error);
+                    this.isLoadingLocation = false; 
                     resolve(); // Resolve even on error to avoid blocking
                 },
                 {
@@ -160,6 +167,7 @@ export class HomePage implements OnInit, AfterViewInit {
         } else {
             this.locationName = 'Geolocation is not supported by this browser.';
             console.error(this.locationName);
+            this.isLoadingLocation = false; 
             resolve(); // Resolve if geolocation is not supported
         }
     });
@@ -167,6 +175,8 @@ export class HomePage implements OnInit, AfterViewInit {
 
 
   async getSolvedCrimes(stationId: number): Promise<number> { // Change return type to Promise<number>
+    this.isLoadingCrimes = true; // Set loading state to true
+    this.loadingMessage = 'Loading solved crimes in nearby station...'; // Set loading message
     const url = `${environment.ipAddUrl}api/case/retrieve/local/${stationId}`;
     return this.http.get<any[]>(url).toPromise().then((cases) => {
         if (cases) {
@@ -183,6 +193,8 @@ export class HomePage implements OnInit, AfterViewInit {
 }
 
   async getTotalSolvedCrimes() {
+    this.isLoadingCrimes = true; // Set loading state to true
+    this.loadingMessage = 'Loading solved crimes in your region...'; // Set loading message
     try {
         const totalSolvedCrimes = await Promise.all(
             Array.from({ length: 11 }, (_, i) => this.getSolvedCrimes(i + 1))
@@ -197,6 +209,8 @@ export class HomePage implements OnInit, AfterViewInit {
     } catch (error) {
         console.error('Error fetching total solved crimes:', error);
         this.totalSolvedCrimesCount = 0; // Optionally reset the count on error
+    } finally {
+      this.isLoadingCrimes = false;
     }
 }
 
@@ -244,11 +258,15 @@ loadPoliceStations(): Promise<void> {
 
 }
 async getSolvedCrimesForLocation() {
+  this.isLoadingCrimes = true; // Set loading state to true
+    this.loadingMessage = 'Loading nearby station name...';
   const locationName = this.locationName; 
   const station = this.policeStations.find(station => 
     station.jurisdiction.includes(locationName),
+
     console.log('Location Name hereee', locationName)
   );
+  
 
   if (station) {
     console.log(`Found station: ${station.stationName} with ID: ${station.stationId}`);
@@ -258,8 +276,10 @@ async getSolvedCrimesForLocation() {
     console.log(`Total solved crimes for ${station.stationName}: ${totalSolvedCrimes}`);
   } else {
     console.log('No station found for the current location.');
-   
+    this.stationName = 'Unknown Station';
   }
+
+  this.isLoadingCrimes = false;
 }
 
   handleLocationError(error: GeolocationPositionError): string {

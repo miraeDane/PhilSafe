@@ -19,16 +19,16 @@
     <ion-label>Incident Date:</ion-label>
     <ion-label>Station Name:</ion-label>
     <ion-label>Narrative:</ion-label>
-    <ion-label>E-Signature</ion-label>
+    <!-- <ion-label>E-Signature</ion-label> -->
     </div>
-    <div class="report-data">
-      <ion-label>{{ report.reportId }}</ion-label>
+    <div class="report-data" *ngIf="report">
+      <ion-label>{{ report.report_id }}</ion-label>
       <ion-label>{{ report.subcategory_name }}</ion-label>
       <ion-label>{{ report.category_name }}</ion-label>
       <ion-label>{{ report.incident_date | date: 'medium' }}</ion-label>
-      <ion-label>{{ report.jurisdiction_id }}</ion-label>
+      <ion-label>{{ report.jurisdiction_name }}</ion-label>
       <ion-label>{{ report.report_body }}</ion-label>
-      <ion-label>{{ report.e_signature }}</ion-label>
+      <!-- <ion-label>{{ report.e_signature }}</ion-label> -->
     </div>
-  </div>
+  </div> 
 </ion-content>

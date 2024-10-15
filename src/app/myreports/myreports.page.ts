@@ -122,7 +122,8 @@ export class MyreportsPage implements OnInit {
   }
 
   goToDetails(reportId: string) {
-    this.router.navigate(['/incident-details', reportId]);
+    this.router.navigate(['/incident-details'], { queryParams: { reportId } });
+    //this.router.navigate(['/incident-details', reportId]);
   }
-
+  
 }

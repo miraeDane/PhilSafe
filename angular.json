@@ -132,8 +132,10 @@
           "options": {
             "lintFilePatterns": [
               "src/**/*.ts",
-              "src/**/*.html"
-            ]
+              "src/**/*.html" 
+            ],
+            "host": "0.0.0.0",
+            "disableHostCheck": true
           }
         }
       }

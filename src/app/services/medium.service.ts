@@ -38,7 +38,7 @@ export class MediumService {
   }
 
   uploadItemWithDetails(formData: FormData, reportId: number): Observable<any> {
-    return this.http.post(`${this.mediaUrl}api/media/upload/item/${reportId}`, formData).pipe(
+    return this.http.post(`${this.mediaUrl}api/media/upload/item/citizen/${reportId}`, formData).pipe(
       catchError(this.handleError)
     );
   }

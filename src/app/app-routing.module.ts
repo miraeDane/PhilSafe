@@ -67,7 +67,7 @@ const routes: Routes = [
   },
   
   {
-    path: 'incident-details/:id',
+    path: 'incident-details',
     loadChildren: () => import('./myreports/incident-details/incident-details.module').then( m => m.IncidentDetailsPageModule),
     canActivate: [AuthGuard],
   },

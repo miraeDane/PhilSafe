@@ -69,16 +69,22 @@
               [(ngModel)]="selectedBarangays"
               multiple="true"
               placeholder="Choose Barangay"
+              (ionChange)="onBarangaySelection()"
             >
-              <ion-select-option
-                *ngFor="let barangay of barangays"
-                [value]="barangay"
-              >
-                {{ barangay }}
-              </ion-select-option>
+            
+            <ion-select-option value="All Barangays">
+              All Barangays
+            </ion-select-option>
+            <ion-select-option
+              *ngFor="let barangay of barangays"
+              [value]="barangay"
+            >
+              {{ barangay }}
+            </ion-select-option>
+
             </ion-select>
           </ion-item>
-
+ 
         
 
           <ion-button (click)="applyFilter()">Apply Filter</ion-button>

@@ -315,5 +315,82 @@ ion-title {
     width: 200px;
   }
   
+  ion-loading.login {
+    --background: #e3edff;
+    --spinner-color: #1c6dff;
+  
+    color: #1c6dff;
+  }
+
+  .loading-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px; /* Add some spacing */
+  }
+
+  .custom-modal {
+    --height: 25%;
+    --width: 80%; 
+    --padding: 0;
+    --background: #ffffff;
+    --color: #000000
+  }
+  
+  .custom-modal ion-header {
+    background-color: #f8f8f8;
+  }
+
+  .custom-modal ion-toolbar {
+    --background: #007acc;
+    --color: #ffffff;
+    height: 50px;
+  }
+  
+  .custom-modal ion-content {
+    padding: 16px;
+    --color: #000000
+  }
+  
+  .custom-modal ion-button {
+    --background: #007acc;
+      --color: #ffffff;
+      --border-width: 20px;
+      --border-radius: 50px;
+      width: 80%;
+      top: 10px;
+      
+
+  }
+  
+  .custom-modal ion-item{
+    margin: 20px;
+    --color: #000000;
+    --background: #ffffff;
+  }
+  
+  .custom-modal ion-buttons {
+    --background: none;
+  }
+  
+  .home-button-modal {
+    display: flex;
+    justify-content: center;
+    align-items:  center;
+    padding-top: 17px;
+  }
+
+  .home-button-modal ion-button {
+    --background: #40dc59;
+    
+  }
+
+  .content {
+      display: flex;
+      justify-content: center;
+      align-items:  center;
+      margin: 20px;
+  }
+ 
  
   

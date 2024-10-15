@@ -31,9 +31,10 @@ import { switchMap, concatMap, of, EMPTY, tap, catchError, forkJoin  } from 'rxj
 import { Victim } from '../models/victim';
 import { OccupationService } from '../services/occupation.service';
 import { ReportService } from '../services/report.service';
-import { getItem } from 'localforage-cordovasqlitedriver';
 import { IncidentType } from '../models/incident-type';
 import { CitizenService } from '../services/citizen.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -234,6 +235,21 @@ export class ReportPage implements OnInit {
   selectedIncidentID: number = 0;
   incidentTypes: IncidentType[] = [];
   incidentTypeMap: { [key: number]: string } = {};
+  latitude: number | null = null;
+  longitude: number | null = null;
+  locationError: string = '';
+  locationName: string = 'Your current location is unknown.';
+  stationName: string = 'Unknown Station';
+  solvedCrimesCount: number = 0;
+  totalSolvedCrimesCount: number = 0;
+  solvedCrimesPerStation: number = 0;
+  policeStations: any[] = [];
+  isLoadingLocation: boolean = true; 
+  isLoadingCrimes: boolean = true; 
+  loadingMessage: string = '';
+  loading: boolean = false;
+  isModalOpen: boolean = false;
+  
 
 
 
@@ -252,7 +268,8 @@ export class ReportPage implements OnInit {
     private personService: PersonService,
     private occupationService: OccupationService,
     private reportService: ReportService,
-    private citizenService: CitizenService
+    private citizenService: CitizenService,
+    private http: HttpClient
     
   ) {
     this.dateOfBirth = new Date().toISOString().substring(0, 10);
@@ -309,6 +326,11 @@ export class ReportPage implements OnInit {
             }
         );
     }
+
+    this.getCurrentLocation().then(() => {
+      this.loadPoliceStations().then(() => {
+      });
+  });
   }
 
 
@@ -912,7 +934,119 @@ loadIncidentTypes() {
   /**************************************************************************************************/
 
 
-save(){
+
+
+
+  getCurrentLocation(): Promise<void> {
+    this.isLoadingLocation = true; // Set loading state to true
+    this.loadingMessage = 'Loading your current location...'; // Set loading message
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    this.latitude = position.coords.latitude;
+                    this.longitude = position.coords.longitude;
+                    console.log('Latitude:', this.latitude);
+                    console.log('Longitude:', this.longitude);
+                    this.getLocationName(this.latitude, this.longitude).then((name) => {
+                        this.locationName = name; // Set the location name
+                        resolve(); // Resolve the promise
+                        this.isLoadingLocation = false; 
+                    }).catch((error) => {
+                        console.error(error);
+                        this.locationName = 'Could not retrieve location name.';
+                        resolve(); // Resolve even on error to avoid blocking
+                    });
+                },
+                (error) => {
+                    console.error('Error getting location:', error);
+                    this.locationName = this.handleLocationError(error);
+                    this.isLoadingLocation = false; 
+                    resolve(); // Resolve even on error to avoid blocking
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0,
+                }
+            );
+        } else {
+            this.locationName = 'Geolocation is not supported by this browser.';
+            console.error(this.locationName);
+            this.isLoadingLocation = false; 
+            resolve(); // Resolve if geolocation is not supported
+        }
+    });
+}
+
+getLocationName(latitude: number, longitude: number): Promise<string> {
+  const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${environment.mapboxKey}&types=locality,neighborhood&limit=1`;
+
+  return new Promise((resolve, reject) => {
+      this.http.get<any>(url).subscribe(
+          (response: { features: { text: string }[] }) => { // Add type annotation here
+              const features = response?.features || [];
+              let barangayName = 'Unknown location';
+
+              if (features.length > 0) {
+                  barangayName = features[0].text || 'Unknown location';
+              }
+
+              resolve(barangayName);
+          },
+          (error: any) => { // Add type annotation here
+              console.error('Error fetching location name:', error);
+              reject('Unknown location');
+          }
+      );
+  });
+}
+
+handleLocationError(error: GeolocationPositionError): string {
+  switch (error.code) {
+    case error.PERMISSION_DENIED:
+      return 'User denied the request for Geolocation.';
+    case error.POSITION_UNAVAILABLE:
+      return 'Location information is unavailable.';
+    case error.TIMEOUT:
+      return 'The request to get user location timed out.';
+    default:
+      return 'An unknown error occurred.';
+  }
+}
+
+async loadPoliceStations() {
+  try {
+    const data = await this.http.get<any[]>('assets/location/jurisdiction1.json').toPromise();
+    
+    // Check if data is defined and is an array
+    if (Array.isArray(data)) {
+      this.policeStations = data; // Store the police stations data
+    } else {
+      console.error('Expected an array but received:', data);
+      this.policeStations = []; // Assign an empty array if data is not valid
+    }
+  } catch (error) {
+    console.error('Error loading police stations:', error);
+    this.policeStations = []; // Assign an empty array on error
+  }
+}
+
+
+
+closeModal() {
+  this.isModalOpen = false; 
+}
+
+goBack() {
+  this.closeModal(); 
+  setTimeout(() => {
+    this.router.navigate(['/tabs/home']);
+  }, 100);
+}
+
+
+async save(){
 
 
 const heightNumber = parseFloat(this.sus_height);
@@ -1200,7 +1334,28 @@ this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
   });
 
   
+  await this.getCurrentLocation();
+
+  const locationName = this.locationName;
+  const station = this.policeStations.find(station => 
+    station.jurisdiction.includes(locationName),
+    console.log('Your current location is:', locationName )
+  );
+
+  if (station) {
+    console.log(`Found station: ${station.stationName} with ID: ${station.stationId}`);
+    this.reportData.stationId = station.stationId;
+    //this.reportData.stationId = 7
+  } else {
+    console.error('No station found for the current location.');
+    return;
+  }  
+
+  this.loadingMessage = 'Loading...';
+  this.loading = true;
+  //this.reportData.stationId = 7;
   
+
   const formData = new FormData();
   formData.append('reportId', this.reportData.reportId.toString());
   formData.append('reportBody', this.reportData.reportBody);
@@ -1225,17 +1380,24 @@ this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
           console.log('Report submitted successfully:', response);
 
           console.log('Report submission response:', response);
-          const newReportId = response.report_id;
+          const newReportId = response.id;
           if (!newReportId) {
               console.error('newReportId is undefined in the response.');
+              this.loading = false; 
               return;
+              
           }
 
+         this.loadingMessage = `Report submitted to ${station.stationName}`;
+          
+          this.loading = false;
           const formDataMedium = new FormData();
           const reportMedium = {
               reportId: newReportId,
               crime_id: this.selectedIncidentID
           }; 
+
+          this.isModalOpen = true;
 
           formDataMedium.append('File', this.idData.filename);
           formDataMedium.append('Description', this.idData.description || '');
@@ -1257,6 +1419,7 @@ this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
       (error) => {
           console.log('ReportData:', this.reportData);
           console.error('Error submitting report:', error);
+          this.loading = false;
       }
   );
   
@@ -1268,7 +1431,11 @@ this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
   console.log('Suspect Data: ', this.suspect);
   console.log('Victim Data: ', this.victim);
 
+  // this.isModalOpen = false;
+  // this.router.navigate(['/tabs/home']);
+
 }
+
   
 
 }

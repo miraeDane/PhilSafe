@@ -467,13 +467,17 @@ ion-modal {
   --background: none;
 }
 .custom-modal {
-  --height: 35%;
+  --height: 40%;
   --width: 80%; 
   --padding: 0;
 }
 
 .custom-modal ion-header {
   background-color: #f8f8f8;
+}
+
+.custom-modal ion-toolbar {
+  height: 50px;
 }
 
 .custom-modal ion-content {
