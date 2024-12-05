@@ -25,8 +25,8 @@ export class AddSuspectPage implements OnInit {
     contactDetails: { email: '',  mobileNum: '' },
     homeAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', zipCode: 0 },
     workAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '',block:'', zipCode: 0 },
-    description: { descriptionId: 0, ethnicity: '', height: 0, weight: 0, eyeColor: '', hairColor: '', drug: false, alcohol: false, distinguishingMark:'' },
-    occupation: { occupationId: 0, name: '' },
+    description: { descriptionId: 0, ethnicity: '', height: 0, weight: 0, eyeColor: '', hairColor: '', drug: false, alcohol: false, distinguishingMark:'', occupation: { occupationId: 0, name: ''} },
+  
     isUnidentified: false, 
     suspect: {suspectId: 0, personId: 0, isCaught: false}
   };

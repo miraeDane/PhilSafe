@@ -46,7 +46,7 @@ ion-title {
     --color-checked: white;
     text-align: center;
     width: 150px;
-    font-size: 40px;
+    font-size: 25px;
   
   }
 
@@ -292,6 +292,8 @@ ion-title {
   .add-items {
     display: flex;
     flex-direction: column;
+    padding: 15px;
+    margin-left: 10px;
   }
 
   .file-name {
@@ -392,5 +394,60 @@ ion-title {
       margin: 20px;
   }
  
- 
+  .shake {
+    animation: shake 0.3s ease;
+  }
+  
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+  }
+  
+ .signature-item {
+   padding: 2px;
+  
+ }
+
+ ion-item#signature-item  {
+  border: 0px solid;
+  display: math;
+ }
+
+ ion-button#signature-item {
+  padding: 10px;
+  width: 150px;
+ }
+
+
+ ion-button#proceed  {
+    --background: #007acc;
+      --color: #ffffff;
+      --border-width: 20px;
+      --border-radius: 50px;
+      width: 80%;
+      top: 10px;
+  }
+
+  .required .required-asterisk {
+    color: red;
+    font-size: 1.2rem; /* Adjust size */
+    margin-left: 4px;
+  }
+  
+  .required ion-label {
+    display: flex; /* Align text and asterisk properly */
+  }
+  
+  .custom-class {
+    background-color: #f9f9f9; /* Example styling for custom-class */
+    border: 1px solid #ddd;
+    padding: 8px;
+    border-radius: 4px;
+  }
+  
+  /* Ensure that adding 'required' won't override the existing styles */
+  .required.custom-class {
+    border-color: #ff0000; /* Optional: Highlight required items visually */
+  }
   

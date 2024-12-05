@@ -114,7 +114,7 @@ export class CreateAccountPage implements OnInit {
   loading: boolean = false;
   showValidationMessages = false;
   passwordVisible: boolean = false;
-  confirmPasswordVisible: boolean = false;
+  confirmPasswordVisible: boolean = false; 
   
 
   constructor(

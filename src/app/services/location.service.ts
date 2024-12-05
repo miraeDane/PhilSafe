@@ -48,15 +48,38 @@ export class LocationService {
     return this.http.get<Barangay[]>(this.cebuBarangays);
   }
 
-  getCoordinates(): Observable<Cluster[]> {
-    return this.http.get<Cluster[]>(`${this.locationURL}api/location/retrieve/mapcoordinates`);
+  // getCoordinates(): Observable<Cluster[]> {
+  //   return this.http.get<Cluster[]>(`${this.locationURL}api/location/retrieve/mapcoordinates`);
     
-  }
+  // }
 
+  // getFullCoordinates(incidentID: number): Observable<Cluster[]> {
+  //   return this.http.get<Cluster[]>(`${this.locationURL}api/location/retrieve/mapcoordinates/${incidentID}`);
+  // }
+  
+  getCoordinates(): Observable<Cluster[]> {
+    return this.http.get<Cluster[]>(`${this.locationURL}api/location/retrieve/mapcoordinates`).pipe(
+      map(clusters => 
+        clusters.sort((a, b) => {
+          const nameA = a.barangay || ''; // Fallback to an empty string if undefined
+          const nameB = b.barangay || ''; // Fallback to an empty string if undefined
+          return nameA.localeCompare(nameB);
+        })
+      )
+    );
+  }
+  
   getFullCoordinates(incidentID: number): Observable<Cluster[]> {
-    return this.http.get<Cluster[]>(`${this.locationURL}api/location/retrieve/mapcoordinates/${incidentID}`);
+    return this.http.get<Cluster[]>(`${this.locationURL}api/location/retrieve/mapcoordinates/${incidentID}`).pipe(
+      map(clusters => 
+        clusters.sort((a, b) => {
+          const nameA = a.barangay || ''; // Fallback to an empty string if undefined
+          const nameB = b.barangay || ''; // Fallback to an empty string if undefined
+          return nameA.localeCompare(nameB);
+        })
+      )
+    );
   }
-
 
 
 
@@ -82,14 +105,14 @@ export class LocationService {
   }
 
     getLocation(locationId: number): Observable<any> {
-      return this.http.get(`${this.locationURL}api/retrieve/${locationId}`, { observe: 'response' })
+      return this.http.get(`${this.locationURL}api/location/retrieve/${locationId}`, { observe: 'response' })
         .pipe(
           map((response: HttpResponse<any>) => {
             if (response.status === 200) {
-              console.log('RESPONSE FROM PERSON SERVICE', response.body)
+              console.log('RESPONSE FROM LOCATION SERVICE', response.body)
               return response.body;
             } else {
-              console.log('RESPONSE FROM PERSON SERVICE', response.body)
+              console.log('RESPONSE FROM LOCATION SERVICE', response.body)
               return null;
             }
           }),

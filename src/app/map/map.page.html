@@ -193,6 +193,16 @@
                 height="300"
               ></canvas>
             </div>
+
+            <ion-item class="modal-analysis">
+              <ion-label class="modal-analysis">Top 5 Crime Locations:</ion-label>
+              <ion-label class="modal-name" style="font-weight: normal; text-align: end">
+                <ng-container *ngFor="let location of topCrimeLocations">
+                  {{ location.location }}: {{ location.count }}<br>
+                </ng-container>
+              </ion-label>
+            </ion-item>
+    
             <ion-item class="modal-analysis">
               <ion-label class="modal-analysis"
                 >Highest Crime per Time:</ion-label

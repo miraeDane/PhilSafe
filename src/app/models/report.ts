@@ -1,4 +1,5 @@
 import { Citizen } from "./citizen";
+import { Location } from "./location";
 import { Crime } from "./crime";
 import { Medium } from "./medium";
 import { ReportSubCategory } from "./report-sub-category";
@@ -13,7 +14,7 @@ export interface Report {
     locationId?: number; 
     stationId: number;
     crimeId?: number; 
-    reportedDate: string; 
+    reportedDate?: string; 
     blotterNum: string;
     eSignature: number[] | Uint8Array | Blob; 
     signatureExt: string;

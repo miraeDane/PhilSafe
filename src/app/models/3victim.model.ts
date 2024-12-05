@@ -2,10 +2,10 @@ import { BasePerson, ContactDetails, Address, Description, Occupation } from './
 import { Victim } from './victim';
 
 export interface VictimCommon extends BasePerson {
-  contactDetails: ContactDetails;
+  contactDetails?: ContactDetails;
   homeAddress: Address;
   workAddress: Address;
   description: Description
-  occupation: Occupation;
+  occupation?: Occupation;
   victim: Victim
 }

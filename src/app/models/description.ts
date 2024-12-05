@@ -20,7 +20,7 @@ export interface Description {
     height?: number;
     weight?: number;
     personId?: number;
-    occupationId?: number;
+    //occupationId?: number;
     witnessId?: number;
     victimId?: number;
     suspectId?: number;
@@ -33,7 +33,6 @@ export interface Description {
     datetimeLastSeen?: string; 
     placeLastSeen?: string;
     bloodType?: string;
-  
     ego?: Ego; 
     location?: Location; 
     occupation?: Occupation;

@@ -160,7 +160,7 @@ export class HomePage implements OnInit, AfterViewInit {
                 },
                 {
                     enableHighAccuracy: true,
-                    timeout: 5000,
+                    timeout: 20000,
                     maximumAge: 0,
                 }
             );
@@ -266,7 +266,7 @@ async getSolvedCrimesForLocation() {
 
     console.log('Location Name hereee', locationName)
   );
-  
+  console.log("Station: ", station)
 
   if (station) {
     console.log(`Found station: ${station.stationName} with ID: ${station.stationId}`);

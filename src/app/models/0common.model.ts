@@ -39,8 +39,8 @@ export interface BasePerson {
     witnessId?: number;
     suspectId?: number;
     personId?: number;
-    occupationId?: number;
     distinguishingMark?: string;
+    occupation?: Occupation
   }
   
   export interface Occupation {

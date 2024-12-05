@@ -1,6 +1,4 @@
-import { Citizen } from './citizen'; 
-import { Report } from './report'; 
-import { TransactionLink } from './transaction-link'; 
+import { TransactionLink } from "./transaction-link";
 
 export interface Transaction {
   transactionId: number;
@@ -8,7 +6,5 @@ export interface Transaction {
   paymentAmount: number;
   citizenId: number;
   reportId: number;
-  citizen: Citizen;
-  report: Report;
-  transcLink: TransactionLink;
+  transactionLink: TransactionLink
 }

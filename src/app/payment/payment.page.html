@@ -1,0 +1,119 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/report"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Payment</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Payment</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Payment Method</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-segment
+        [(ngModel)]="selectedPaymentMethod"
+        (ionChange)="onPaymentMethodChange()"
+      >
+        <ion-segment-button value="paypal">
+          <img src="assets/paypal.png" width="50px" />
+        </ion-segment-button>
+        <ion-segment-button value="mastercard">
+          <img src="assets/mastercard.png" width="50px" />
+        </ion-segment-button>
+        <ion-segment-button value="gcash">
+          <img src="assets/gcash.png" width="50px" />
+        </ion-segment-button>
+      </ion-segment>
+
+      <div *ngIf="selectedPaymentMethod === 'paypal'">
+        <ion-item>
+          <ion-label position="floating">Recipient Email</ion-label>
+          <ion-input
+            type="email"
+            [(ngModel)]="recipientEmail"
+            required
+          ></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Amount</ion-label>
+          <ion-input type="number" [(ngModel)]="amount" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Currency</ion-label>
+          <ion-select [(ngModel)]="currency" required>
+            <ion-select-option value="PHP">PHP</ion-select-option>
+            <ion-select-option value="USD">USD</ion-select-option>
+            <ion-select-option value="EUR">EUR</ion-select-option>
+            <ion-select-option value="GBP">GBP</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Note (Optional)</ion-label>
+          <ion-input type="text" [(ngModel)]="note"></ion-input>
+        </ion-item>
+      </div>
+
+      <ion-button
+        class="send-payment"
+        expand="full"
+        (click)="submitPayment()"
+        [disabled]="!recipientEmail || !amount || !currency"
+      >
+        Send Payment
+      </ion-button>
+      <ion-loading
+        class="custom-loading"
+        [isOpen]="loading"
+        [message]="loadingMessage"
+      >
+      </ion-loading>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-toast
+    [isOpen]="showToast"
+    message="Payment initiated successfully!"
+    duration="5000"
+    position="top"
+    positionAnchor="header"
+    (didDismiss)="showToast = false"
+  >
+  </ion-toast>
+
+  <ion-modal class="custom-modal" id="confirmationModal" [isOpen]="isModalOpen" (willDismiss)="closeModal()">
+    <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Confirm Message</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeModal()">Close</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <div class="content">
+        <p>
+          This is to confirm and acknowledge that your report has been forwarded to nearby station
+        </p>
+      </div>
+      
+      <div class="home-button-modal">
+        <ion-button expand="full" (click)="goBack()">Go back to Homepage</ion-button>
+      </div>
+     
+    </ion-content>
+  </ng-template>
+  </ion-modal>
+</ion-content>

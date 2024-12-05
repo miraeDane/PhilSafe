@@ -64,6 +64,7 @@
               </ion-select-option>
           </ion-select>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !selectedIncidentID" color="danger">Please fill out this item</ion-label>
       </ion-list>
       <div class="anonymous-person-info">
         <ion-label class="title-info-personal">PERSONAL INFORMATION</ion-label>
@@ -78,61 +79,77 @@
         </ion-buttons>
       </div>
       <ion-list class="info" lines="none">
-        <ion-item >
+        <ion-item [class.shake]="showValidationMessages && !witness.firstname">
           <ion-input [(ngModel)]="witness.firstname" id="fname" placeholder="First Name" [disabled]="isDataLoaded"> </ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.firstname" color="danger">Please fill out this item</ion-label>
+        
+        
 
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !witness.middlename">
           <ion-input [(ngModel)]="witness.middlename" id="mname" placeholder="Middle Name" [disabled]="isDataLoaded"> </ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.middlename" color="danger">Please fill out this item</ion-label>
+        
 
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !witness.lastname">
           <ion-input [(ngModel)]="witness.lastname" id="lname" placeholder="Last Name" [disabled]="isDataLoaded"> </ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.lastname" color="danger">Please fill out this item</ion-label>
 
-        <ion-item>
+        <!-- <ion-item [class.shake]="showValidationMessages && !witness.description.ethnicity">
           <ion-select  id="citizenship" placeholder="Citizenship" [(ngModel)]="witness.description.ethnicity">
             <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality">
               {{ nationality }}
             </ion-select-option>
           </ion-select>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.description.ethnicity" color="danger">Please fill out this item</ion-label>
+
+        <ion-item [class.shake]="showValidationMessages && !witness.description.occupation.name" >
+          <ion-input [(ngModel)]="witness.description.occupation.name" name="occupation" placeholder="Occupation" ></ion-input>
+        </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.description.occupation.name" color="danger">Please fill out this item</ion-label> -->
 
         <div class="detail-select">
-          <ion-item class="dob">
-            <ion-icon name="calendar" color="black"></ion-icon>
-            <ion-input [(ngModel)]="witness.birthdate" [disabled]="isDataLoaded"
-              name="dateOfbirth"
-              [ngModelOptions]="{standalone: true}"
-              placeholder="Date of Birth"
-              value="{{ dateOfBirth | date: 'yyyy.MM.dd' }}"
-              id="date"
-              class="ion-text-end"
-            ></ion-input>
-            <ion-popover trigger="date" >
-              <ng-template>
-                <ion-datetime
-                  presentation="date"
-                  [(ngModel)]="dateOfBirth"
-                  locale="en"  
-                  (ionChange)="updateBirthdate()"
-                ></ion-datetime>
-              </ng-template>
-            </ion-popover>
-          </ion-item>
+          <ion-item class="dob" [class.shake]="showValidationMessages && !witness.birthdate">
+  <ion-icon name="calendar" color="black"></ion-icon>
+  <ion-input
+    [(ngModel)]="witness.birthdate"
+    [disabled]="isDataLoaded"
+    name="witnessDateOfBirth"
+    [ngModelOptions]="{standalone: true}"
+    placeholder="Date of Birth"
+    class="ion-text-end"
+    id="witnessDate"
+  ></ion-input>
+  <ion-popover trigger="witnessDate">
+    <ng-template>
+      <ion-datetime
+        presentation="date"
+        [(ngModel)]="witnessDateOfBirth"
+        locale="en"
+        (ionChange)="updateBirthdate('witness')"
+      ></ion-datetime>
+    </ng-template>
+  </ion-popover>
+</ion-item>
 
-          <ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.birthdate" color="danger">Please fill out this item</ion-label>
+
+          <ion-item [class.shake]="showValidationMessages && !witness.sex">
             <ion-select [(ngModel)]="witness.sex" id="gender" placeholder="Gender" [disabled]="isDataLoaded">
               <ion-select-option>Male</ion-select-option>
               <ion-select-option>Female</ion-select-option>
               <ion-select-option>Prefer not to say</ion-select-option>
             </ion-select>
           </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.sex" color="danger">Please fill out this item</ion-label>
         </div>
 
         
-      <ion-item>
-        <ion-select [(ngModel)]="witness.civilStatus" placeholder="Civil Status" [disabled]="isDataLoaded">
+      <ion-item [class.shake]="showValidationMessages && !witness.civilStatus">
+        <ion-select [(ngModel)]="witness.civilStatus" placeholder="Civil Status" >
           <ion-select-option >Single</ion-select-option>
           <ion-select-option >Married</ion-select-option>
           <ion-select-option >Separated</ion-select-option>
@@ -140,147 +157,204 @@
           <ion-select-option >Widowed</ion-select-option>
         </ion-select>
       </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.civilStatus" color="danger">Please fill out this item</ion-label>
 
 
-        <ion-label class="title-info">CONTACT DETAILS</ion-label>
+        <!-- <ion-label class="title-info">CONTACT DETAILS</ion-label>
 
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !witness.contactDetails">
           <ion-input [(ngModel)]="witness.contactDetails.telNum" placeholder="Home Phone" [disabled]="isDataLoaded"> </ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.contactDetails" color="danger">Please fill out this item</ion-label>
 
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !witness.contactDetails">
           <ion-input [(ngModel)]="witness.contactDetails.mobileNum" id="mobileNum" placeholder="Mobile Number" [disabled]="isDataLoaded"> </ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.contactDetails" color="danger">Please fill out this item</ion-label>
 
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !witness.contactDetails">
           <ion-input [(ngModel)]="witness.contactDetails.email" id="email" placeholder="Email" [disabled]="isDataLoaded"> </ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.contactDetails" color="danger">Please fill out this item</ion-label> -->
 
 
         <ion-label class="title-info">HOME ADDRESS</ion-label>
 
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !witness.homeAddress.region"> 
           <ion-select [(ngModel)]="witness.homeAddress.region" name="homeregionName" placeholder="Region" (ionChange)="onHomeRegionChange($event)" [disabled]="isDataLoaded">
             <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
               {{ region.region_name }}
             </ion-select-option>
           </ion-select>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.homeAddress.region" color="danger">Please fill out this item</ion-label>
         
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !witness.homeAddress.province">
           <ion-select [(ngModel)]="witness.homeAddress.province" name="homeprovinceName" placeholder="Province" (ionChange)="onHomeProvinceChange($event)" [disabled]="isDataLoaded">
             <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
               {{ province.province_name }}
             </ion-select-option>
           </ion-select>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.homeAddress.region" color="danger">Please fill out this item</ion-label>
         
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !witness.homeAddress.municipality">
           <ion-select [(ngModel)]="witness.homeAddress.municipality" name="homemunicipalName" placeholder="Municipality" (ionChange)="onHomeMunicipalityChange($event)" [disabled]="isDataLoaded">
             <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
               {{ municipality.municipality_name }}
             </ion-select-option>
           </ion-select>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.homeAddress.municipality" color="danger">Please fill out this item</ion-label>
         
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !witness.homeAddress.barangay">
           <ion-select [(ngModel)]="witness.homeAddress.barangay" name="homebrgyName" placeholder="Barangay" [disabled]="isDataLoaded">
             <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
               {{ barangay.barangay_name }}
             </ion-select-option>
           </ion-select>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.homeAddress.barangay" color="danger">Please fill out this item</ion-label>
   
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !witness.homeAddress.street">
           <ion-input [(ngModel)]="witness.homeAddress.street" name="homestreetName" placeholder="Street" [disabled]="isDataLoaded"></ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.homeAddress.street" color="danger">Please fill out this item</ion-label>
   
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !witness.homeAddress.block">
           <ion-input [(ngModel)]="witness.homeAddress.block" name="homeblockName" placeholder="Block/Lot/Unit Number" [disabled]="isDataLoaded"></ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.homeAddress.block" color="danger">Please fill out this item</ion-label>
   
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !comp_home_zip_code">
           <ion-input [(ngModel)]="comp_home_zip_code" name="homezip" placeholder="Zip Code" [disabled]="isDataLoaded"></ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !comp_home_zip_code" color="danger">Please fill out this item</ion-label>
   
+       
+
+       
+
         <ion-label class="title-info">WORK ADDRESS</ion-label>
   
-        <!-- <div class="checkbox-container">
-          <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="isSameAddress" (ionChange)="onAddressCheckboxChange($event, 'witness')" ></ion-checkbox>
+        <div class="checkbox-container">
+          <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="isSameAddressWitness" [disabled]="isSamePerson" (ionChange)="onAddressCheckboxChange($event, 'witness')"></ion-checkbox>
           <ion-label class="checkbox-label">Same as Home Address</ion-label>
-  
         </div>
-   -->
-      <ion-item>
-        <ion-input [(ngModel)]="witness.occupation.name" name="occupation" placeholder="Occupation" ></ion-input>
-      </ion-item>
 
-        <ion-item>
-          <ion-select [(ngModel)]="witness.workAddress.region" name="workregionName" placeholder="Region" (ionChange)="onWorkRegionChange($event)" [disabled]="isDataLoaded">
-            <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
-              {{ region.region_name }}
-            </ion-select-option>
-          </ion-select>
-        </ion-item>
-        
-  
-        <ion-item>
-          <ion-select [(ngModel)]="witness.workAddress.province" name="workprovinceName" placeholder="Province" (ionChange)="onWorkProvinceChange($event)" [disabled]="isDataLoaded">
-            <ng-container *ngIf="isSameAddress; else workProvinceOptions">
-              <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
-                {{ province.province_name }}
-              </ion-select-option>
-            </ng-container>
-            <ng-template #workProvinceOptions>
-              <ion-select-option *ngFor="let province of workProvinces" [value]="province.province_id">
-                {{ province.province_name }}
-              </ion-select-option>
-            </ng-template>
-          </ion-select>
-        </ion-item>
-        
-        <ion-item>
-          <ion-select [(ngModel)]="witness.workAddress.municipality" name="workmunicipalName" placeholder="Municipality" (ionChange)="onWorkMunicipalityChange($event)" [disabled]="isDataLoaded">
-            <ng-container *ngIf="isSameAddress; else workMunicipalityOptions">
-              <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
-                {{ municipality.municipality_name }}
-              </ion-select-option>
-            </ng-container>
-            <ng-template #workMunicipalityOptions>
-              <ion-select-option *ngFor="let municipality of workMunicipalities" [value]="municipality.municipality_id">
-                {{ municipality.municipality_name }}
-              </ion-select-option>
-            </ng-template>
-          </ion-select>
-        </ion-item>
-        
-        <ion-item>
-          <ion-select [(ngModel)]="witness.workAddress.barangay" name="workbrgyName" placeholder="Barangay" [disabled]="isDataLoaded">
-            <ng-container *ngIf="isSameAddress; else workBarangayOptions">
-              <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
-                {{ barangay.barangay_name }}
-              </ion-select-option>
-            </ng-container>
-            <ng-template #workBarangayOptions>
-              <ion-select-option *ngFor="let barangay of workBarangays" [value]="barangay.barangay_id">
-                {{ barangay.barangay_name }}
-              </ion-select-option>
-            </ng-template>
-          </ion-select>
-        </ion-item>
-  
-        <ion-item>
-          <ion-input [(ngModel)]="witness.workAddress.street" name="workstreetName" placeholder="Street" [disabled]="isDataLoaded"></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-input [(ngModel)]="witness.workAddress.block" name="workblockName" placeholder="Office/Bldg Name" [disabled]="isDataLoaded"></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-input [(ngModel)]="comp_work_zip_code" name="workzip" placeholder="Zip Code" [disabled]="isDataLoaded"></ion-input>
-        </ion-item>
+        <ng-container *ngIf="!isSameAddressWitness">
 
+        
+          
+          
+    
+            <ion-item [class.shake]="showValidationMessages && !witness.workAddress.region">
+              <ion-select [(ngModel)]="witness.workAddress.region" name="workregionName" placeholder="Region" (ionChange)="onWorkRegionChange($event)" [disabled]="isDataLoaded">
+                <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
+                  {{ region.region_name }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.workAddress.region" color="danger">Please fill out this item</ion-label>
+            
+      
+            <ion-item [class.shake]="showValidationMessages && !witness.workAddress.province">
+              <ion-select [(ngModel)]="witness.workAddress.province" name="workprovinceName" placeholder="Province" (ionChange)="onWorkProvinceChange($event)" [disabled]="isDataLoaded">
+                <ng-container *ngIf="isSameAddress; else workProvinceOptions">
+                  <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
+                    {{ province.province_name }}
+                  </ion-select-option>
+                </ng-container>
+                <ng-template #workProvinceOptions>
+                  <ion-select-option *ngFor="let province of workProvinces" [value]="province.province_id">
+                    {{ province.province_name }}
+                  </ion-select-option>
+                </ng-template>
+              </ion-select>
+            </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.workAddress.province" color="danger">Please fill out this item</ion-label>
+            
+            <ion-item [class.shake]="showValidationMessages && !witness.workAddress.municipality">
+              <ion-select [(ngModel)]="witness.workAddress.municipality" name="workmunicipalName" placeholder="Municipality" (ionChange)="onWorkMunicipalityChange($event)" [disabled]="isDataLoaded">
+                <ng-container *ngIf="isSameAddress; else workMunicipalityOptions">
+                  <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
+                    {{ municipality.municipality_name }}
+                  </ion-select-option>
+                </ng-container>
+                <ng-template #workMunicipalityOptions>
+                  <ion-select-option *ngFor="let municipality of workMunicipalities" [value]="municipality.municipality_id">
+                    {{ municipality.municipality_name }}
+                  </ion-select-option>
+                </ng-template>
+              </ion-select>
+            </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.workAddress.municipality" color="danger">Please fill out this item</ion-label>
+            
+            <ion-item [class.shake]="showValidationMessages && !witness.workAddress.barangay">
+              <ion-select [(ngModel)]="witness.workAddress.barangay" name="workbrgyName" placeholder="Barangay" [disabled]="isDataLoaded">
+                <ng-container *ngIf="isSameAddress; else workBarangayOptions">
+                  <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
+                    {{ barangay.barangay_name }}
+                  </ion-select-option>
+                </ng-container>
+                <ng-template #workBarangayOptions>
+                  <ion-select-option *ngFor="let barangay of workBarangays" [value]="barangay.barangay_id">
+                    {{ barangay.barangay_name }}
+                  </ion-select-option>
+                </ng-template>
+              </ion-select>
+            </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.workAddress.barangay" color="danger">Please fill out this item</ion-label>
+      
+            <ion-item [class.shake]="showValidationMessages && !witness.workAddress.street">
+              <ion-input [(ngModel)]="witness.workAddress.street" name="workstreetName" placeholder="Street" [disabled]="isDataLoaded"></ion-input>
+            </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.workAddress.street" color="danger">Please fill out this item</ion-label>
+      
+            <ion-item [class.shake]="showValidationMessages && !witness.workAddress.block">
+              <ion-input [(ngModel)]="witness.workAddress.block" name="workblockName" placeholder="Office/Bldg Name" [disabled]="isDataLoaded"></ion-input>
+            </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !witness.workAddress.block" color="danger">Please fill out this item</ion-label>
+      
+            <ion-item [class.shake]="showValidationMessages && !comp_work_zip_code">
+              <ion-input [(ngModel)]="comp_work_zip_code" name="workzip" placeholder="Zip Code" [disabled]="isDataLoaded"></ion-input>
+            </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !comp_work_zip_code" color="danger">Please fill out this item</ion-label>
+    
+        </ng-container>
+
+        <ng-container *ngIf="isSameAddressWitness">
+          <ion-item >
+            <ion-label>{{ getRegionName(witness.homeAddress.region) }}</ion-label>
+          </ion-item>
+        
+          <ion-item >
+            <ion-label>{{ getProvinceName(witness.homeAddress.province) }}</ion-label>
+          </ion-item>
+       
+
+          <ion-item >
+            <ion-label>{{ getMunicipalityName(witness.homeAddress.municipality) }}</ion-label>
+          </ion-item>
+       
+          <ion-item >
+            <ion-label>{{ getBarangayName(witness.homeAddress.barangay) }}</ion-label>
+          </ion-item>
+        
+          <ion-item >
+            <ion-label>{{ witness.homeAddress.street }}</ion-label>
+          </ion-item>
+       
+          <ion-item>
+            <ion-label>{{ witness.homeAddress.block }}</ion-label>
+          </ion-item>
+         
+          <ion-item >
+            <ion-label>{{ comp_home_zip_code }}</ion-label>
+          </ion-item>
+       
+        </ng-container>
+      
         <ion-label class="title-info">ID DETAILS</ion-label>
 
         <ion-item>
@@ -290,10 +364,12 @@
             </ion-select-option>
           </ion-select>
         </ion-item>
+     
 
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !idData.description">
           <ion-input [(ngModel)]="idData.description" id="idNum" placeholder="ID Number"> </ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !idData.description" color="danger">Please fill out this item</ion-label>
       </ion-list>
 
       <div id="uploadfile" class="uploadfile">
@@ -313,6 +389,7 @@
         <ion-button class="next" (click)="goToNextSegment(1)"
           >Next</ion-button
         >
+       
         <!-- <ion-button style="--background: blue;" (click)="save()">Save</ion-button> -->
       </div>
     </div>
@@ -347,59 +424,71 @@
           <ion-label class="title-info-personal">PERSONAL INFORMATION</ion-label>
         </div>
         <ion-list class="info" lines="none">
-          <ion-item>
+          <ion-item [class.shake]="showValidationMessages && !suspect.firstname">
             <ion-input [(ngModel)]="suspect.firstname" id="fname" placeholder="First Name"></ion-input>
           </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.firstname" color="danger">Please fill out this item</ion-label>
   
-          <ion-item>
+          <ion-item [class.shake]="showValidationMessages && !suspect.middlename">
             <ion-input [(ngModel)]="suspect.middlename" id="mname" placeholder="Middle Name"></ion-input>
           </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.middlename" color="danger">Please fill out this item</ion-label>
   
-          <ion-item>
+          <ion-item [class.shake]="showValidationMessages && !suspect.lastname">
             <ion-input [(ngModel)]="suspect.lastname" id="lname" placeholder="Last Name"></ion-input>
           </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.lastname" color="danger">Please fill out this item</ion-label>
   
-          <ion-item>
+          <ion-item [class.shake]="showValidationMessages && !suspect.description.ethnicity">
             <ion-select id="citizenship" placeholder="Citizenship" [(ngModel)]="suspect.description.ethnicity">
               <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality">
                 {{ nationality }}
               </ion-select-option>
             </ion-select>
           </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.description.ethnicity" color="danger">Please fill out this item</ion-label>
+
+          <!-- <ion-item [class.shake]="showValidationMessages && !suspect.description.occupation.name">
+            <ion-input [(ngModel)]="suspect.description.occupation.name" name="occupation" placeholder="Occupation"></ion-input>
+          </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.description.occupation.name" color="danger">Please fill out this item</ion-label> -->
+
   
           <div class="detail-select">
-            <ion-item class="dob">
+            <ion-item class="dob" [class.shake]="showValidationMessages && !suspect.birthdate">
               <ion-icon name="calendar" color="black"></ion-icon>
-              <ion-input [(ngModel)]="suspect.birthdate"
-                name="dateOfbirth"
+              <ion-input
+                [(ngModel)]="suspect.birthdate"
+                name="suspectDateOfBirth"
                 [ngModelOptions]="{standalone: true}"
                 placeholder="Date of Birth"
-                value="{{ dateOfBirth | date: 'yyyy.MM.dd' }}"
-                id="date"
                 class="ion-text-end"
+                id="suspectDate"
               ></ion-input>
-              <ion-popover trigger="date">
+              <ion-popover trigger="suspectDate">
                 <ng-template>
                   <ion-datetime
                     presentation="date"
-                    [(ngModel)]="dateOfBirth"
-                    locale="en"  
-                    (ionChange)="updateBirthdate()"
+                    [(ngModel)]="suspectDateOfBirth"
+                    locale="en"
+                    (ionChange)="updateBirthdate('suspect')"
                   ></ion-datetime>
                 </ng-template>
               </ion-popover>
-            </ion-item>
+            </ion-item>   
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.birthdate" color="danger">Please fill out this item</ion-label>
   
-            <ion-item>
+            <ion-item [class.shake]="showValidationMessages && !suspect.sex">
               <ion-select [(ngModel)]="suspect.sex" id="gender" placeholder="Gender">
                 <ion-select-option>Male</ion-select-option>
                 <ion-select-option>Female</ion-select-option>
                 <ion-select-option>Prefer not to say</ion-select-option>
               </ion-select>
             </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.sex" color="danger">Please fill out this item</ion-label>
           </div>
   
-          <ion-item>
+          <ion-item [class.shake]="showValidationMessages && !suspect.civilStatus">
             <ion-select [(ngModel)]="suspect.civilStatus" placeholder="Civil Status">
               <ion-select-option>Single</ion-select-option>
               <ion-select-option>Married</ion-select-option>
@@ -408,161 +497,206 @@
               <ion-select-option>Widowed</ion-select-option>
             </ion-select>
           </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.birthdate" color="danger">Please fill out this item</ion-label>
   
-          <!-- <ion-item>
-            <ion-input [(ngModel)]="suspect.contactDetails.telNum" placeholder="Home Phone"></ion-input>
-          </ion-item>
-  
-          <ion-item>
-            <ion-input [(ngModel)]="suspect.contactDetails.mobileNum" id="mobileNum" placeholder="Mobile Number"></ion-input>
-          </ion-item>
-  
-          <ion-item>
-            <ion-input [(ngModel)]="suspect.contactDetails.email" id="email" placeholder="Email"></ion-input>
-          </ion-item> -->
   
           <ion-label class="title-info">HOME ADDRESS</ion-label>
   
-          <ion-item>
+          <ion-item [class.shake]="showValidationMessages && !suspect.homeAddress.region">
             <ion-select [(ngModel)]="suspect.homeAddress.region" name="homeregionName" placeholder="Region" (ionChange)="onHomeRegionChange($event)">
               <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
                 {{ region.region_name }}
               </ion-select-option>
             </ion-select>
           </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.homeAddress.region" color="danger">Please fill out this item</ion-label>
           
-          <ion-item>
+          <ion-item [class.shake]="showValidationMessages && !suspect.homeAddress.province">
             <ion-select [(ngModel)]="suspect.homeAddress.province" name="homeprovinceName" placeholder="Province" (ionChange)="onHomeProvinceChange($event)">
               <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
                 {{ province.province_name }}
               </ion-select-option>
             </ion-select>
           </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.homeAddress.province" color="danger">Please fill out this item</ion-label>
           
-          <ion-item>
+          <ion-item [class.shake]="showValidationMessages && !suspect.homeAddress.municipality">
             <ion-select [(ngModel)]="suspect.homeAddress.municipality" name="homemunicipalName" placeholder="Municipality" (ionChange)="onHomeMunicipalityChange($event)">
               <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
                 {{ municipality.municipality_name }}
               </ion-select-option>
             </ion-select>
           </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.homeAddress.municipality" color="danger">Please fill out this item</ion-label>
           
-          <ion-item>
+          <ion-item [class.shake]="showValidationMessages && !suspect.homeAddress.barangay">
             <ion-select [(ngModel)]="suspect.homeAddress.barangay" name="homebrgyName" placeholder="Barangay">
               <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
                 {{ barangay.barangay_name }}
               </ion-select-option>
             </ion-select>
           </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.homeAddress.barangay" color="danger">Please fill out this item</ion-label>
   
-          <ion-item>
+
+          <ion-item [class.shake]="showValidationMessages && !suspect.homeAddress.street">
             <ion-input [(ngModel)]="suspect.homeAddress.street" name="homestreetName" placeholder="Street"></ion-input>
           </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.homeAddress.street" color="danger">Please fill out this item</ion-label>
   
-          <ion-item>
+          <ion-item [class.shake]="showValidationMessages && !suspect.homeAddress.block">
             <ion-input [(ngModel)]="suspect.homeAddress.block" name="homeblockName" placeholder="Block/Lot/Unit Number"></ion-input>
           </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.homeAddress.block" color="danger">Please fill out this item</ion-label>
   
-          <ion-item>
+          <ion-item [class.shake]="showValidationMessages && !sus_home_zip_code">
             <ion-input [(ngModel)]="sus_home_zip_code" name="workzip" placeholder="Zip Code"></ion-input>
           </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !sus_home_zip_code" color="danger">Please fill out this item</ion-label>
   
           <ion-label class="title-info">WORK ADDRESS</ion-label>
   
-          <ion-item>
-            <ion-input [(ngModel)]="suspect.occupation.name" name="occupation" placeholder="Occupation"></ion-input>
-          </ion-item>
-  
-          <ion-item>
-            <ion-select [(ngModel)]="suspect.workAddress.region" name="workregionName" placeholder="Region" (ionChange)="onWorkRegionChange($event)">
-              <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
-                {{ region.region_name }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
-  
-          <ion-item>
-            <ion-select [(ngModel)]="suspect.workAddress.province" name="workprovinceName" placeholder="Province" (ionChange)="onWorkProvinceChange($event)">
-              <ng-container *ngIf="isSameAddress; else workProvinceOptions">
-                <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
-                  {{ province.province_name }}
+        
+          <div class="checkbox-container">
+            <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="isSameAddressSuspect" (ionChange)="onAddressCheckboxChange($event, 'suspect')"></ion-checkbox>
+            <ion-label class="checkbox-label">Same as Home Address</ion-label>
+          </div>
+
+          <ng-container *ngIf="!isSameAddressSuspect">
+            <ion-item [class.shake]="showValidationMessages && !suspect.workAddress.region">
+              <ion-select [(ngModel)]="suspect.workAddress.region" name="workregionName" placeholder="Region" (ionChange)="onWorkRegionChange($event)">
+                <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
+                  {{ region.region_name }}
                 </ion-select-option>
-              </ng-container>
-              <ng-template #workProvinceOptions>
-                <ion-select-option *ngFor="let province of workProvinces" [value]="province.province_id">
-                  {{ province.province_name }}
-                </ion-select-option>
-              </ng-template>
-            </ion-select>
-          </ion-item>
+              </ion-select>
+            </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.workAddress.region" color="danger">Please fill out this item</ion-label>
+    
+            <ion-item [class.shake]="showValidationMessages && !suspect.workAddress.province">
+              <ion-select [(ngModel)]="suspect.workAddress.province" name="workprovinceName" placeholder="Province" (ionChange)="onWorkProvinceChange($event)">
+                <ng-container *ngIf="isSameAddress; else workProvinceOptions">
+                  <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
+                    {{ province.province_name }}
+                  </ion-select-option>
+                </ng-container>
+                <ng-template #workProvinceOptions>
+                  <ion-select-option *ngFor="let province of workProvinces" [value]="province.province_id">
+                    {{ province.province_name }}
+                  </ion-select-option>
+                </ng-template>
+              </ion-select>
+            </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.workAddress.province" color="danger">Please fill out this item</ion-label>
+            
+            <ion-item [class.shake]="showValidationMessages && !suspect.workAddress.municipality">
+              <ion-select [(ngModel)]="suspect.workAddress.municipality" name="workmunicipalName" placeholder="Municipality" (ionChange)="onWorkMunicipalityChange($event)">
+                <ng-container *ngIf="isSameAddress; else workMunicipalityOptions">
+                  <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
+                    {{ municipality.municipality_name }}
+                  </ion-select-option>
+                </ng-container>
+                <ng-template #workMunicipalityOptions>
+                  <ion-select-option *ngFor="let municipality of workMunicipalities" [value]="municipality.municipality_id">
+                    {{ municipality.municipality_name }}
+                  </ion-select-option>
+                </ng-template>
+              </ion-select>
+            </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.workAddress.municipality" color="danger">Please fill out this item</ion-label>
+            
+            <ion-item [class.shake]="showValidationMessages && !suspect.workAddress.barangay">
+              <ion-select [(ngModel)]="suspect.workAddress.barangay" name="workbrgyName" placeholder="Barangay">
+                <ng-container *ngIf="isSameAddress; else workBarangayOptions">
+                  <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
+                    {{ barangay.barangay_name }}
+                  </ion-select-option>
+                </ng-container>
+                <ng-template #workBarangayOptions>
+                  <ion-select-option *ngFor="let barangay of workBarangays" [value]="barangay.barangay_id">
+                    {{ barangay.barangay_name }}
+                  </ion-select-option>
+                </ng-template>
+              </ion-select>
+            </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.workAddress.barangay" color="danger">Please fill out this item</ion-label>
+    
+            <ion-item [class.shake]="showValidationMessages && !suspect.workAddress.street">
+              <ion-input [(ngModel)]="suspect.workAddress.street" name="workstreetName" placeholder="Street"></ion-input>
+            </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.workAddress.street" color="danger">Please fill out this item</ion-label>
+    
+            <ion-item [class.shake]="showValidationMessages && !suspect.workAddress.block">
+              <ion-input [(ngModel)]="suspect.workAddress.block" name="workblockName" placeholder="Office/Bldg Name"></ion-input>
+            </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.workAddress.block" color="danger">Please fill out this item</ion-label>
+    
+            <ion-item [class.shake]="showValidationMessages && !sus_work_zip_code">
+              <ion-input [(ngModel)]="sus_work_zip_code" name="homezip" placeholder="Zip Code"></ion-input>
+            </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !sus_work_zip_code" color="danger">Please fill out this item</ion-label>
+    
+          </ng-container>
           
-          <ion-item>
-            <ion-select [(ngModel)]="suspect.workAddress.municipality" name="workmunicipalName" placeholder="Municipality" (ionChange)="onWorkMunicipalityChange($event)">
-              <ng-container *ngIf="isSameAddress; else workMunicipalityOptions">
-                <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
-                  {{ municipality.municipality_name }}
-                </ion-select-option>
-              </ng-container>
-              <ng-template #workMunicipalityOptions>
-                <ion-select-option *ngFor="let municipality of workMunicipalities" [value]="municipality.municipality_id">
-                  {{ municipality.municipality_name }}
-                </ion-select-option>
-              </ng-template>
-            </ion-select>
-          </ion-item>
-          
-          <ion-item>
-            <ion-select [(ngModel)]="suspect.workAddress.barangay" name="workbrgyName" placeholder="Barangay">
-              <ng-container *ngIf="isSameAddress; else workBarangayOptions">
-                <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
-                  {{ barangay.barangay_name }}
-                </ion-select-option>
-              </ng-container>
-              <ng-template #workBarangayOptions>
-                <ion-select-option *ngFor="let barangay of workBarangays" [value]="barangay.barangay_id">
-                  {{ barangay.barangay_name }}
-                </ion-select-option>
-              </ng-template>
-            </ion-select>
-          </ion-item>
-  
-          <ion-item>
-            <ion-input [(ngModel)]="suspect.workAddress.street" name="workstreetName" placeholder="Street"></ion-input>
-          </ion-item>
-  
-          <ion-item>
-            <ion-input [(ngModel)]="suspect.workAddress.block" name="workblockName" placeholder="Office/Bldg Name"></ion-input>
-          </ion-item>
-  
-          <ion-item>
-            <ion-input [(ngModel)]="sus_work_zip_code" name="homezip" placeholder="Zip Code"></ion-input>
-          </ion-item>
-        </ion-list>
+          <ng-container *ngIf="isSameAddressSuspect">
+            <ion-item >
+              <ion-label>{{ getRegionName(suspect.homeAddress.region) }}</ion-label>
+            </ion-item>
+       
+
+            <ion-item>
+              <ion-label>{{ getProvinceName(suspect.homeAddress.province) }}</ion-label>
+            </ion-item>
+       
+            <ion-item >
+              <ion-label>{{ getMunicipalityName(suspect.homeAddress.municipality) }}</ion-label>
+            </ion-item>
+       
+            <ion-item >
+              <ion-label>{{ getBarangayName(suspect.homeAddress.barangay) }}</ion-label>
+            </ion-item>
+      
+            <ion-item >
+              <ion-label>{{ suspect.homeAddress.street }}</ion-label>
+            </ion-item>
+      
+            <ion-item >
+              <ion-label>{{ suspect.homeAddress.block }}</ion-label>
+            </ion-item>
+       
+            <ion-item >
+              <ion-label>{{ sus_home_zip_code }}</ion-label>
+            </ion-item>
+     
+          </ng-container>
+
+
+          </ion-list>
       </div>
   
       <ion-label class="title-info">DESCRIPTION</ion-label>
       <ion-list class="info" lines="none">
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !sus_height">
           <ion-input [(ngModel)]="sus_height" id="height" placeholder="Height" ></ion-input>
           <ion-label slot="end">ft, in</ion-label>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !sus_height" color="danger">Please fill out this item</ion-label>
   
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !sus_weight">
           <ion-input [(ngModel)]="sus_weight" id="weight" placeholder="Weight" ></ion-input>
           <ion-label slot="end">kg</ion-label>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !sus_weight" color="danger">Please fill out this item</ion-label>
   
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !suspect.description.eyeColor">
           <ion-input [(ngModel)]="suspect.description.eyeColor" id="eyecolor" placeholder="Color of Eyes"></ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.description.eyeColor" color="danger">Please fill out this item</ion-label>
   
-        <ion-item>
-          <ion-input id="eyedescription" placeholder="Description of eyes"></ion-input>
-        </ion-item>
   
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !suspect.description.hairColor">
           <ion-input [(ngModel)]="suspect.description.hairColor" id="haircolor" placeholder="Color of hair"></ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.description.hairColor" color="danger">Please fill out this item</ion-label>
   
         <div class="influence-under">
           <ion-label class="checkbox-label" style="font-size: 15px; text-align: start">Under the influence?</ion-label>
@@ -572,12 +706,13 @@
           <ion-label class="checkbox-label">Liquor</ion-label>
         </div>
   
-        <ion-item class="sus-narrative">
+        <ion-item class="sus-narrative" [class.shake]="showValidationMessages && !suspect.description.distinguishingMark">
           <ion-textarea [(ngModel)]="suspect.description.distinguishingMark" rows="15"
             id="suspect-narrative" class="suspect-textarea"
             placeholder="Other distinguishing features (describe in detail clothes, vehicle, sunglasses, weapon/s, scars and other data or activity of the suspect/s which were observed by the reporting person and/or witness/es to identify the suspect/s. These are important and may become evidence to identify, and link to the crime, the suspect/s) ">
           </ion-textarea>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.description.distinguishingMark" color="danger">Please fill out this item</ion-label>
       </ion-list>
   
       <ion-list>
@@ -626,7 +761,7 @@
       </div> -->
 
       <ion-list class="incident" lines="none">
-        <ion-item class="incident-item">
+        <ion-item class="incident-item" [class.shake]="showValidationMessages && !selectedmodus" >
           <ion-select
           [(ngModel)]="selectedmodus"
             class="custom-select"
@@ -638,6 +773,7 @@
             <ion-select-option *ngFor="let method of modus" [value]="method">{{ method.method_name }}</ion-select-option>
           </ion-select>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !selectedmodus" color="danger">Please fill out this item</ion-label>
       </ion-list>
 
       <div class="anonymous-person-info">
@@ -650,59 +786,72 @@
         </ion-buttons>
       </div>
       <ion-list class="info" lines="none">
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !victim.firstname">
           <ion-input [(ngModel)]="victim.firstname" id="fname" placeholder="First Name" [disabled]="isSamePerson"> </ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.firstname" color="danger">Please fill out this item</ion-label>
 
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !victim.middlename">
           <ion-input [(ngModel)]="victim.middlename" id="mname" placeholder="Middle Name" [disabled]="isSamePerson"> </ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.middlename" color="danger">Please fill out this item</ion-label>
 
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !victim.lastname">
           <ion-input [(ngModel)]="victim.lastname" id="lname" placeholder="Last Name" [disabled]="isSamePerson"> </ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.lastname" color="danger">Please fill out this item</ion-label>
 
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !victim.description.ethnicity">
           <ion-select id="citizenship" placeholder="Citizenship" [(ngModel)]="victim.description.ethnicity" [disabled]="isSamePerson">
             <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality" [disabled]="suspect.isUnidentified">
               {{ nationality }}
-            </ion-select-option>
+            </ion-select-option> 
           </ion-select>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.description.ethnicity" color="danger">Please fill out this item</ion-label>
+
+        <!-- <ion-item [class.shake]="showValidationMessages && !victim.description.occupation.name" >
+          <ion-input [(ngModel)]="victim.description.occupation.name" name="occupation" placeholder="Occupation" ></ion-input>
+        </ion-item>
+              <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.description.occupation.name" color="danger">Please fill out this item</ion-label> -->
 
         <div class="detail-select">
-          <ion-item class="dob">
+          <ion-item class="dob" [class.shake]="showValidationMessages && !victim.birthdate">
             <ion-icon name="calendar" color="black"></ion-icon>
-            <ion-input [(ngModel)]="victim.birthdate"
-              name="dateOfbirth"
+            <ion-input
+              [(ngModel)]="victim.birthdate"
+              name="victimDateOfBirth"
               [ngModelOptions]="{standalone: true}"
               placeholder="Date of Birth"
-              value="{{ dateOfBirth | date: 'yyyy.MM.dd' }}"
-              id="date"
               class="ion-text-end"
+              id="victimDate"
             ></ion-input>
-            <ion-popover trigger="date" >
+            <ion-popover trigger="victimDate">
               <ng-template>
                 <ion-datetime
                   presentation="date"
-                  [(ngModel)]="dateOfBirth"
-                  locale="en"  
-                  (ionChange)="updateBirthdate()"
+                  [(ngModel)]="victimDateOfBirth"
+                  locale="en"
+                  (ionChange)="updateBirthdate('victim')"
                 ></ion-datetime>
               </ng-template>
             </ion-popover>
           </ion-item>
-          <ion-item>
+          
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.birthdate" color="danger">Please fill out this item</ion-label>
+
+          <ion-item [class.shake]="showValidationMessages && !victim.sex">
             <ion-select [(ngModel)]="victim.sex"  id="gender" placeholder="Gender" [disabled]="isSamePerson">
               <ion-select-option>Male</ion-select-option>
               <ion-select-option>Female</ion-select-option>
               <ion-select-option>Prefer not to say</ion-select-option>
             </ion-select>
           </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.sex" color="danger">Please fill out this item</ion-label>
         </div>
 
         
-      <ion-item>
+      <ion-item [class.shake]="showValidationMessages && !victim.civilStatus">
         <ion-select [(ngModel)]="victim.civilStatus" placeholder="Civil Status" [disabled]="isSamePerson">
           <ion-select-option >Single</ion-select-option>
           <ion-select-option >Married</ion-select-option>
@@ -711,23 +860,26 @@
           <ion-select-option >Widowed</ion-select-option>
         </ion-select>
       </ion-item>
-
-        <ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.civilStatus" color="danger">Please fill out this item</ion-label>
+<!-- 
+        <ion-item [class.shake]="showValidationMessages && !victim.contactDetails.telNum">
           <ion-input [(ngModel)]="victim.contactDetails.telNum" placeholder="Home Phone" [disabled]="isSamePerson"> </ion-input>
         </ion-item>
-
-        <ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.contactDetails.telNum" color="danger">Please fill out this item</ion-label>
+        <ion-item [class.shake]="showValidationMessages && !witness.middlename">
           <ion-input [(ngModel)]="victim.contactDetails.mobileNum" id="mobileNum" placeholder="Mobile Number" [disabled]="suspect.isUnidentified"> </ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.contactDetails.mobileNum" color="danger">Please fill out this item</ion-label>
 
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !victim.contactDetails.email">
           <ion-input [(ngModel)]="victim.contactDetails.email" id="email" placeholder="Email" [disabled]="isSamePerson"> </ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.contactDetails.email" color="danger">Please fill out this item</ion-label> -->
 
 
         <ion-label class="title-info">HOME ADDRESS</ion-label>
 
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !victim.homeAddress.region">
           <ion-select [(ngModel)]="victim.homeAddress.region" name="homeregionName" placeholder="Region" 
           [disabled]="isSamePerson" (ionChange)="onHomeRegionChange($event)">
             <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
@@ -735,16 +887,18 @@
             </ion-select-option>
           </ion-select>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.homeAddress.region" color="danger">Please fill out this item</ion-label>
         
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !victim.homeAddress.province">
           <ion-select [(ngModel)]="victim.homeAddress.province" name="homeprovinceName" placeholder="Province" (ionChange)="onHomeProvinceChange($event)" [disabled]="isSamePerson" >
             <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
               {{ province.province_name }}
             </ion-select-option>
           </ion-select>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.homeAddress.province" color="danger">Please fill out this item</ion-label>
         
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !victim.homeAddress.municipality">
           <ion-select [(ngModel)]="victim.homeAddress.municipality" name="homemunicipalName" placeholder="Municipality" 
           [disabled]="isSamePerson" (ionChange)="onHomeMunicipalityChange($event)">
             <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
@@ -752,105 +906,153 @@
             </ion-select-option>
           </ion-select>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.homeAddress.municipality" color="danger">Please fill out this item</ion-label>
         
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !victim.homeAddress.barangay">
           <ion-select [(ngModel)]="victim.homeAddress.barangay" name="homebrgyName" placeholder="Barangay" [disabled]="isSamePerson" >
             <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
               {{ barangay.barangay_name }}
             </ion-select-option>
           </ion-select>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.homeAddress.barangay" color="danger">Please fill out this item</ion-label>
   
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !victim.homeAddress.street">
           <ion-input [(ngModel)]="victim.homeAddress.street" name="homestreetName" placeholder="Street" [disabled]="isSamePerson"></ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.homeAddress.barangay" color="danger">Please fill out this item</ion-label>
   
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !victim.homeAddress.block">
           <ion-input [(ngModel)]="victim.homeAddress.block" name="homeblockName" placeholder="Block/Lot/Unit Number" [disabled]="isSamePerson" ></ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.homeAddress.block" color="danger">Please fill out this item</ion-label>
   
-        <ion-item>
+        <ion-item [class.shake]="showValidationMessages && !vic_home_zip_code">
           <ion-input [(ngModel)]="vic_home_zip_code" name="workzip" placeholder="Zip Code" [disabled]="isSamePerson"></ion-input>
         </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !vic_home_zip_code" color="danger">Please fill out this item</ion-label>
   
-        <ion-label class="title-info">WORK ADDRESS</ion-label>
-  
-        <!-- <div class="checkbox-container">
-          <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="isSameAddress" [disabled]="isSamePerson" (ionChange)="onAddressCheckboxChange($event, 'suspect')" ></ion-checkbox>
-          <ion-label class="checkbox-label">Same as Home Address</ion-label>
-  
-        </div> -->
         
-        <ion-item>
-          <ion-input [(ngModel)]="victim.occupation.name" name="occupation" placeholder="Occupation"></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-select [(ngModel)]="victim.workAddress.region" name="workregionName" placeholder="Region" [disabled]="isSamePerson"
-           (ionChange)="onWorkRegionChange($event)" >
-            <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
-              {{ region.region_name }}
-            </ion-select-option>
-          </ion-select>
-        </ion-item>
-        
-  
-        <ion-item>
-          <ion-select [(ngModel)]="victim.workAddress.province" name="workprovinceName" placeholder="Province" [disabled]="isSamePerson" (ionChange)="onWorkProvinceChange($event)">
-            <ng-container *ngIf="isSameAddress; else workProvinceOptions">
-              <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
-                {{ province.province_name }}
-              </ion-select-option>
-            </ng-container>
-            <ng-template #workProvinceOptions>
-              <ion-select-option *ngFor="let province of workProvinces" [value]="province.province_id">
-                {{ province.province_name }}
-              </ion-select-option>
-            </ng-template>
-          </ion-select>
-        </ion-item>
-        
-        <ion-item>
-          <ion-select [(ngModel)]="victim.workAddress.municipality" name="workmunicipalName" placeholder="Municipality" [disabled]="isSamePerson" (ionChange)="onWorkMunicipalityChange($event)">
-            <ng-container *ngIf="isSameAddress; else workMunicipalityOptions">
-              <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
-                {{ municipality.municipality_name }}
-              </ion-select-option>
-            </ng-container>
-            <ng-template #workMunicipalityOptions>
-              <ion-select-option *ngFor="let municipality of workMunicipalities" [value]="municipality.municipality_id">
-                {{ municipality.municipality_name }}
-              </ion-select-option>
-            </ng-template>
-          </ion-select>
-        </ion-item>
-        
-        <ion-item>
-          <ion-select [(ngModel)]="victim.workAddress.barangay" name="workbrgyName" placeholder="Barangay" [disabled]="isSamePerson">
-            <ng-container *ngIf="isSameAddress; else workBarangayOptions">
-              <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
-                {{ barangay.barangay_name }}
-              </ion-select-option>
-            </ng-container>
-            <ng-template #workBarangayOptions>
-              <ion-select-option *ngFor="let barangay of workBarangays" [value]="barangay.barangay_id">
-                {{ barangay.barangay_name }}
-              </ion-select-option>
-            </ng-template>
-          </ion-select>
-        </ion-item>
-  
-        <ion-item>
-          <ion-input [(ngModel)]="victim.workAddress.street" name="workstreetName" placeholder="Street" [disabled]="isSamePerson"></ion-input>
-        </ion-item>
-  
-        <ion-item>
-          <ion-input [(ngModel)]="victim.workAddress.block" name="workblockName" placeholder="Office/Bldg Name" [disabled]="isSamePerson"></ion-input>
-        </ion-item>
 
-        <ion-item>
-          <ion-input [(ngModel)]="vic_work_zip_code" name="homezip" placeholder="Zip Code" [disabled]="isSamePerson" ></ion-input>
-        </ion-item>
+
+        <ion-label class="title-info">WORK ADDRESS</ion-label>
+        
+        <div class="checkbox-container">
+          <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="isSameAddressVictim" [disabled]="isSamePerson" (ionChange)="onAddressCheckboxChange($event, 'victim')"></ion-checkbox>
+          <ion-label class="checkbox-label">Same as Home Address</ion-label>
+        </div>
+
+        <ng-container *ngIf="!isSameAddressVictim">
+         
+    
+          <ion-item [class.shake]="showValidationMessages && !victim.workAddress.region">
+            <ion-select [(ngModel)]="victim.workAddress.region" name="workregionName" placeholder="Region" [disabled]="isSamePerson"
+             (ionChange)="onWorkRegionChange($event)" >
+              <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
+                {{ region.region_name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.workAddress.region" color="danger">Please fill out this item</ion-label>
+          
+    
+          <ion-item [class.shake]="showValidationMessages && !victim.workAddress.province">
+            <ion-select [(ngModel)]="victim.workAddress.province" name="workprovinceName" placeholder="Province" [disabled]="isSamePerson" (ionChange)="onWorkProvinceChange($event)">
+              <ng-container *ngIf="isSameAddress; else workProvinceOptions">
+                <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
+                  {{ province.province_name }}
+                </ion-select-option>
+              </ng-container>
+              <ng-template #workProvinceOptions>
+                <ion-select-option *ngFor="let province of workProvinces" [value]="province.province_id">
+                  {{ province.province_name }}
+                </ion-select-option>
+              </ng-template>
+            </ion-select>
+          </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.workAddress.province" color="danger">Please fill out this item</ion-label>
+          
+          <ion-item [class.shake]="showValidationMessages && !victim.workAddress.municipality">
+            <ion-select [(ngModel)]="victim.workAddress.municipality" name="workmunicipalName" placeholder="Municipality" [disabled]="isSamePerson" (ionChange)="onWorkMunicipalityChange($event)">
+              <ng-container *ngIf="isSameAddress; else workMunicipalityOptions">
+                <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
+                  {{ municipality.municipality_name }}
+                </ion-select-option>
+              </ng-container>
+              <ng-template #workMunicipalityOptions>
+                <ion-select-option *ngFor="let municipality of workMunicipalities" [value]="municipality.municipality_id">
+                  {{ municipality.municipality_name }}
+                </ion-select-option>
+              </ng-template>
+            </ion-select>
+          </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.workAddress.municipality" color="danger">Please fill out this item</ion-label>
+          
+          <ion-item [class.shake]="showValidationMessages && !victim.workAddress.barangay">
+            <ion-select [(ngModel)]="victim.workAddress.barangay" name="workbrgyName" placeholder="Barangay" [disabled]="isSamePerson">
+              <ng-container *ngIf="isSameAddress; else workBarangayOptions">
+                <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
+                  {{ barangay.barangay_name }}
+                </ion-select-option>
+              </ng-container>
+              <ng-template #workBarangayOptions>
+                <ion-select-option *ngFor="let barangay of workBarangays" [value]="barangay.barangay_id">
+                  {{ barangay.barangay_name }}
+                </ion-select-option>
+              </ng-template>
+            </ion-select>
+          </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.workAddress.barangay" color="danger">Please fill out this item</ion-label>
+    
+          <ion-item [class.shake]="showValidationMessages && !victim.workAddress.street">
+            <ion-input [(ngModel)]="victim.workAddress.street" name="workstreetName" placeholder="Street" [disabled]="isSamePerson"></ion-input>
+          </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.workAddress.street" color="danger">Please fill out this item</ion-label>
+    
+          <ion-item [class.shake]="showValidationMessages && !victim.workAddress.block">
+            <ion-input [(ngModel)]="victim.workAddress.block" name="workblockName" placeholder="Office/Bldg Name" [disabled]="isSamePerson"></ion-input>
+          </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.workAddress.block" color="danger">Please fill out this item</ion-label>
+  
+          <ion-item [class.shake]="showValidationMessages && !vic_work_zip_code">
+            <ion-input [(ngModel)]="vic_work_zip_code" name="homezip" placeholder="Zip Code" [disabled]="isSamePerson" ></ion-input>
+          </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !vic_work_zip_code" color="danger">Please fill out this item</ion-label>
+  
+        </ng-container>
+        
+        
+        <ng-container *ngIf="isSameAddressVictim">
+          <ion-item >
+            <ion-label>{{ getRegionName(victim.homeAddress.region) }}</ion-label>
+          </ion-item>
+        
+          <ion-item >
+            <ion-label>{{ getProvinceName(victim.homeAddress.province) }}</ion-label>
+          </ion-item>
+       
+          <ion-item >
+            <ion-label>{{ getMunicipalityName(victim.homeAddress.municipality) }}</ion-label>
+          </ion-item>
+      
+          <ion-item >
+            <ion-label>{{ getBarangayName(victim.homeAddress.barangay) }}</ion-label>
+          </ion-item>
+       
+          <ion-item>
+            <ion-label>{{ victim.homeAddress.street }}</ion-label>
+          </ion-item>
+        
+          <ion-item >
+            <ion-label>{{ victim.homeAddress.block }}</ion-label>
+          </ion-item>
+       
+          <ion-item >
+            <ion-label>{{ vic_home_zip_code }}</ion-label>
+          </ion-item>
+       
+        </ng-container>
+
       </ion-list>
     </div>
         
@@ -894,18 +1096,18 @@
 
       <ion-label class="title-info">INCIDENT DETAILS</ion-label>
 
-      <ion-item class="incident-date">
+      <ion-item class="incident-date" [class.shake]="showValidationMessages && !reportData.incidentDate">
         <ion-icon name="calendar" color="black"></ion-icon>
         <ion-input
           [(ngModel)]="reportData.incidentDate"
           name="dateOfIncident"
           [ngModelOptions]="{standalone: true}"
           placeholder="Date of Incident"
-          value="{{ incidentDate | date: 'yyyy.MM.dd' }}"
-          id="incidentDate"
           class="ion-text-end"
+          id="incidentDateInput"
+          value="{{ incidentDate | date: 'yyyy.MM.dd' }}"
         ></ion-input>
-        <ion-popover trigger="incidentDate">
+        <ion-popover trigger="incidentDateInput">
           <ng-template>
             <ion-datetime
               presentation="date"
@@ -916,61 +1118,101 @@
           </ng-template>
         </ion-popover>
       </ion-item>
+      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !reportData.incidentDate" color="danger">
+        Please fill out this item
+      </ion-label>
+      
 
-      <ion-item class="incident-date">
-        <ion-icon name="calendar" color="black"></ion-icon>
-        <ion-input
-          [(ngModel)]="reportData.reportedDate"
-          name="reportedDate"
-          [ngModelOptions]="{standalone: true}"
-          placeholder="Reported Date"
-          value="{{ reportedDate | date: 'yyyy.MM.dd' }}"
-          id="reportedDate"
-          class="ion-text-end"
-        ></ion-input>
-        <ion-popover trigger="reportedDate">
-          <ng-template>
-            <ion-datetime
-              presentation="date"
-              [(ngModel)]="reportedDate"
-              locale="en"
-              (ionChange)="updateReportedDate()"
-            ></ion-datetime>
-          </ng-template>
-        </ion-popover>
-      </ion-item>
 
-      <!-- <ion-item>
-        <ion-input id="incident-time" placeholder="Time"> </ion-input>
-      </ion-item> -->
+        <ion-label class="title-info">Place of Incident</ion-label>
 
-      <ion-item>
-        <ion-input id="incident-place" placeholder="Place of incident"> </ion-input>
-      </ion-item>
+        <ion-item [class.shake]="showValidationMessages && !incidentPlace.region">
+          <ion-select [(ngModel)]="incidentPlace.region" name="incidentRegion" placeholder="Region" 
+          [disabled]="isSamePerson" (ionChange)="onHomeRegionChange($event)">
+            <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
+              {{ region.region_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !incidentPlace.region" color="danger">Please fill out this item</ion-label>
+        
+        <ion-item [class.shake]="showValidationMessages && !incidentPlace.province">
+          <ion-select [(ngModel)]="incidentPlace.province" name="incidentProvince" placeholder="Province" (ionChange)="onHomeProvinceChange($event)" [disabled]="isSamePerson" >
+            <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
+              {{ province.province_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !incidentPlace.region" color="danger">Please fill out this item</ion-label>
+        
+        <ion-item [class.shake]="showValidationMessages && !incidentPlace.municipality">
+          <ion-select [(ngModel)]="incidentPlace.municipality" name="incidentMunicipal" placeholder="Municipality" 
+          [disabled]="isSamePerson" (ionChange)="onHomeMunicipalityChange($event)">
+            <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
+              {{ municipality.municipality_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !incidentPlace.municipality" color="danger">Please fill out this item</ion-label>
+        
+        <ion-item [class.shake]="showValidationMessages && !incidentPlace.barangay">
+          <ion-select [(ngModel)]="incidentPlace.barangay" name="incidentBrgy" placeholder="Barangay" [disabled]="isSamePerson" >
+            <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
+              {{ barangay.barangay_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !incidentPlace.barangay" color="danger">Please fill out this item</ion-label>
+  
+        <ion-item [class.shake]="showValidationMessages && !incidentPlace.street">
+          <ion-input [(ngModel)]="incidentPlace.street" name="incidentStreet" placeholder="Street" [disabled]="isSamePerson"></ion-input>
+        </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !incidentPlace.street" color="danger">Please fill out this item</ion-label>
+  
+        <ion-item [class.shake]="showValidationMessages && !incidentPlace.block">
+          <ion-input [(ngModel)]="incidentPlace.block" name="incidentBlock" placeholder="Block/Lot/Unit Number" [disabled]="isSamePerson" ></ion-input>
+        </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !incidentPlace.block" color="danger">Please fill out this item</ion-label>
+  
+        <ion-item [class.shake]="showValidationMessages && !inc_zip_code">
+          <ion-input [(ngModel)]="inc_zip_code" name="workzip" placeholder="Zip Code" [disabled]="isSamePerson"></ion-input>
+        </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !inc_zip_code" color="danger">Please fill out this item</ion-label>
 
       
 
-      <ion-item class="narrative">
+      <ion-item class="narrative" [class.shake]="showValidationMessages && !reportData.reportBody">
         <ion-textarea rows="15" [(ngModel)]="reportData.reportBody"
           id="narrative" class="textarea"
           placeholder="Enter in detail the narrative of the incident or event, answering the WHO, WHAT, WHEN, WHERE, WHY and HOW."
         >
         </ion-textarea>
       </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !reportData.reportBody" color="danger">Please fill out this item</ion-label>
       <div class="add-items">
         <ion-button class="add-btn" routerLink="/add-witness"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add witness</ion-button>
       
        <ion-button class="add-btn" routerLink="/add-evidence"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add Evidence</ion-button>
-      </div>
 
-      <ion-button (click)="openSignatureModal()">Sign Here</ion-button> 
+      </div>
+   <!-- <ion-button (click)="openSignatureModal()" >Sign Here</ion-button> -->
+   <ion-item class="signature-item"  id="signature-item" [class.shake]="showValidationMessages && !reportData.eSignature">
+    <ion-button id="signature-item" (click)="openSignatureModal()">Sign Here</ion-button>
+  </ion-item>
+  <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !reportData.eSignature" color="danger">
+    Please provide your signature
+  </ion-label>
+  
+
+     
+     
       
     </ion-list>
     <div class="next-container">
       <!-- <ion-button style="--background: blue;" (click)="save()">Save</ion-button> -->
-      <ion-button class="next" style="width: 200px; font-size: small;"  (click)="save()"
-        >Submit Report</ion-button
-      >
+      <ion-button id="proceed" style="width: 200px; font-size: small;"  (click)="save()"
+        >Proceed to payment</ion-button
+      > 
       <ion-loading 
         class="custom-loading" 
         [isOpen]="loading" 

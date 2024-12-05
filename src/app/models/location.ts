@@ -5,11 +5,11 @@ import { Jurisdiction } from "./jurisdiction";
 
 export interface Location {
     locationId?: any;
-    province: string;
-    municipality: string;
+    province: any ;
+    municipality: any;
     street: string;
     region: string;
-    barangay: string;
+    barangay: any;
     block?: string;
     latitude?: number;
     longitude?: number;
@@ -37,6 +37,7 @@ export interface Location {
     latitude: number;
     event_time?: string;
     incident?: string;
+    barangay: string;
   }
 
 
@@ -52,8 +53,10 @@ export interface Cluster {
       latitude: number;
       event_time?: string;
       incident?: string;
+      barangay: string;
     }[];
     incident_id?: number;
+    barangay: string;
     
   }
   

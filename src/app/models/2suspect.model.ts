@@ -2,11 +2,10 @@ import { BasePerson, ContactDetails, Address, Description, Occupation } from './
 import { Suspect } from './suspect';
 
 export interface SuspectCommon extends BasePerson {
-  contactDetails: ContactDetails;
+  contactDetails?: ContactDetails;
   homeAddress: Address;
   workAddress: Address;
   description: Description;
-  occupation: Occupation;
   isUnidentified: boolean;
   suspect: Suspect
 }

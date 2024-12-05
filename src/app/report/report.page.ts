@@ -27,7 +27,7 @@ import { WitnessService } from '../services/witness.service';
 import { SuspectService } from '../services/suspect.service';
 import { VictimService } from '../services/victim.service';
 import { PersonService } from '../services/person.service';
-import { switchMap, concatMap, of, EMPTY, tap, catchError, forkJoin  } from 'rxjs';
+import { switchMap, concatMap, of, EMPTY, tap, catchError, forkJoin, map  } from 'rxjs';
 import { Victim } from '../models/victim';
 import { OccupationService } from '../services/occupation.service';
 import { ReportService } from '../services/report.service';
@@ -35,6 +35,7 @@ import { IncidentType } from '../models/incident-type';
 import { CitizenService } from '../services/citizen.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+
 
 
 @Component({
@@ -56,11 +57,9 @@ export class ReportPage implements OnInit {
     birthdate: '',
     civilStatus: '',
     bioStatus: true,
-    description: {descriptionId: 0, ethnicity: '', occupationId: 0, personId: 0},
-    contactDetails: { email: '',  mobileNum: '', telNum: '' },
+    //contactDetails: { email: '',  mobileNum: '', telNum: '' },
     homeAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', block:'', zipCode: 0 },
-    workAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', zipCode: 0 },
-    occupation: { occupationId: 0, name: '' },
+    workAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', zipCode: 0 }
   };
 
   suspect: SuspectCommon = {
@@ -72,11 +71,11 @@ export class ReportPage implements OnInit {
     birthdate: '',
     civilStatus: '',
     bioStatus: true,
-    contactDetails: { email: '',  mobileNum: '' },
+    //contactDetails: { email: '',  mobileNum: '' },
     homeAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', zipCode: 0 },
     workAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '',block:'', zipCode: 0 },
-    description: { descriptionId: 0, ethnicity: '', height: 0, weight: 0, eyeColor: '', hairColor: '', drug: false, alcohol: false, distinguishingMark:'', personId: 0 },
-    occupation: { occupationId: 0, name: '' },
+    description: { descriptionId: 0, ethnicity: '', height: 0, weight: 0, eyeColor: '', hairColor: '', drug: false, alcohol: false, distinguishingMark:'', personId: 0
+     },
     isUnidentified: false, 
     suspect: {suspectId: 0, personId: 0, isCaught: false}
   };
@@ -91,10 +90,9 @@ export class ReportPage implements OnInit {
     civilStatus: '',
     bioStatus: true,
     description: {descriptionId: 0, ethnicity: '', personId: 0},
-    contactDetails: { email: '',  mobileNum: '' },
+    //contactDetails: { email: '',  mobileNum: '' },
     homeAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '',block:'', zipCode: 0 },
     workAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', block:'', zipCode: 0 },
-    occupation: { occupationId: 0, name: '' },
     victim: {victimId: 0, vicMethodId: 0, personId: 0, vicMethod: {
       vicMethodId: 0, methodName: ''
     }}
@@ -129,6 +127,9 @@ export class ReportPage implements OnInit {
     zipCode: 0,
   }
 
+ 
+
+
   suspectData: CreateAccountData = {
   
     email: '',
@@ -147,18 +148,11 @@ export class ReportPage implements OnInit {
     stationId: 1,
     incidentDate: '',
     reportSubCategoryId: 0,
-    reportedDate: '',
     blotterNum: '07601-0662456',
     eSignature: new Uint8Array,
     signatureExt: '',
     hasAccount: true,
-    media: [{
-      mediaId:  0,
-      content: new Uint8Array(),
-      contentType: '',
-      description: '',
-      filename: ''
-    }],
+    locationId: 0,
     reportSubCategory: {
       reportSubCategoryId: 0,
       reportCategoryId: 0,
@@ -166,18 +160,37 @@ export class ReportPage implements OnInit {
     }
   }
 
+  incidentPlace: Location ={
+    locationId: 0,
+    province: '',
+    municipality: '',
+    street: '',
+    region: '',
+    barangay: '',
+    zipCode: 0,
+  }
 
 
   isSamePerson: boolean = false;
   height: string = '';
   weight: string = '';
 
-  comp_home_zip_code: string = '';
-  comp_work_zip_code: string = '';
+  // comp_home_zip_code: string = '';
+  // comp_work_zip_code: string = '';
+  // sus_home_zip_code: string = '';
+  // sus_work_zip_code: string = '';
+  // vic_home_zip_code: string = '';
+  // vic_work_zip_code: string = '';
+  // inc_zip_code: string = '';
+
+
+  comp_home_zip_code: any;
+  comp_work_zip_code: any;
   sus_home_zip_code: string = '';
   sus_work_zip_code: string = '';
-  vic_home_zip_code: string = '';
-  vic_work_zip_code: string = '';
+  vic_home_zip_code: any;
+  vic_work_zip_code: any;
+  inc_zip_code: string = '';
 
   sus_height: string = '';
   sus_weight: string = '';
@@ -249,7 +262,15 @@ export class ReportPage implements OnInit {
   loadingMessage: string = '';
   loading: boolean = false;
   isModalOpen: boolean = false;
-  
+  isSameAddressSuspect: boolean = false;
+  isSameAddressVictim: boolean = false;
+  isSameAddressWitness: boolean = false;
+  showValidationMessages = false;
+  signHere: string = '';
+  witnessDateOfBirth: string = '';
+  suspectDateOfBirth: string = '';
+  victimDateOfBirth: string = '';
+
 
 
 
@@ -272,7 +293,9 @@ export class ReportPage implements OnInit {
     private http: HttpClient
     
   ) {
-    this.dateOfBirth = new Date().toISOString().substring(0, 10);
+    this.witnessDateOfBirth = new Date().toISOString().substring(0, 10);
+    this.suspectDateOfBirth = new Date().toISOString().substring(0, 10);
+    this.victimDateOfBirth = new Date().toISOString().substring(0, 10);
     this.incidentDate = new Date().toISOString().substring(0, 10);
     this.reportedDate = new Date().toISOString().substring(0, 10);
    }
@@ -331,6 +354,21 @@ export class ReportPage implements OnInit {
       this.loadPoliceStations().then(() => {
       });
   });
+
+  // if (!this.reportData.location) {
+  //   this.reportData.location = {
+  //     region: '',
+  //     province: '',
+  //     municipality: '',
+  //     barangay: '',
+  //     street: '',
+  //     block: '',
+  //     zipCode: 0
+  //   }; 
+  // }
+
+
+ 
   }
 
 
@@ -339,45 +377,83 @@ export class ReportPage implements OnInit {
   /*************************************************************************************************/
 
   onAddressCheckboxChange(event: any, type: 'witness' | 'suspect' | 'victim') {
-    this.isSameAddress = event.detail.checked;
-
-    if (this.isSameAddress) {
-      if (type === 'witness') {
+    if (type === 'witness') {
+      this.isSameAddressWitness = event.detail.checked;
+      if (this.isSameAddressWitness) {
         this.copyAddress(this.witness.homeAddress, this.witness.workAddress);
-      } else if (type === 'suspect') {
-        this.copyAddress(this.suspect.homeAddress, this.suspect.workAddress);
-      } else if (type === 'victim') {
-        this.copyAddress(this.victim.homeAddress, this.victim.workAddress);
-      }
-    } else {
-      if (type === 'witness') {
+        console.log('witness work address:', this.witness.workAddress)
+      } else {
         this.resetAddress(this.witness.workAddress);
-      } else if (type === 'suspect') {
+      }
+    } else if (type === 'suspect') {
+      this.isSameAddressSuspect = event.detail.checked;
+      if (this.isSameAddressSuspect) {
+        this.copyAddress(this.suspect.homeAddress, this.suspect.workAddress);
+      } else {
         this.resetAddress(this.suspect.workAddress);
-      } else if (type === 'victim') {
+      }
+    } else if (type === 'victim') {
+      this.isSameAddressVictim = event.detail.checked;
+      if (this.isSameAddressVictim) {
+        this.copyAddress(this.victim.homeAddress, this.victim.workAddress);
+      } else {
         this.resetAddress(this.victim.workAddress);
       }
     }
   }
-
+  
   copyAddress(source: Location, target: Location) {
     target.region = source.region;
     target.province = source.province;
     target.municipality = source.municipality;
     target.barangay = source.barangay;
-    target.street = '';
-    target.block = '';
-    target.zipCode = 0;
+    target.street = source.street; 
+    target.block = source.block;   
+    target.zipCode = source.zipCode;  
+  
+    
+   
+      this.convertLocationIdsToNames(
+        target,
+        this.homeProvinces,
+        this.homeMunicipalities,
+        this.homeBarangays
+      );
+   
+    
+  
+    // Log the copied values to the console
+    console.log(`Address copied:`);
+    console.log(`Region: ${target.region}`);
+    console.log(`Province: ${target.province}`);
+    console.log(`Municipality: ${target.municipality}`);
+    console.log(`Barangay: ${target.barangay}`);
   }
-
+  
   resetAddress(address: Location) {
     address.region = '';
     address.province = '';
     address.municipality = '';
     address.barangay = '';
     address.street = '';
+    address.block = '';
     address.zipCode = 0;
   }
+  
+  // Convert location IDs to names using selected arrays (provinces, municipalities, barangays)
+  convertLocationIdsToNames(location: Location, provinces: any[], municipalities: any[], barangays: any[]) {
+    const selectedRegion = this.regions.find((r) => r.region_id === location.region);
+    const selectedProvince = provinces.find((p) => p.province_id === location.province);
+    const selectedMunicipality = municipalities.find((m) => m.municipality_id === location.municipality);
+    const selectedBarangay = barangays.find((b) => b.barangay_id === location.barangay);
+  
+    location.region = selectedRegion ? selectedRegion.region_name : '';
+    location.province = selectedProvince ? selectedProvince.province_name : '';
+    location.municipality = selectedMunicipality ? selectedMunicipality.municipality_name : '';
+    location.barangay = selectedBarangay ? selectedBarangay.barangay_name : '';
+  }
+
+ 
 
   onHomeRegionChange(event: any) {
     const regionId = event.detail.value;
@@ -436,29 +512,50 @@ export class ReportPage implements OnInit {
         this.workBarangays = data.filter((b) => b.municipality_id === municipalityId);
     });
   }
+
+
+  getRegionName(regionId: string): string {
+    const region = this.regions.find(r => r.region_id === regionId);
+    return region ? region.region_name : '';
+  }
   
-    convertLocationIdsToNames(location: Location, provinces: any[], municipalities: any[], barangays: any[]) {
-      const selectedRegion = this.regions.find(
-        (r) => r.region_id === location.region
-      );
-      const selectedProvince = provinces.find(
-        (p) => p.province_id === location.province
-      );
-      const selectedMunicipality = municipalities.find(
-        (m) => m.municipality_id === location.municipality
-      );
-      const selectedBarangay = barangays.find(
-        (b) => b.barangay_id === location.barangay
-      );
+  getProvinceName(provinceId: string): string {
+    const province = this.homeProvinces.find(p => p.province_id === provinceId);
+    return province ? province.province_name : '';
+  }
   
-      location.region = selectedRegion ? selectedRegion.region_name : '';
-      location.province = selectedProvince ? selectedProvince.province_name : '';
-      location.municipality = selectedMunicipality
-        ? selectedMunicipality.municipality_name
-        : '';
-      location.barangay = selectedBarangay ? selectedBarangay.barangay_name : '';
+  getMunicipalityName(municipalityId: string): string {
+    const municipality = this.homeMunicipalities.find(m => m.municipality_id === municipalityId);
+    return municipality ? municipality.municipality_name : '';
+  }
+  
+  getBarangayName(barangayId: string): string {
+    const barangay = this.homeBarangays.find(b => b.barangay_id === barangayId);
+    return barangay ? barangay.barangay_name : '';
+  }
+  
+    // convertLocationIdsToNames(location: Location, provinces: any[], municipalities: any[], barangays: any[]) {
+    //   const selectedRegion = this.regions.find(
+    //     (r) => r.region_id === location.region
+    //   );
+    //   const selectedProvince = provinces.find(
+    //     (p) => p.province_id === location.province
+    //   );
+    //   const selectedMunicipality = municipalities.find(
+    //     (m) => m.municipality_id === location.municipality
+    //   );
+    //   const selectedBarangay = barangays.find(
+    //     (b) => b.barangay_id === location.barangay
+    //   );
+  
+    //   location.region = selectedRegion ? selectedRegion.region_name : '';
+    //   location.province = selectedProvince ? selectedProvince.province_name : '';
+    //   location.municipality = selectedMunicipality
+    //     ? selectedMunicipality.municipality_name
+    //     : '';
+    //   location.barangay = selectedBarangay ? selectedBarangay.barangay_name : '';
       
-    }
+    // }
 
     getUserLocation(): Promise<{ latitude: number; longitude: number }> {
       return new Promise((resolve, reject) => {
@@ -530,7 +627,7 @@ export class ReportPage implements OnInit {
       locationId: 0,
       zipCode: 0
     };
-    this.suspect.occupation.name = '';
+    
     this.sus_home_zip_code = '';
     this.sus_work_zip_code = '';
   }
@@ -630,88 +727,203 @@ export class ReportPage implements OnInit {
     return { mimeType, byteArray };
   }
 
-  retrieveSessionData() {
+  // retrieveSessionData() {
+  //   const userDataString = sessionStorage.getItem('userData');
+
+  //   if (userDataString) {
+
+  //     this.userData = JSON.parse(userDataString);
+  //     console.log('Retrieved user data:', this.userData);
+      
+  //     let targetObject: any;
+  //     if (this.reporterType === 'victim') {
+  //       targetObject = this.victim;
+  //     } else if (this.reporterType === 'witness') {
+  //       targetObject = this.witness;
+  //     } else {
+  //       console.log('Unknown reporter type:', this.reporterType);
+  //       return; 
+  //     }
+  
+
+  //     const genderMap: { [key: string]: string } = {
+  //       'M': 'Male',
+  //       'F': 'Female'
+  //     };
+  
+     
+  //     targetObject.firstname = this.userData.first_name || '';
+  //     targetObject.middlename = this.userData.middle_name || '';
+  //     targetObject.lastname = this.userData.last_name || '';
+  //     targetObject.birthdate = this.userData.birth_date || '';
+  //     targetObject.sex = genderMap[this.userData.sex] || this.userData.sex || '';
+  //     targetObject.contactDetails = {
+  //       telNum: this.userData.tel_num || '',
+  //       mobileNum: this.userData.contact_num || '',
+  //       email: this.userData.email || ''
+  //     };
+  //     targetObject.personId = this.userData.personId || 0;
+  //     targetObject.role = this.userData.role || '';
+  //     targetObject.civilStatus = this.userData.civilStatus || '';
+  //     targetObject.bioStatus = this.userData.bioStatus || false;
+  
+   
+  //     targetObject.description = {
+  //       descriptionId: 0,
+  //       ethnicity: ''
+  //     };
+  
+   
+  //     targetObject.occupation = {
+  //       occupationId: 0,
+  //       name: ''
+  //     };
+  
+    
+  //     if (this.userData.home_address_id) {
+  //       targetObject.homeAddressId = this.userData.home_address_id;
+  //       targetObject.homeAddress = {
+  //         locationId: 0,
+  //         province: '',
+  //         municipality: '',
+  //         street: '',
+  //         region: '',
+  //         barangay: '',
+  //         block: ''
+  //       };
+        
+  //     }
+  //     if (this.userData.work_address_id) {
+  //       targetObject.workAddressId = this.userData.work_address_id;
+  //       targetObject.workAddress = {
+  //         locationId: 0,
+  //         province: '',
+  //         municipality: '',
+  //         street: '',
+  //         region: '',
+  //         barangay: '',
+  //         block: ''
+  //       };
+        
+  //     }
+  
+  //     console.log('Populated data:', targetObject);
+      
+  //     if (this.reporterType === 'victim') {
+  //       this.victim = { ...targetObject };
+  //     } else if (this.reporterType === 'witness') {
+  //       this.witness = { ...targetObject };
+  //     }
+  //     this.isDataLoaded = true;
+  //   } else {
+  //     console.log('No user data found in session');
+  //   }
+  // }
+
+ getLocation(locationId: number): Promise<any> {
+    return this.locationService.getLocation(locationId).toPromise();
+  }
+
+
+  async retrieveSessionData() {
+
     const userDataString = sessionStorage.getItem('userData');
-
+   
+  
     if (userDataString) {
-
       this.userData = JSON.parse(userDataString);
       console.log('Retrieved user data:', this.userData);
-      
+  
       let targetObject: any;
+
+      // targetObject.description = targetObject.description || {
+      //   descriptionId: 0,
+      //   ethnicity: '',
+      //   personId: 0,
+      //   occupation: { occupationId: 0, name: '' }
+      // };
+
+
       if (this.reporterType === 'victim') {
         targetObject = this.victim;
       } else if (this.reporterType === 'witness') {
         targetObject = this.witness;
       } else {
         console.log('Unknown reporter type:', this.reporterType);
-        return; 
+        return;
       }
   
-
-      const genderMap: { [key: string]: string } = {
-        'M': 'Male',
-        'F': 'Female'
+      // Map userData to targetObject
+      targetObject = {
+        firstname: this.userData.first_name || '',
+        middlename: this.userData.middle_name || '',
+        lastname: this.userData.last_name || '',
+        birthdate: this.userData.birth_date || '',
+        sex: this.mapGender(this.userData.sex),
+        personId: this.userData.personId || 0,
+        role: this.userData.role || '',
+        bioStatus: this.userData.bioStatus || false,
+        
       };
-  
-     
-      targetObject.firstname = this.userData.first_name || '';
-      targetObject.middlename = this.userData.middle_name || '';
-      targetObject.lastname = this.userData.last_name || '';
-      targetObject.birthdate = this.userData.birth_date || '';
-      targetObject.sex = genderMap[this.userData.sex] || this.userData.sex || '';
       targetObject.contactDetails = {
-        telNum: this.userData.tel_num || '',
+        email: this.userData.email || '',
         mobileNum: this.userData.contact_num || '',
-        email: this.userData.email || ''
-      };
-      targetObject.personId = this.userData.personId || 0;
-      targetObject.role = this.userData.role || '';
-      targetObject.civilStatus = this.userData.civilStatus || '';
-      targetObject.bioStatus = this.userData.bioStatus || false;
-  
-   
-      targetObject.description = {
-        descriptionId: 0,
-        ethnicity: ''
-      };
-  
-   
-      targetObject.occupation = {
-        occupationId: 0,
-        name: ''
-      };
-  
-    
+        telNum: this.userData.tel_num || '',
+      }
+
       if (this.userData.home_address_id) {
-        targetObject.homeAddressId = this.userData.home_address_id;
-        targetObject.homeAddress = {
-          locationId: 0,
-          province: '',
-          municipality: '',
-          street: '',
-          region: '',
-          barangay: '',
-          block: ''
-        };
-        
+        const homeAddress = await this.getLocation(this.userData.home_address_id);
+        if (homeAddress) {
+          console.log("Home Address:", homeAddress);
+      
+          // Spread the homeAddress properties and add zipCode
+          targetObject.homeAddress = { 
+            ...homeAddress, 
+            zipCode: this.extractZipCode(this.userData.home_address_id)
+          };
+      
+          console.log("Extracted home zip code:", this.extractZipCode(this.userData.home_address_id));
+
+          if(this.reporterType === 'witness'){
+            this.comp_home_zip_code = this.extractZipCode(this.userData.home_address_id);
+            console.log("Home Address Zip Code After Assignment:", this.comp_home_zip_code);
+          }else {
+            this.vic_home_zip_code = this.extractZipCode(this.userData.home_address_id);
+            console.log("Home Address Zip Code After Assignment:", this.vic_home_zip_code);
+          } 
+        }
       }
+      
       if (this.userData.work_address_id) {
-        targetObject.workAddressId = this.userData.work_address_id;
-        targetObject.workAddress = {
-          locationId: 0,
-          province: '',
-          municipality: '',
-          street: '',
-          region: '',
-          barangay: '',
-          block: ''
-        };
+        const workAddress = await this.getLocation(this.userData.work_address_id);
+        if (workAddress) {
+          console.log("Work Address:", workAddress);
+      
+          // Spread the workAddress properties and add zipCode
+          targetObject.workAddress = { 
+            ...workAddress,
+            zipCode: this.extractZipCode(this.userData.work_address_id)  // Set zipCode from work address
+          };
+      
+          console.log("Extracted work zip code:", this.extractZipCode(this.userData.work_address_id));
+
+          if(this.reporterType === 'witness'){
+            this.comp_work_zip_code = this.extractZipCode(this.userData.work_address_id);
+            console.log("Work Address Zip Code After Assignment:", this.comp_work_zip_code);
+          } else {
+            this.vic_work_zip_code = this.extractZipCode(this.userData.work_address_id);
+            console.log("Work Address Zip Code After Assignment:", this.vic_work_zip_code);
+          }
+      
         
+        }
       }
+      
+    
   
       console.log('Populated data:', targetObject);
-      
+  
+      // Assign to victim or witness
       if (this.reporterType === 'victim') {
         this.victim = { ...targetObject };
       } else if (this.reporterType === 'witness') {
@@ -723,6 +935,20 @@ export class ReportPage implements OnInit {
     }
   }
 
+
+
+private mapGender(sex: string): string {
+  const genderMap: { [key: string]: string } = { M: 'Male', F: 'Female' };
+  return genderMap[sex] || sex || 'Unknown';
+}
+
+extractZipCode(locationId: number): number {
+  if (!locationId) {
+    console.warn('Invalid location_id for extracting zip code');
+    return 0; // Default value for missing or invalid location_id
+  }
+  return parseInt(locationId.toString().slice(0, 4), 10) || 0;
+}
 
 
 
@@ -816,16 +1042,21 @@ export class ReportPage implements OnInit {
     this.dateOfBirth = event.detail.value;
   }
 
-
-  updateBirthdate() {
-    this.witness.birthdate = this.dateOfBirth;
-    this.suspect.birthdate = this.dateOfBirth;
-    this.victim.birthdate = this.dateOfBirth;
+  updateBirthdate(entity: 'witness' | 'suspect' | 'victim') {
+    if (entity === 'witness') {
+      this.witness.birthdate = this.witnessDateOfBirth;
+    } else if (entity === 'suspect') {
+      this.suspect.birthdate = this.suspectDateOfBirth;
+    } else if (entity === 'victim') {
+      this.victim.birthdate = this.victimDateOfBirth;
+    }
   }
+  
 
   updateIncidentDate() {
   
     console.log('Incident date updated:', this.incidentDate);
+    this.reportData.incidentDate = this.incidentDate;
   }
 
   updateReportedDate() {
@@ -930,7 +1161,7 @@ loadIncidentTypes() {
 }
   
   /**************************************************************************************************/
-  /****************************************SERVICE***************************************************/
+  /****************************************EXTRACT LOC***********************************************/
   /**************************************************************************************************/
 
 
@@ -966,7 +1197,7 @@ loadIncidentTypes() {
                 },
                 {
                     enableHighAccuracy: true,
-                    timeout: 5000,
+                    timeout: 20000,
                     maximumAge: 0,
                 }
             );
@@ -1046,29 +1277,12 @@ goBack() {
 }
 
 
-async save(){
+  /**************************************************************************************************/
+  /***********************************************SAVE***********************************************/
+  /**************************************************************************************************/
 
-
-const heightNumber = parseFloat(this.sus_height);
-const weightNumber = parseFloat(this.sus_weight);
-
-const roundToDecimalPlaces = (number: number): number  => {
-  return Math.round(number * 100) / 100; 
-};
-this.suspect.description.height = roundToDecimalPlaces(heightNumber);
-this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
-
-  this.witness.homeAddress.zipCode = Number(this.comp_home_zip_code);
-  this.witness.workAddress.zipCode = Number(this.comp_work_zip_code);
-
-  this.suspect.homeAddress.zipCode = Number(this.sus_home_zip_code);
-  this.suspect.workAddress.zipCode = Number(this.sus_work_zip_code);
-
-  this.victim.homeAddress.zipCode = Number(this.vic_home_zip_code);
-  this.victim.workAddress.zipCode = Number(this.vic_work_zip_code);
-
-  const mapSexToLetter = (sex: string): string => {
-    switch (sex) {
+  genderToLetter(gender: string){
+    switch(gender){
       case 'Male':
         return 'M';
       case 'Female':
@@ -1078,61 +1292,115 @@ this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
       default:
         return 'X'; 
     }
-  };
- 
-  // const descriptionData = {
-  //   descriptionId: 0,
-  //   ethnicity: this.suspect.description.ethnicity,
-  //   height: this.suspect.description.height, 
-  //   weight: this.suspect.description.weight, 
-  //   eyeColor: this.suspect.description.eyeColor,
-  //   hairColor: this.suspect.description.hairColor,
-  //   drug: this.suspect.description.drug,
-  //   alcohol: this.suspect.description.alcohol,
-  //   distinguishingMark: this.suspect.description.distinguishingMark,
-    
-  // };
-
-
-  // console.log("Height", descriptionData.height);
-  // console.log("Type of Height", typeof descriptionData.height);
-  // console.log("Weight", descriptionData.weight);
-  // console.log("Type of Weight", typeof descriptionData.weight);
-
-
-  //WITNESS//
-
-  if(this.witness.personId){
-    this.witnessService.establishWitness(this.witness.personId).subscribe(
-      (response) => {
-        console.log('Witness saved successfully', this.witness)
-        console.log('Response:', response)
-      },
-      (error) => {
-        console.error('Failed to save witness:', error);
-      }
-    )
-  
-    this.descriptionService.establishDescription(this.witness.description).subscribe(
-      (response) => {
-        console.log('Witness Description saved successfully', this.witness.description)
-        console.log('Response:', response)
-      },
-      (error) => {
-        console.error('Failed to save witness description:', error);
-      }
-    )
   }
 
+  async saveWitness() {
+    this.witness.homeAddress.zipCode = Number(this.comp_home_zip_code);
+    this.witness.workAddress.zipCode = Number(this.comp_work_zip_code);
   
 
-//SUSPECT//
-  const suspectPerson =  {
+  
+    const witnessPerson = {
+      personId: this.witness.personId,
+      firstname: this.witness.firstname,
+      middlename: this.witness.middlename,
+      lastname: this.witness.lastname,
+      sex: this.genderToLetter(this.witness.sex),
+      birthdate: this.witness.birthdate,
+      civilStatus: this.witness.civilStatus,
+      bioStatus: this.witness.bioStatus,
+    };
+  
+    this.personService.createPerson(witnessPerson).pipe(
+      switchMap((personResponse: any) => {
+        console.log('Witness Person saved successfully', personResponse);
+        const personId = personResponse.id || this.witness.personId;
+  
+        // Update witness object with the retrieved personId
+        this.witness.personId = personId;
+  
+        const hasHomeAddress = this.witness.homeAddress && this.witness.homeAddress.zipCode;
+        const hasWorkAddress = this.witness.workAddress && this.witness.workAddress.zipCode;
+  
+        const homeLocation$ = hasHomeAddress
+          ? this.locationService.createOrRetrieveLocation(this.witness.homeAddress, this.witness.homeAddress.zipCode).pipe(
+              tap((homeLocationResponse) => {
+                console.log('Witness Home location saved successfully:', homeLocationResponse);
+              }),
+              catchError((error) => {
+                console.error('Failed to save witness home location:', error);
+                return EMPTY;
+              })
+            )
+          : of(null);
+  
+        const workLocation$ = hasWorkAddress
+          ? this.locationService.createOrRetrieveLocation(this.witness.workAddress, this.witness.workAddress.zipCode).pipe(
+              tap((workLocationResponse) => {
+                console.log('Witness Work location saved successfully:', workLocationResponse);
+              }),
+              catchError((error) => {
+                console.error('Failed to save witness work location:', error);
+                return EMPTY;
+              })
+            )
+          : of(null);
+  
+        return forkJoin({
+          homeLocation: homeLocation$,
+          workLocation: workLocation$
+        }).pipe(
+          switchMap(() => {
+            return this.witnessService.establishWitness(personId).pipe(
+              tap((witnessResponse) => {
+                console.log('Witness saved successfully', witnessResponse);
+              }),
+              switchMap(() => {
+                // Save the witness description after witness is successfully saved
+                const descriptionData = {
+                  descriptionId: this.witness.description?.descriptionId,
+                  ethnicity: this.witness.description?.ethnicity,
+                  personId: personId
+                }
+                return this.descriptionService.establishDescription(descriptionData).pipe(
+                  tap((descriptionResponse) => {
+                    console.log('Witness Description saved successfully', descriptionResponse);
+                    console.log('UNSA MAN GYD KANG DESCRIPTION!!!', this.witness.description)
+
+                  }),
+                  catchError((error) => {   
+                    console.log('UNSA MAN GYD KA DESCRIPTION!!', this.witness.description)
+                    console.error('Failed to save witness description:', error);
+                    return EMPTY;
+                  })
+                );
+              })
+            );
+          })
+        );
+      })
+    ).subscribe({
+      next: () => {
+        console.log('All witness data saved successfully');
+      },
+      error: (error) => {
+        console.error('Error occurred during witness save process:', error);
+      }
+    });
+  }
+  
+
+   async saveSuspect(){
+
+      this.suspect.homeAddress.zipCode = Number(this.sus_home_zip_code);
+      this.suspect.workAddress.zipCode = Number(this.sus_work_zip_code);
+
+    const suspectPerson =  {
     personId: this.suspect.personId,
     firstname: this.suspect.firstname,
     middlename: this.suspect.middlename,
     lastname: this.suspect.lastname,
-    sex: mapSexToLetter(this.suspect.sex),
+    sex: this.genderToLetter(this.suspect.sex),
     birthdate: this.suspect.birthdate,
     civilStatus: this.suspect.civilStatus,
     bioStatus: this.suspect.bioStatus
@@ -1150,9 +1418,15 @@ this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
       drug: this.suspect.description.drug,
       alcohol: this.suspect.description.alcohol,
       distinguishingMark: this.suspect.description.distinguishingMark,
-      personId: null
+      personId: null,
+     
     };
   
+
+    if (!this.validateObject(this.suspect)) {
+      console.error('Suspect validation failed.');
+      return;
+    }
     this.descriptionService.establishDescription(descriptionData).pipe(
       switchMap((descriptionResponse: any) => {
         console.log('Description saved successfully for unidentified person:', descriptionResponse);
@@ -1215,10 +1489,11 @@ this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
               weight: this.suspect.description.weight,
               eyeColor: this.suspect.description.eyeColor,
               hairColor: this.suspect.description.hairColor,
-              drug: this.suspect.description.drug,
-              alcohol: this.suspect.description.alcohol,
+              drug: this.suspect.description?.drug,
+              alcohol: this.suspect.description?.alcohol,
               distinguishingMark: this.suspect.description.distinguishingMark,
-              personId: personId 
+              personId: personId,  
+            
             };
   
             return this.descriptionService.establishDescription(descriptionData).pipe(
@@ -1248,194 +1523,339 @@ this.suspect.description.weight = roundToDecimalPlaces(weightNumber);
       }
     );
   }
-  
 
-  //VICTIM//
-  const victimPerson = {
-    personId: this.victim.personId,
-    firstname: this.victim.firstname,
-    middlename: this.victim.middlename,
-    lastname: this.victim.lastname,
-    sex: mapSexToLetter(this.victim.sex),
-    birthdate: this.victim.birthdate,
-    civilStatus: this.victim.civilStatus,
-    bioStatus: this.victim.bioStatus,
-  };
+  }
+
+  async saveVictim() {
+    const victimPerson = {
+      personId: this.victim.personId,
+      firstname: this.victim.firstname,
+      middlename: this.victim.middlename,
+      lastname: this.victim.lastname,
+      sex: this.genderToLetter(this.victim.sex),
+      birthdate: this.victim.birthdate,
+      civilStatus: this.victim.civilStatus,
+      bioStatus: this.victim.bioStatus,
+    };
   
-  this.personService.createPerson(victimPerson).pipe(
-    switchMap((personResponse: any) => {
-      console.log('Victim Person saved successfully', personResponse);
-      const personId = personResponse.id || this.victim.personId; 
-  
-      const hasHomeAddress = this.victim.homeAddress && this.victim.homeAddress.zipCode;
-      const hasWorkAddress = this.victim.workAddress && this.victim.workAddress.zipCode;
-  
-      const homeLocation$ = hasHomeAddress
-        ? this.locationService.createOrRetrieveLocation(this.victim.homeAddress, this.victim.homeAddress.zipCode).pipe(
-            tap((homeLocationResponse) => {
-              console.log('Victim Home location saved successfully:', homeLocationResponse);
-            }),
-            catchError((error) => {
-              console.error('Failed to save victim home location:', error);
-              return EMPTY;
-            })
-          )
-        : of(null);
-  
-      const workLocation$ = hasWorkAddress
-        ? this.locationService.createOrRetrieveLocation(this.victim.workAddress, this.victim.workAddress.zipCode).pipe(
-            tap((workLocationResponse) => {
-              console.log('Victim Work location saved successfully:', workLocationResponse);
-            }),
-            catchError((error) => {
-              console.error('Failed to save victim work location:', error);
-              return EMPTY;
-            })
-          )
-        : of(null);
-  
-      return forkJoin({
-        homeLocation: homeLocation$,
-        workLocation: workLocation$
-      }).pipe(
-        switchMap((results) => {
-          console.log('Additional data saved successfully:', results);
-  
-          const victim: Victim = {
-            victimId: this.victim.victim.victimId,
-            personId: personId,
-            vicMethodId: this.selectedmodus.vicmethod_id, 
-            vicMethod: {
-              vicMethodId: this.selectedmodus.vicmethod_id, 
-              methodName: this.selectedmodus.method_name
-            }
-          };
-  
-          return this.victimService.establishVictim(victim).pipe(
-            tap((victimResponse: any) => {
-              console.log('Victim saved successfully', victimResponse);
-            
-              if (victimResponse.vicMethod && victimResponse.vicMethod.VicMethodId) {
-                victim.vicMethod.vicMethodId = victimResponse.vicMethod.VicMethodId;
-              }
-            })
-          );
-        })
-      );
-    })
-  ).subscribe({
-    next: (victimResponse: any) => {
-      console.log('Victim saved successfully', victimResponse);
-      
-    },
-    error: (error) => {
-      console.error('Failed to save victim:', error);
+    if (!this.validateObject(this.victim)) {
+      console.error('Victim validation failed.');
+      return;
     }
-  });
-
   
-  await this.getCurrentLocation();
+    this.personService.createPerson(victimPerson).pipe(
+      switchMap((personResponse: any) => {
+        console.log('Victim Person saved successfully', personResponse);
+        const personId = personResponse.id || this.victim.personId; 
+  
+        // Add the personId to victim's description
+        this.victim.description.personId = personId;
+  
+        const hasHomeAddress = this.victim.homeAddress && this.victim.homeAddress.zipCode;
+        const hasWorkAddress = this.victim.workAddress && this.victim.workAddress.zipCode;
+  
+        const homeLocation$ = hasHomeAddress
+          ? this.locationService.createOrRetrieveLocation(this.victim.homeAddress, this.victim.homeAddress.zipCode).pipe(
+              tap((homeLocationResponse) => {
+                console.log('Victim Home location saved successfully:', homeLocationResponse);
+              }),
+              catchError((error) => {
+                console.error('Failed to save victim home location:', error);
+                return EMPTY;
+              })
+            )
+          : of(null);
+  
+        const workLocation$ = hasWorkAddress
+          ? this.locationService.createOrRetrieveLocation(this.victim.workAddress, this.victim.workAddress.zipCode).pipe(
+              tap((workLocationResponse) => {
+                console.log('Victim Work location saved successfully:', workLocationResponse);
+              }),
+              catchError((error) => {
+                console.error('Failed to save victim work location:', error);
+                return EMPTY;
+              })
+            )
+          : of(null);
+  
+        return forkJoin({
+          homeLocation: homeLocation$,
+          workLocation: workLocation$
+        }).pipe(
+          switchMap((results) => {
+            console.log('Additional data saved successfully:', results);
+  
+            const victim: Victim = {
+              victimId: this.victim.victim.victimId,
+              personId: personId,
+              vicMethodId: this.selectedmodus.vicmethod_id, 
+              vicMethod: {
+                vicMethodId: this.selectedmodus.vicmethod_id, 
+                methodName: this.selectedmodus.method_name
+              }
+            };
+  
+            return this.victimService.establishVictim(victim).pipe(
+              switchMap((victimResponse: any) => {
+                console.log('Victim saved successfully', victimResponse);
+  
+                // After saving victim, save the description
+                return this.descriptionService.establishDescription(this.victim.description).pipe(
+                  tap((descriptionResponse) => {
+                    console.log('Victim Description saved successfully', descriptionResponse);
+                  }),
+                  catchError((error) => {
+                    console.error('Failed to save victim description:', error);
+                    return EMPTY;
+                  })
+                );
+              })
+            );
+          })
+        );
+      })
+    ).subscribe({
+      next: () => {
+        console.log('All data saved successfully');
+      },
+      error: (error) => {
+        console.error('Error occurred during save process:', error);
+      }
+    });
+  }
 
-  const locationName = this.locationName;
-  const station = this.policeStations.find(station => 
-    station.jurisdiction.includes(locationName),
-    console.log('Your current location is:', locationName )
-  );
+ 
+  
+  async saveIncidentLocation() {
+    this.incidentPlace.zipCode = Number(this.inc_zip_code);
+  
+    try {
+      const locationDetails = {
+        province: this.getProvinceName(this.incidentPlace.province),
+        barangay: this.getBarangayName(this.incidentPlace.barangay),
+        street: this.incidentPlace.street,
+        region: this.getRegionName(this.incidentPlace.region),
+        municipality: this.getMunicipalityName(this.incidentPlace.municipality),
+        zipCode: this.incidentPlace.zipCode,
+        block: this.incidentPlace.block
+      };
+  
+  
+      console.log('Converted Location Details:', locationDetails);
+      const locationId = await this.locationService
+      .createOrRetrieveLocation(locationDetails, locationDetails.zipCode)
+      .pipe(
+        map((response) => {
+          console.log('Full response:', response); // Log the entire response
+          if (!response?.locationId) {
+            throw new Error('Invalid response: locationId is undefined');
+          }
+          return response.locationId;
+        })
+      )
+      .toPromise(); // Convert the Observable to a Promise
 
-  if (station) {
-    console.log(`Found station: ${station.stationName} with ID: ${station.stationId}`);
-    this.reportData.stationId = station.stationId;
-    //this.reportData.stationId = 7
+    console.log('Location saved successfully:', locationId);
+    this.reportData.locationId = locationId;
+  } catch (error) {
+    console.log('Incident Location Error:', this.reportData.locationId);
+    console.error('Error saving location:', error);
+    throw error;
+  }
+  }
+  
+  
+  
+
+  async prepareFormData(formData: FormData){
+
+    // const formData = new FormData();
+    formData.append('reportId', this.reportData.reportId.toString());
+    formData.append('reportBody', this.reportData.reportBody);
+    formData.append('citizenId', this.reportData.citizenId.toString());
+    formData.append('stationId', this.reportData.stationId.toString());
+    formData.append('incidentDate', this.incidentDate);
+    formData.append('blotterNum', this.reportData.blotterNum);
+    formData.append('hasAccount', this.reportData.hasAccount.toString());
+    formData.append(
+        'reportSubCategoryId',
+        this.reportData.reportSubCategory?.reportCategoryId.toString() || ''
+    );
+
+    if (this.reportData.locationId !== undefined) {
+      formData.append('locationId', this.reportData.locationId.toString());
   } else {
-    console.error('No station found for the current location.');
-    return;
-  }  
-
-  this.loadingMessage = 'Loading...';
-  this.loading = true;
-  //this.reportData.stationId = 7;
-  
-
-  const formData = new FormData();
-  formData.append('reportId', this.reportData.reportId.toString());
-  formData.append('reportBody', this.reportData.reportBody);
-  formData.append('citizenId', this.reportData.citizenId.toString());
-  formData.append('stationId', this.reportData.stationId.toString());
-  formData.append('incidentDate', this.incidentDate);
-  formData.append('reportedDate', this.reportedDate);
-  formData.append('blotterNum', this.reportData.blotterNum);
-  formData.append('hasAccount', this.reportData.hasAccount.toString());
-  formData.append('reportSubCategoryId', this.reportData.reportSubCategory?.reportCategoryId.toString() || '')
+      console.error('Error: locationId is undefined.');
+      throw new Error('locationId is required but is undefined.');
+  }
 
   if (this.reportData.eSignature instanceof Uint8Array || Array.isArray(this.reportData.eSignature)) {
-    const blob = new Blob([new Uint8Array(this.reportData.eSignature)], { type: `image/${this.reportData.signatureExt}` });
-    
-   
-    formData.append('ESignature', blob, `signature.${this.reportData.signatureExt}`);
+    try {
+      const blob = new Blob([new Uint8Array(this.reportData.eSignature)], { type: `image/${this.reportData.signatureExt}` });
+      formData.append('ESignature', blob, `signature.${this.reportData.signatureExt}`);
+      console.log(`ESignature added successfully as a blob with extension: ${this.reportData.signatureExt}`);
+    } catch (error) {
+      console.error('Failed to append ESignature to the form data:', error);
+    }
+  } else {
+    console.error('Invalid eSignature format. It must be an instance of Uint8Array or an array.');
   }
-  console.log('ReportData:', this.reportData);
-  this.reportService.establishReport(formData).subscribe(
+  
+
+    return formData;
+
+  }
+
+
+  async saveNearby() {
+
+    const locationName = this.locationName;
+    const station = this.policeStations.find(station => 
+      station.jurisdiction.includes(locationName),
+      console.log('Your current location is:', locationName )
+    );
+    this.reportData.stationId = 7
+  
+  //   if (station) {
+  //     console.log(`Found station: ${station.stationName} with ID: ${station.stationId}`);
+  //     //this.reportData.stationId = station.stationId;
+  //     this.reportData.stationId = 7
+  //   } else {
+  //     console.error('No station found for the current location.');
+  //     return;
+  //   }   
+   }
+
+  async confirmMessage(){
+
+    const locationName = this.locationName;
+    const station = this.policeStations.find(station => 
+      station.jurisdiction.includes(locationName),
+      console.log('Your current location is:', locationName )
+    );
+
+    this.loadingMessage = `Report submitted to ${station.stationName}`;
+    this.stationName = station.stationName;
+     
+     this.loading = false;
+  }
+
+  validateSignature(signature: number[] | Uint8Array | Blob): boolean {
+    if (Array.isArray(signature) || signature instanceof Uint8Array) {
+      return signature.length > 0; // Check if the array or Uint8Array has content
+    } else if (signature instanceof Blob) {
+      return signature.size > 0; // Check if the Blob has content
+    }
+    return false; // Invalid type
+  }
+  
+
+  validateObject(obj: any): boolean {
+    if (!obj || typeof obj !== 'object') return false;
+  
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        const value = obj[key];
+  
+       
+        if (typeof value === 'object' && value !== null) {
+          if (!this.validateObject(value)) return false;
+        }
+  
+      
+        else if (value === null || value === undefined || value === '') {
+          console.error(`Validation failed: ${key} is empty or invalid`);
+          return false;
+        }
+      }
+    }
+  
+    return true;
+  }
+  
+
+
+
+
+  async save() {
+    const form = new FormData();
+
+    // Establish report
+    this.loadingMessage = 'Loading...';
+    this.loading = true;
+  
+    // Validate data
+    const isValidWitness = this.validateObject(this.witness);
+    const isValidSuspect = this.validateObject(this.suspect);
+    const isValidVictim = this.validateObject(this.victim);
+    const isValidReport = this.validateObject(this.reportData);
+  
+    if (!isValidWitness || !isValidSuspect || !isValidVictim || !isValidReport) {
+      this.showValidationMessages = true;
+      console.error('Validation Errors:', {
+        witness: !isValidWitness,
+        suspect: !isValidSuspect,
+        victim: !isValidVictim,
+        report: !isValidReport,
+      });
+      return; // Stop execution if validation fails
+    }
+  
+    this.showValidationMessages = false;
+  
+    // Save related data
+    await this.saveWitness();
+    await this.saveSuspect();
+    await this.saveVictim();
+    await this.saveIncidentLocation();
+    await this.getCurrentLocation();
+    await this.saveNearby();
+  
+    
+  
+    this.reportService.establishReport(await this.prepareFormData(form)).subscribe(
       (response) => {
-          console.log('ReportData:', this.reportData);
-          console.log('Report submitted successfully:', response);
+        console.log('Report submitted successfully:', response);
 
-          console.log('Report submission response:', response);
-          const newReportId = response.id;
-          if (!newReportId) {
-              console.error('newReportId is undefined in the response.');
-              this.loading = false; 
-              return;
-              
+        this.loading = false;
+  
+        const reportId = response.id;
+        if (!reportId) {
+          console.error('Report ID is undefined in the response.');
+          return;
+        }
+  
+        // Navigate to payment
+        this.router.navigate(['/payment'], {
+          state: {
+            citizenId: this.reportData.citizenId,
+            reportId: reportId,
+          },
+        });
+  
+        // Prepare and upload media
+        const formDataMedium = new FormData();
+        formDataMedium.append('File', this.idData.filename);
+        formDataMedium.append('Description', this.idData.description || '');
+        formDataMedium.append('ContentType', this.idData.contentType || '');
+  
+        this.mediumService.uploadItemWithDetails(formDataMedium, reportId).subscribe(
+          (mediaResponse) => {
+            console.log('Media uploaded successfully:', mediaResponse);
+          },
+          (mediaError) => {
+            console.error('Error uploading media:', mediaError);
           }
-
-         this.loadingMessage = `Report submitted to ${station.stationName}`;
-          
-          this.loading = false;
-          const formDataMedium = new FormData();
-          const reportMedium = {
-              reportId: newReportId,
-              crime_id: this.selectedIncidentID
-          }; 
-
-          this.isModalOpen = true;
-
-          formDataMedium.append('File', this.idData.filename);
-          formDataMedium.append('Description', this.idData.description || '');
-          formDataMedium.append('ContentType', this.idData.contentType || '');
-
-          if (reportMedium.crime_id) {
-              this.mediumService.uploadItemWithDetails(formDataMedium, reportMedium.reportId).subscribe(
-                  (response) => {
-                      console.log('ID Details:', formDataMedium);
-                      console.log('Media saved successfully', response);
-                  },
-                  (error) => {
-                      //console.error('Error Saving Media', error);
-                      console.log('ID Details:', formDataMedium);
-                  }
-              );
-          }
+        );
       },
       (error) => {
-          console.log('ReportData:', this.reportData);
-          console.error('Error submitting report:', error);
-          this.loading = false;
+        console.error('Error submitting report:', error);
+        
       }
-  );
-  
-  
-
-  console.log('Witness Data: ',this.witness);
-  console.log(this.selectedCrime);
-  console.log(this.reportData.media);
-  console.log('Suspect Data: ', this.suspect);
-  console.log('Victim Data: ', this.victim);
-
-  // this.isModalOpen = false;
-  // this.router.navigate(['/tabs/home']);
-
+    );
+  this.loading = false; 
 }
 
-  
+
 
 }

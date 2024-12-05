@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import * as mapboxgl from 'mapbox-gl';
 import { LocationService } from '../services/location.service';
 import { Cluster, Coordinates, Location } from '../models/location';
+import { concatMap, delay, catchError } from 'rxjs/operators';
 import { ModalController } from '@ionic/angular';
 import { map } from 'rxjs';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -37,6 +38,7 @@ export class MapPage implements OnInit, AfterViewInit {
   topCounts: number[] = [];
   topLocations: string[] = [];
   topLocationCounts: number[] = [];
+  
   selectedLevel: any = '1';
   private map!: mapboxgl.Map;
   isModalOpen = false;
@@ -93,6 +95,8 @@ isFilterModalOpen = false; // Control modal visibility
 totalCrimes: number = 0;
 total_incidents: number = 0
 incidentName: string = '';
+topCrimeLocations: { location: string; count: number }[] = [];
+crimeLocationPieChart!: Chart<'pie', number[], string>;
 
 
   private locationCache: { [key: string]: string } = {};
@@ -135,109 +139,12 @@ incidentName: string = '';
       const applyFilter = this.selectedIncidentID ? true : false; 
         this.initializeMap(applyFilter);
     }, 1000);
+
+    
   }
 
 
 
-// initializeMap(applyFilter: boolean) {
-//   this.map = new mapboxgl.Map({
-//     container: 'map',
-//     style: 'mapbox://styles/mimsh23/clzxshvrk004g01rb21e17pa5',
-//     center: [123.880283, 10.324278],
-//     zoom: 12,
-//   });
-
-//   this.map.addControl(new mapboxgl.NavigationControl());
-
-//   this.map.on('load', () => {
-//     const locationService = applyFilter
-//       ? this.locationService.getFullCoordinates(this.selectedIncidentID)
-//       : this.locationService.getCoordinates();
-
-//     locationService.subscribe(
-//       async (responses: Cluster[]) => {
-//         let filteredResponses: Cluster[] = responses;
-
-//         if (applyFilter && this.selectedBarangays && this.selectedBarangays.length > 0) {
-//           const promises = responses.map(async (cluster) => {
-//             if (cluster.coordinates) {
-//               const matchedCoordinates = await Promise.all(
-//                 cluster.coordinates.map(async (coord) => {
-//                   const barangayName = await this.getLocationName(coord.latitude, coord.longitude);
-//                   return this.selectedBarangays.includes(barangayName) ? coord : null;
-//                 })
-//               );
-
-//               const filteredCoordinates = matchedCoordinates.filter((coord) => coord !== null) as {
-//                 longitude: number;
-//                 latitude: number;
-//                 event_time?: string;
-//                 incident?: string;
-//               }[];
-
-//               return {
-//                 ...cluster,
-//                 coordinates: filteredCoordinates,
-//               };
-//             }
-//             return cluster;
-//           });
-
-//           filteredResponses = await Promise.all(promises);
-//           filteredResponses = filteredResponses.filter(cluster => cluster.coordinates && cluster.coordinates.length > 0) as Cluster[];
-//         }
-
-//         const geoJSONData = this.convertToGeoJSON(filteredResponses);
-//         this.addGeoJSONSource(geoJSONData);
-//         this.calculateCrimeAnalysis(geoJSONData);
-//         this.calculateHighestCrimeTime(geoJSONData);
-
-//         this.map.on('click', 'crimes', async (e) => {
-//           if (e.features && e.features.length > 0) {
-//             const geometry = e.features[0].geometry;
-
-//             if (geometry.type === 'Point') {
-//               const coordinates: [number, number] = geometry.coordinates as [number, number];
-//               const properties = e.features[0].properties;
-
-//               if (properties) {
-//                 const barangayName = await this.getLocationName(coordinates[1], coordinates[0]);
-//                 const eventTime = properties['event_time'] || 'Event Time Not Available';
-//                 const incidentName = properties['incident'] || 'Incident Not Available';
-
-//                 // Adjust based on the filtering context
-//                 const incidentType = applyFilter
-//                   ? this.incidentTypeMap[this.selectedIncidentID] || 'Incident Type Not Available'
-//                   : incidentName; // Use incident from properties if not filtered
-
-//                 new mapboxgl.Popup()
-//                   .setLngLat(coordinates)
-//                   .setHTML(`
-//                     <h3 style="color: #000000">${incidentName}</h3>
-//                     <p style="color: #000000"><strong>Barangay:</strong> ${barangayName}</p>
-//                     <p style="color: #000000"><strong>Time Committed:</strong> ${eventTime}</p>
-                    
-//                   `)
-//                   .addTo(this.map);
-//               } else {
-//                 console.warn('Properties are undefined or null.');
-//               }
-//             } else {
-//               console.warn('The geometry type is not a Point:', geometry.type);
-//             }
-//           } else {
-//             console.warn('No features found at the clicked location.');
-//           }
-//         });
-
-//         console.log('Filtered coordinates data:', filteredResponses);
-//       },
-//       (error) => {
-//         console.error('Error fetching coordinates:', error);
-//       }
-//     );
-//   });
-// }
 
 initializeMap(applyFilter: boolean) {
   this.map = new mapboxgl.Map({
@@ -256,14 +163,12 @@ initializeMap(applyFilter: boolean) {
 
     locationService.subscribe(
       async (responses: Cluster[]) => {
-
-        if (!applyFilter) {
-          
-        }
+       
 
         let filteredResponses: Cluster[] = responses;
 
         // Only filter by barangay if "All Barangays" is NOT selected
+        
         if (
           applyFilter &&
           this.selectedBarangays &&
@@ -272,19 +177,11 @@ initializeMap(applyFilter: boolean) {
         ) {
           const promises = responses.map(async (cluster) => {
             if (cluster.coordinates) {
-              const matchedCoordinates = await Promise.all(
-                cluster.coordinates.map(async (coord) => {
-                  const barangayName = await this.getLocationName(coord.latitude, coord.longitude);
-                  return this.selectedBarangays.includes(barangayName) ? coord : null;
-                })
-              );
-
-              const filteredCoordinates = matchedCoordinates.filter((coord) => coord !== null) as {
-                longitude: number;
-                latitude: number;
-                event_time?: string;
-                incident?: string;
-              }[];
+              const filteredCoordinates = cluster.coordinates.filter(coord => {
+                // Use the barangay directly from the cluster
+                const barangayName = coord.barangay; // Assuming barangay is a property of cluster
+                return this.selectedBarangays.includes(barangayName);
+              });
 
               return {
                 ...cluster,
@@ -298,7 +195,6 @@ initializeMap(applyFilter: boolean) {
           filteredResponses = filteredResponses.filter(cluster => cluster.coordinates && cluster.coordinates.length > 0) as Cluster[];
         }
 
-
         const geoJSONData = this.convertToGeoJSON(filteredResponses, applyFilter);
         this.addGeoJSONSource(geoJSONData); 
         this.calculateCrimeAnalysis(geoJSONData);
@@ -308,15 +204,23 @@ initializeMap(applyFilter: boolean) {
         this.map.on('click', 'crimes', async (e) => {
           if (e.features && e.features.length > 0) {
             const geometry = e.features[0].geometry;
+            const properties = e.features[0].properties;
+
+            console.log('Properties:', properties);
+            console.log('Geometry:', geometry);
+            
+
 
             if (geometry.type === 'Point') {
               const coordinates: [number, number] = geometry.coordinates as [number, number];
               const properties = e.features[0].properties;
 
               if (properties) {
-                const barangayName = await this.getLocationName(coordinates[1], coordinates[0]);
+              
                 const eventTime = properties['event_time'] || 'Event Time Not Available';
                 const incidentName = properties['incident'] || 'Incident Not Available';
+                const barangayName = properties['barangay'] || 'Barangay Not Available';
+                
 
                 // Adjust based on the filtering context
                 const incidentType = applyFilter
@@ -325,11 +229,11 @@ initializeMap(applyFilter: boolean) {
 
                 new mapboxgl.Popup()
                   .setLngLat(coordinates)
-                  .setHTML(`
-                    <h3 style="color: #000000">${incidentName}</h3>
+                  .setHTML(
+                    `<h3 style="color: #000000">${incidentName}</h3>
                     <p style="color: #000000"><strong>Barangay:</strong> ${barangayName}</p>
-                    <p style="color: #000000"><strong>Time Committed:</strong> ${eventTime}</p>
-                  `)
+                    <p style="color: #000000"><strong>Time Committed:</strong> ${eventTime}</p>`
+                  )
                   .addTo(this.map);
               } else {
                 console.warn('Properties are undefined or null.');
@@ -358,6 +262,7 @@ initializeMap(applyFilter: boolean) {
 
 
 
+
   async openCrimeAnalysisModal() {
     this.isModalOpen = true;
 
@@ -366,22 +271,21 @@ initializeMap(applyFilter: boolean) {
       if (this.topHours.length && this.topCounts.length) {
         this.createCrimeTimeChart(this.topHours, this.topCounts);
       } else {
-        // console.error('Top hours and counts are not available.');
-        // console.log(
-        //   'Heres the tophours and topcounts',
-        //   this.topHours,
-        //   this.topCounts
-        // );
+        console.error('Top hours and counts are not available.');
+        console.log(
+          'Heres the tophours and topcounts',
+          this.topHours, 
+          this.topCounts
+        );
       }
-      if (this.topLocations.length && this.topLocationCounts.length) {
-        this.createCrimeLocationPieChart(this.topLocations, this.topLocationCounts);
-      } else {
-        console.log('Top locations and counts are not available.');
-        // console.log(
-        //   'Heres the top location and topcounts',
-        //   this.topLocations,
-        //   this.topLocationCounts
-        // );
+      if (this.topCrimeLocations && this.topCrimeLocations.length) {
+        // Extract location names and counts
+        const topLocationNames = this.topCrimeLocations.map(loc => loc.location);
+        const topLocationCounts = this.topCrimeLocations.map(loc => loc.count);
+  
+        console.log("TopcrimeLocation:", topLocationNames);
+        console.log("TopcrimeLocation:", topLocationCounts);
+        this.createCrimeLocationPieChart(topLocationNames, topLocationCounts);
       }
       
     }, 500);
@@ -400,6 +304,7 @@ initializeMap(applyFilter: boolean) {
               cluster_label: item.cluster_label,
               density: item.density,
               centroid: item.centroid,
+              barangay: item.barangay,
               // Set point size and opacity based on filter state
               pointSize: isFilterApplied ? 10 : 5,  // Example size, adjust as necessary
               opacity: isFilterApplied ? 0.8 : 0.5,  // Example opacity, adjust as necessary
@@ -414,18 +319,20 @@ initializeMap(applyFilter: boolean) {
   
       if (item.coordinates && Array.isArray(item.coordinates)) {
         item.coordinates.forEach((coord) => {
-          const { longitude, latitude, event_time, incident } = coord;
+          const { longitude, latitude, event_time, incident, barangay } = coord;
           if (longitude !== undefined && latitude !== undefined) {
             features.push({
               type: 'Feature',
               properties: {
                 cluster_label: item.cluster_label,
                 density: item.density,
+                barangay,
                 event_time,
                 incident: incident || 'Incident Not Available',
                 // Set point size and opacity based on filter state
                 pointSize: isFilterApplied ? 10 : 5,
-                opacity: isFilterApplied ? 0.8 : 0.5,
+                opacity: isFilterApplied ? 0.8 : 0.5
+                
               },
               geometry: {
                 type: 'Point',
@@ -543,6 +450,8 @@ initializeMap(applyFilter: boolean) {
     this.topHours = topHours;
     this.topCounts = topCounts;
 
+    
+
     // Ensure data is available
     this.openCrimeAnalysisModal();
   }
@@ -645,44 +554,51 @@ initializeMap(applyFilter: boolean) {
 
 
 
+
 async calculateCrimeAnalysis(geoJSONData: GeoJSON.FeatureCollection) {
-  const coordinates: Array<[number, number]> = [];
-  
-  // Step 1: Collect all coordinates from GeoJSON features
-  geoJSONData.features.forEach((feature) => {
-      const coords = (feature.geometry as GeoJSON.Point).coordinates;
-      coordinates.push([coords[0], coords[1]]); // longitude, latitude
-  });
+  // Step 1: Check if there are features in GeoJSON data
+  if (!geoJSONData.features || geoJSONData.features.length === 0) {
+      console.warn('No features available in GeoJSON data.');
+      return; // Exit early if there are no features
+  }
 
-  // Step 2: Geocode the coordinates to get location names
-  const locationPromises = coordinates.map(async (coord) => {
-      return this.getLocationName(coord[1], coord[0]); // Note: latitude, longitude
-  });
-
-  // Step 3: Wait for all geocoding results
-  const locationNames = await Promise.all(locationPromises);
-
-  // Step 4: Count incidents per location
+  // Step 2: Count incidents per location based on barangay property
   const crimeCounts: Record<string, number> = {};
-  locationNames.forEach((location) => {
-      if (location) {
-          crimeCounts[location] = (crimeCounts[location] || 0) + 1;
+  geoJSONData.features.forEach((feature) => {
+      const barangay = feature.properties?.['barangay']; // Safe access to properties
+   
+
+      if (barangay) {
+          crimeCounts[barangay] = (crimeCounts[barangay] || 0) + 1;
       }
   });
 
-  // Step 5: Convert counts to an array and sort
+  // Step 3: Convert counts to an array and sort
   const sortedCrimeCounts = Object.entries(crimeCounts)
       .map(([location, count]) => ({ location, count }))
       .sort((a, b) => b.count - a.count);
+
+  // Step 4: Proceed only if sorted crime counts are available
+  if (sortedCrimeCounts.length === 0) {
+      console.warn('No crimes to analyze after counting.');
+      return; // Exit early if no crime counts are found
+  }
 
   // Get top 5 locations
   const topLocations = sortedCrimeCounts.slice(0, 5);
   const topLocationNames = topLocations.map(({ location }) => location);
   const topLocationCounts = topLocations.map(({ count }) => count);
 
+  // Log the top locations for debugging
+  console.log('Top locations:', topLocations);
+
+  this.topCrimeLocations = topLocations;
+
   // Get the highest crime location
   this.highestCrimeLocation = topLocationNames[0] || 'Unknown location';
 
+  console.log('Top Location Names:', topLocationNames);
+  console.log('Top Location Counts:', topLocationCounts);
   // Prepare pie chart data
   this.createCrimeLocationPieChart(topLocationNames, topLocationCounts);
   this.openCrimeAnalysisModal();
@@ -690,155 +606,119 @@ async calculateCrimeAnalysis(geoJSONData: GeoJSON.FeatureCollection) {
 
 
 
-getLocationName(latitude: number, longitude: number): Promise<string> {
-    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${environment.mapboxKey}&types=locality,neighborhood&limit=1`;
-
-    return new Promise((resolve, reject) => {
-        this.http.get<any>(url).subscribe(
-            (response) => {
-                const features = response?.features || [];
-                let barangayName = 'Unknown location';
-
-                if (features.length > 0) {
-    
-                    barangayName = features[0].text || 'Unknown location';
-                }
-
-                resolve(barangayName);
-            },
-            (error) => {
-                console.error('Error fetching location name:', error);
-                reject('Unknown location');
-            }
-        );
-    });
-}
-
-
 
 createCrimeLocationPieChart(locations: string[], counts: number[]) {
+  if (!Array.isArray(locations) || !Array.isArray(counts) || locations.length === 0 || counts.length === 0) {
+    console.error('Invalid data for pie chart rendering');
+    return;
+  }
 
+  const canvas = document.getElementById('crimeLocationPieChart') as HTMLCanvasElement | null;
+  if (!canvas) {
+    console.error('Canvas element for pie chart not found');
+    return;
+  }
 
-    if (!Array.isArray(locations) || !Array.isArray(counts) || locations.length === 0 || counts.length === 0) {
-        // console.error('Invalid data for pie chart rendering. Please ensure both locations and counts are provided and are arrays with at least one element.');
-        // console.log('Top 5 locations pie chart recipient:', locations);
-        // console.log('Top Counts pie chart recipient:', counts);
-        return; 
-    }
-    // console.log('Top 5 locations pie chart recipient:', locations);
-    // console.log('Top Counts pie chart recipient:', counts);
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    console.error('Failed to get 2D context from canvas');
+    return;
+  }
 
-    const canvas = document.getElementById('crimeLocationPieChart') as HTMLCanvasElement | null;
-    if (!canvas) {
-        // console.error('Canvas element for pie chart not found');
-        return;
-    }
+  // Destroy existing chart if it exists
+  if (this.crimeLocationPieChart) {
+    this.crimeLocationPieChart.destroy();
+  }
 
-
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-        // console.error('Failed to get 2D context from canvas');
-        return;
-    }
-
-    const backgroundColors = [
-      'rgba(255, 99, 132, 0.2)',
-      'rgba(54, 162, 235, 0.2)',
-      'rgba(255, 206, 86, 0.2)',
-      'rgba(75, 192, 192, 0.2)',
-      'rgba(153, 102, 255, 0.2)',
-  ];
-    
-    // Create new pie chart
-    new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: locations,
-            datasets: [{
-                label: 'Top 5 Crime Frequencies per Location',
-                data: counts, // Keep counts for the pie chart data
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                ],
-                borderWidth: 1,
-            }],
+  // Create new pie chart
+  this.crimeLocationPieChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: locations,
+      datasets: [{
+        label: 'Top 5 Crime Frequencies per Location',
+        data: counts,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+        ],
+        borderWidth: 1,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Top 5 Crime Frequencies per Location',
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              title:{
-                  display: true,
-                  text: 'Top 5 Crime Frequencies per Location',
-              },
-                legend: {
-                  display: true,
-                    position: 'top',
-                    labels: {
-                      font: {
-                        size: 16
-                      },
-                      boxWidth: 20,
-                      padding: 15
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: (tooltipItem) => {
-                            const dataset = tooltipItem.dataset;
-                            const currentValue = dataset.data[tooltipItem.dataIndex] as number;
-                            const total = dataset.data.reduce((acc, value) => {
-                                return (typeof acc === 'number' ? acc : 0) + (typeof value === 'number' ? value : 0);
-                            }, 0);
-                            const percentage = total > 0 ? ((currentValue / total) * 100).toFixed(2) : '0.00';
-                            return `${tooltipItem.label} (${percentage}%)`;
-                        }
-                    }
-                },
-                datalabels: {
-               
-                    formatter: (value, context) => {
-                     let total: any = 0;
-                    // Ensure we only reduce over numeric values
-                    total = context.dataset.data.reduce((acc, val) => {
-                        const numericAcc = typeof acc === 'number' ? acc : 0;
-                        const numericVal = typeof val === 'number' ? val : 0;
-                        return numericAcc + numericVal;
-                    }, 0);
-
-                    const validValue = typeof value === 'number' ? value : 0; 
-                    const validTotal = total > 0 ? total : 1; 
-
-                    const percentage = ((validValue / validTotal) * 100).toFixed(2);
-
-                   
-                    const label = context.chart.data.labels && context.chart.data.labels[context.dataIndex] 
-                        ? context.chart.data.labels[context.dataIndex] 
-                        : 'Unknown';
-
-                    return `${label} (${percentage}%)`; 
-                    },
-                    color: '#000',
-                    align: 'start', 
-                    anchor: 'end',
-                  
-                },
+        legend: {
+          position: 'top',
+          labels: {
+            font: {
+              size: 16,
             },
+            boxWidth: 20,
+            padding: 15,
+          },
         },
-    });
-   
+        tooltip: {
+          callbacks: {
+            label: (tooltipItem) => {
+              const dataset = tooltipItem.dataset;
+              const currentValue = dataset.data[tooltipItem.dataIndex] as number;
+              const total = dataset.data.reduce((acc, value) => {
+                const numericAcc = typeof acc === 'number' ? acc : 0;
+                const numericVal = typeof value === 'number' ? value : 0;
+                return numericAcc + numericVal;
+              }, 0);
+              const percentage = total > 0 ? ((currentValue / total) * 100).toFixed(2) : '0.00';
+              return `${tooltipItem.label} (${percentage}%)`;
+            },
+          },
+        },
+        datalabels: {
+          formatter: (value, context) => {
+            // Ensure `total` is treated as a number and initialize it safely
+            const total = (context.dataset.data as number[]).reduce((acc, val) => {
+              const numericAcc = typeof acc === 'number' ? acc : 0;
+              const numericVal = typeof val === 'number' ? val : 0;
+              return numericAcc + numericVal;
+            }, 0);
+          
+            // Safely coerce `total` to a number and provide a fallback to 1
+            const validTotal = total && typeof total === 'number' && total > 0 ? total : 1;
+          
+            // Ensure `value` is a number and calculate the percentage
+            const validValue = typeof value === 'number' ? value : 0;
+            const percentage = ((validValue / validTotal) * 100).toFixed(2);
+          
+            // Safely retrieve the label
+            const label = context.chart.data.labels && context.chart.data.labels[context.dataIndex]
+              ? context.chart.data.labels[context.dataIndex]
+              : 'Unknown';
+          
+            return `${label} (${percentage}%)`;
+          }
+          ,
+          color: '#000',
+          align: 'start',
+          anchor: 'end',
+        },
+      },
+    },
+  });
 }
 
 
@@ -942,13 +822,13 @@ createCrimeLocationPieChart(locations: string[], counts: number[]) {
     this.locationService.getCoordinates().subscribe((coordinatesData: any[]) => {
       coordinatesData.forEach((data) => {
         totalDensity += data.density;  
-        console.log('Total Density', totalDensity)
+        // console.log('Total Density', totalDensity)
       });
       this.totalCrimes = totalDensity;
       
     }, error => {
       console.error('Error loading coordinates and density', error);
-      console.log('Total Density', totalDensity)
+      // console.log('Total Density', totalDensity)
     });
   }
 
@@ -996,53 +876,105 @@ applyFilter() {
   this.closeFilterModal();
 }
 
-onChangeIncident() {
+// onChangeIncident() {
 
-  if (!this.selectedIncidentID) {
-    console.warn('No incident ID selected');
-    return;
-  }else {
-    console.log ('Selected Incident:', this.selectedIncidentID)
-  }
+//   if (!this.selectedIncidentID) {
+//     console.warn('No incident ID selected');
+//     return;
+//   }else {
+//     console.log ('Selected Incident:', this.selectedIncidentID)
+//   }
 
-  this.barangays = [];
+//   this.barangays = [];
 
-let barangayIncidentCountMap: { [key: string]: number } = {}
+// let barangayIncidentCountMap: { [key: string]: number } = {}
 
-  this.locationService.getFullCoordinates(this.selectedIncidentID).subscribe(
-    async (responses: Cluster[]) => {
-      console.log('Coordinates fetched for incident:', responses);
+//   this.locationService.getFullCoordinates(this.selectedIncidentID).subscribe(
+//     async (responses: Cluster[]) => {
+//       console.log('Coordinates fetched for incident:', responses);
 
-      const barangaySet: Set<string> = new Set();
+//       const barangaySet: Set<string> = new Set();
 
 
-      for (const cluster of responses) {
-        if (cluster.coordinates) {
-          for (const coord of cluster.coordinates) {
-            const barangayName = await this.getLocationName(coord.latitude, coord.longitude);
+//       for (const cluster of responses) {
+//         if (cluster.coordinates) {
+//           for (const coord of cluster.coordinates) {
+//             const barangayName = await this.getLocationName(coord.latitude, coord.longitude);
 
-            if (barangayName) {
-              barangaySet.add(barangayName);
+//             if (barangayName) {
+//               barangaySet.add(barangayName);
 
-              if (!barangayIncidentCountMap[barangayName]) {
-                barangayIncidentCountMap[barangayName] = 0;
+//               if (!barangayIncidentCountMap[barangayName]) {
+//                 barangayIncidentCountMap[barangayName] = 0;
+//               }
+//               barangayIncidentCountMap[barangayName]++;
+//             }
+//           }
+//         }
+//       }
+
+//       this.barangays = Array.from(barangaySet);
+//       this.barangays.sort((a, b) => a.localeCompare(b));
+//       this.incidentCountPerBarangay = barangayIncidentCountMap;
+//       console.log('Incident Count per Barangay:', this.incidentCountPerBarangay);
+//     },
+//     (error) => {
+//       console.error('Error fetching coordinates:', error);
+//     }
+//   );
+//   }
+
+  onChangeIncident() {
+
+    if (!this.selectedIncidentID) {
+      console.warn('No incident ID selected');
+      return;
+    }else {
+      console.log ('Selected Incident:', this.selectedIncidentID)
+    }
+  
+    this.barangays = [];
+  
+  let barangayIncidentCountMap: { [key: string]: number } = {}
+  
+    this.locationService.getFullCoordinates(this.selectedIncidentID).subscribe(
+      async (responses: Cluster[]) => {
+        console.log('Coordinates fetched for incident:', responses);
+  
+        const barangaySet: Set<string> = new Set();
+  
+  
+        for (const cluster of responses) {
+          if (cluster.coordinates) {
+            for (const coord of cluster.coordinates) {
+              const barangayName = coord.barangay;
+  
+              if (barangayName) {
+                barangaySet.add(barangayName);
+  
+                if (!barangayIncidentCountMap[barangayName]) {
+                  barangayIncidentCountMap[barangayName] = 0;
+                }
+                barangayIncidentCountMap[barangayName]++;
               }
-              barangayIncidentCountMap[barangayName]++;
             }
           }
         }
+  
+        this.barangays = Array.from(barangaySet);
+        this.barangays.sort((a, b) => a.localeCompare(b));
+        this.incidentCountPerBarangay = barangayIncidentCountMap;
+        console.log('Incident Count per Barangay:', this.incidentCountPerBarangay);
+      },
+      (error) => {
+        console.error('Error fetching coordinates:', error);
       }
-
-      this.barangays = Array.from(barangaySet);
-      this.barangays.sort((a, b) => a.localeCompare(b));
-      this.incidentCountPerBarangay = barangayIncidentCountMap;
-      console.log('Incident Count per Barangay:', this.incidentCountPerBarangay);
-    },
-    (error) => {
-      console.error('Error fetching coordinates:', error);
+    );
     }
-  );
-  }
+  
+  
+
+  
 
 
 }

@@ -1,0 +1,90 @@
+ion-toolbar {
+    --background: linear-gradient(to right, #004AAD, #009FFD);
+    height: 80px;
+    width: 100%;
+  
+}
+
+ion-card, ion-item {
+    --background: white;
+    color: black;
+}
+
+ion-card-title {
+    color: black;
+}
+
+.send-payment, ion-button {
+    --background: #1ED760;
+    color: #ffffff;
+   
+}
+
+.send-payment {
+    border-width: 20px;
+    border-radius: 50px;
+}
+
+.custom-modal {
+    --height: 35%;
+    --width: 80%; 
+    --padding: 0;
+    --background: #ffffff;
+    --color: #000000
+  }
+  
+  .custom-modal ion-header {
+    background-color: #f8f8f8;
+  }
+
+  .custom-modal ion-toolbar {
+    --background: #007acc;
+    --color: #ffffff;
+    height: 50px;
+  }
+  
+  .custom-modal ion-content {
+    padding: 16px;
+    --color: #000000
+  }
+  
+  .custom-modal ion-button {
+    --background: #007acc;
+      --color: #ffffff;
+      --border-width: 20px;
+      --border-radius: 50px;
+      width: 80%;
+      top: 10px;
+      
+
+  }
+  
+  .custom-modal ion-item{
+    margin: 20px;
+    --color: #000000;
+    --background: #ffffff;
+  }
+  
+  .custom-modal ion-buttons {
+    --background: none;
+  }
+
+  .home-button-modal {
+    display: flex;
+    justify-content: center;
+    align-items:  center;
+    padding-top: 17px;
+  }
+
+  .home-button-modal ion-button {
+    --background: #40dc59;
+    
+  }
+
+  .content {
+      display: flex;
+      justify-content: center;
+      align-items:  center;
+      margin: 20px;
+  }
+ 

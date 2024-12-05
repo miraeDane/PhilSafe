@@ -113,6 +113,10 @@ const routes: Routes = [
   {
     path: 'account-registration',
     loadChildren: () => import('./auth/account-registration/account-registration.module').then(m => m.AccountRegistrationPageModule)
+  },
+  {
+    path: 'payment',
+    loadChildren: () => import('./payment/payment.module').then( m => m.PaymentPageModule)
   }
   // {
   //   path: 'report/:segment',
