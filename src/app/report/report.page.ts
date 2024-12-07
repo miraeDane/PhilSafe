@@ -1781,8 +1781,8 @@ goBack() {
     const form = new FormData();
 
     // Establish report
-    this.loadingMessage = 'Loading...';
-    this.loading = true;
+    // this.loadingMessage = 'Loading...';
+    // this.loading = true;
   
     // Validate data
     const isValidWitness = this.validateObject(this.witness);
@@ -1817,7 +1817,7 @@ goBack() {
       (response) => {
         console.log('Report submitted successfully:', response);
 
-        this.loading = false;
+        // this.loading = false;
   
         const reportId = response.id;
         if (!reportId) {
@@ -1826,9 +1826,9 @@ goBack() {
         }
   
         // Navigate to payment
-        this.router.navigate(['/payment'], {
+        this.router.navigate(['/add-evidence'], {
           state: {
-            citizenId: this.reportData.citizenId,
+            citizenId: this.userData.citizenId,
             reportId: reportId,
           },
         });

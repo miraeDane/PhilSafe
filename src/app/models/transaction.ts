@@ -6,5 +6,5 @@ export interface Transaction {
   paymentAmount: number;
   citizenId: number;
   reportId: number;
-  transactionLink: TransactionLink
+  
 }

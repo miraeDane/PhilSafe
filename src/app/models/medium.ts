@@ -12,4 +12,4 @@ export interface Medium {
   
     crime?: Crime; 
     report?: Report; 
-  }
+  } 

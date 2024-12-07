@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { ReportPage } from './report.page';
+import { AuthGuard } from '../auth/auth.guard';
 
 const routes: Routes = [
   {
@@ -11,17 +12,18 @@ const routes: Routes = [
   {
     path: ':segment',
     component: ReportPage
-  },  {
+  },
+  {
     path: 'add-witness',
-    loadChildren: () => import('./add-witness/add-witness.module').then( m => m.AddWitnessPageModule)
+    loadChildren: () => import('./add-witness/add-witness.module').then( m => m.AddWitnessPageModule), canActivate: [AuthGuard]
   },
   {
     path: 'add-evidence',
-    loadChildren: () => import('./add-evidence/add-evidence.module').then( m => m.AddEvidencePageModule)
+    loadChildren: () => import('./add-evidence/add-evidence.module').then( m => m.AddEvidencePageModule), canActivate: [AuthGuard]
   },
   {
     path: 'add-suspect',
-    loadChildren: () => import('./add-suspect/add-suspect.module').then( m => m.AddSuspectPageModule)
+    loadChildren: () => import('./add-suspect/add-suspect.module').then( m => m.AddSuspectPageModule), canActivate: [AuthGuard]
   }
 
 ];

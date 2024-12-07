@@ -364,21 +364,22 @@ export class EditProfilePage implements OnInit {
 
 
 
-  updateData() {
-    // Convert `accountData` to FormData
-    const accountFormData = new FormData();
-    this.appendFormData(accountFormData, this.accountData);
-  
-    const personFormData = new FormData();
-    this.appendFormData(personFormData, this.personData);
-  
-    const homeAddressFormData = new FormData();
-    this.appendFormData(homeAddressFormData, this.userHomeAddress);
-  
-    const workAddressFormData = new FormData();
-    this.appendFormData(workAddressFormData, this.userWorkAddress);
-  
-    // Updating Person Data
+updateData() {
+  // Convert `accountData` to FormData
+  const accountFormData = new FormData();
+  this.appendFormData(accountFormData, this.accountData);
+
+  const personFormData = new FormData();
+  this.appendFormData(personFormData, this.personData);
+
+  const homeAddressFormData = new FormData();
+  this.appendFormData(homeAddressFormData, this.userHomeAddress);
+
+  const workAddressFormData = new FormData();
+  this.appendFormData(workAddressFormData, this.userWorkAddress);
+
+  // Updating Person Data
+  if (this.hasNonEmptyValues(this.person)) {
     this.personService.update(this.person.personId, personFormData).subscribe({
       next: (res) => {
         console.log('Person data updated successfully', res);
@@ -387,8 +388,10 @@ export class EditProfilePage implements OnInit {
         console.error('Error updating person data', err);
       }
     });
-  
-    // Updating Home Address
+  }
+
+  // Updating Home Address
+  if (this.hasNonEmptyValues(this.userHomeAddress)) {
     this.locationService.updateLocation(this.userHomeAddress.locationId, homeAddressFormData).subscribe({
       next: (res) => {
         console.log('Home address updated successfully', res);
@@ -397,8 +400,10 @@ export class EditProfilePage implements OnInit {
         console.error('Error updating home address', err);
       }
     });
-  
-    // Updating Work Address
+  }
+
+  // Updating Work Address
+  if (this.hasNonEmptyValues(this.userWorkAddress)) {
     this.locationService.updateLocation(this.userWorkAddress.locationId, workAddressFormData).subscribe({
       next: (res) => {
         console.log('Work address updated successfully', res);
@@ -407,21 +412,29 @@ export class EditProfilePage implements OnInit {
         console.error('Error updating work address', err);
       }
     });
-  
-    const personId = this.accountData.personId;
-    if (personId) {
-      this.accountService.updateAccount(personId, accountFormData).subscribe({
-        next: (res) => {
-          console.log('Account data updated successfully', res);
-        },
-        error: (err) => {
-          console.error('Error updating account data', err);
-        }
-      });
-    } else {
-      console.error('Error: personId is undefined.');
-    }
   }
+
+  // Updating Account Data
+  const personId = this.accountData.personId;
+  if (personId && this.hasNonEmptyValues(this.accountData)) {
+    this.accountService.updateAccount(personId, accountFormData).subscribe({
+      next: (res) => {
+        console.log('Account data updated successfully', res);
+      },
+      error: (err) => {
+        console.error('Error updating account data', err);
+      }
+    });
+  } else {
+    console.error('Error: Account data is empty or personId is undefined.');
+  }
+}
+
+// Utility Method to Check for Non-Empty Values in an Object
+hasNonEmptyValues(obj: any): boolean {
+  return Object.values(obj).some(value => value !== null && value !== undefined && value.toString().trim() !== '');
+}
+
   
  
   appendFormData(formData: FormData, dataObject: any) {
