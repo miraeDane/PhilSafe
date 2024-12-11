@@ -74,7 +74,8 @@ export class CreateAccountPage implements OnInit {
     workAddressId: 0,
     role: 'Certified',
     personId: 0,
-    profile_pic: new Uint8Array
+    profile_pic: null,
+    profile_ext: ''
 
   };
 
@@ -196,8 +197,88 @@ copyHomeToWorkAddress() {
     }
   }
 
+  onProfilePicSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        // Store both byte array and extension
+        const byteArray = new Uint8Array(reader.result as ArrayBuffer);
+        this.upgraded.profile_pic = byteArray;
+        this.upgraded.profile_ext = file.name.split('.').pop() || 'jpg';
   
+        console.log('Profile Picture Metadata:', {
+          byteArray,
+          extension: this.upgraded.profile_ext
+        });
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      console.error('No file selected');
+    }
+  }
  
+  processProfilePic(): File | null {
+   
+
+  if (this.upgraded.profile_pic == null) {
+    console.error('Profile picture is required');
+    return null;
+  }
+
+  let byteArray: Uint8Array;
+
+  if (this.upgraded.profile_pic instanceof Uint8Array) {
+    byteArray = this.upgraded.profile_pic;
+  } else if (typeof this.upgraded.profile_pic === 'string') {
+    try {
+      // Multiple strategies for base64 conversion
+      const base64Patterns = [
+        /^data:image\/\w+;base64,/,
+        /^base64,/,
+        /^\s*data:([a-z]+\/[a-z0-9-+.]+(;[a-z-]+=[a-z0-9-]+)?)?(;base64)?,/i
+      ];
+
+      let cleanBase64: string = this.upgraded.profile_pic;
+      for (const pattern of base64Patterns) {
+        cleanBase64 = cleanBase64.replace(pattern, '');
+      }
+
+      // Remove whitespace and newline characters
+      cleanBase64 = cleanBase64.replace(/[\n\r\s]/g, '');
+
+      // Validate base64 string length and characters
+      if (!/^[A-Za-z0-9+/=]+$/.test(cleanBase64)) {
+        throw new Error('Invalid base64 string');
+      }
+
+      byteArray = new Uint8Array(
+        window.atob(cleanBase64)
+        .split('')
+        .map(char => char.charCodeAt(0))
+      );
+    } catch (error) {
+      console.error('Failed to convert base64', error);
+      return null;
+    }
+  } else {
+    console.error('Invalid profile picture format');
+    return null;
+  }
+    // Use the stored extension or default to jpg
+    const fileExtension = this.upgraded.profile_ext || 'jpg';
+  
+    // Create File from Uint8Array
+    const profilePicFile = new File(
+      [byteArray], 
+      `profile_pic.${fileExtension}`, 
+      { type: `image/${fileExtension}` }
+    );
+  
+    return profilePicFile;
+  }
+ 
+
   async register() {
     this.showValidationMessages = true;
 
@@ -247,6 +328,37 @@ copyHomeToWorkAddress() {
         this.homeBarangays
     );
 
+    // let profilePicFile: File | null = null;
+    // if (this.upgraded.profile_pic) {
+    //     profilePicFile = new File(
+    //         [this.upgraded.profile_pic],
+    //         "profile_pic.jpg",
+    //         { type: "image/jpeg"  }
+    //     );
+    //     console.log("Profile Pic Data", profilePicFile)
+    // } else {
+    //     console.error('Profile picture is required');
+    //     return;
+    // }
+    let profilePicFile: File | null = null;
+    let profilePicExt: string = '';
+  
+    if (this.upgraded.profile_pic) {
+      const processedProfilePic = this.processProfilePic();
+      if (processedProfilePic) {
+        profilePicFile = processedProfilePic;
+        profilePicExt = this.upgraded.profile_ext || 'jpg';
+      } else {
+        console.error('Failed to process profile picture');
+        return;
+      }
+    } else {
+      console.error('Profile picture is required');
+      return;
+    }
+  
+  
+
     if (this.isSameAddress) {
         this.userWorkAddress = {
             locationId: 0,
@@ -266,8 +378,7 @@ copyHomeToWorkAddress() {
         );
     }
 
-    this.loading = true; // Show loading indicator
-
+   
     try {
         const homeAddressPromise = this.locationService
             .createOrRetrieveLocation(this.userHomeAddress, this.userHomeAddress.zipCode)
@@ -299,6 +410,8 @@ copyHomeToWorkAddress() {
                 })
             : Promise.resolve();
 
+   
+
         if (!this.termsAccepted) {
             console.error('You must accept the terms and conditions');
             return;
@@ -320,14 +433,21 @@ copyHomeToWorkAddress() {
         formDataUpgraded.append('ContactNum', this.upgraded.contactNum);
         formDataUpgraded.append('HomeAddressId', this.upgraded.homeAddressId ? this.upgraded.homeAddressId.toString() : '');
         formDataUpgraded.append('WorkAddressId', this.upgraded.workAddressId ? this.upgraded.workAddressId.toString() : '');
-        formDataUpgraded.append('Role', this.upgraded.role);
+        formDataUpgraded.append('Role', this.upgraded.role); 
+        if (this.upgraded.profile_pic) {
+          formDataUpgraded.append('ProfilePic', profilePicFile);
+          formDataUpgraded.append('ProfileExt', profilePicExt);
+        } else {
+          // Handle case where profile_pic is null or undefined, if necessary
+          console.log("No profile picture to upload.");
+        }
 
         console.log('Final Home Address ID:', this.upgraded.homeAddressId);
         console.log('Final Work Address ID:', this.upgraded.workAddressId);
 
         const response = await this.createAccountService.upgradeAccount(formDataUpgraded).toPromise();
         alert('Registration successful');
-     
+  
         this.citizenData.personId = this.upgraded.personId || 0;
         this.router.navigate(['/login']);
 
@@ -351,7 +471,36 @@ copyHomeToWorkAddress() {
         this.loading = false; // Hide loading indicator
     }
 }
-  
+
+
+base64ToBlob(base64: string): Blob {
+  try {
+    // Remove data URL prefix if it exists
+    const base64Clean = base64.replace(/^data:image\/\w+;base64,/, '');
+    
+    // Validate base64 string
+    if (base64Clean.length === 0) {
+      throw new Error('Empty base64 string');
+    }
+
+    // Use window.atob for decoding (more consistent across browsers)
+    const byteCharacters = window.atob(base64Clean);
+    
+    // Create byte arrays
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    
+    const byteArray = new Uint8Array(byteNumbers);
+    
+    return new Blob([byteArray], { type: 'image/jpeg' }); // Adjust type as needed
+  } catch (error) {
+    console.error('Base64 to Blob conversion error:', error);
+    // Provide a fallback or rethrow the error
+    throw new Error('Failed to convert base64 to blob');
+  }
+}
 
   isValidEmail(email: string): boolean {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

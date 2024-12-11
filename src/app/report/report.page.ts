@@ -534,29 +534,7 @@ export class ReportPage implements OnInit {
     return barangay ? barangay.barangay_name : '';
   }
   
-    // convertLocationIdsToNames(location: Location, provinces: any[], municipalities: any[], barangays: any[]) {
-    //   const selectedRegion = this.regions.find(
-    //     (r) => r.region_id === location.region
-    //   );
-    //   const selectedProvince = provinces.find(
-    //     (p) => p.province_id === location.province
-    //   );
-    //   const selectedMunicipality = municipalities.find(
-    //     (m) => m.municipality_id === location.municipality
-    //   );
-    //   const selectedBarangay = barangays.find(
-    //     (b) => b.barangay_id === location.barangay
-    //   );
-  
-    //   location.region = selectedRegion ? selectedRegion.region_name : '';
-    //   location.province = selectedProvince ? selectedProvince.province_name : '';
-    //   location.municipality = selectedMunicipality
-    //     ? selectedMunicipality.municipality_name
-    //     : '';
-    //   location.barangay = selectedBarangay ? selectedBarangay.barangay_name : '';
-      
-    // }
-
+    
     getUserLocation(): Promise<{ latitude: number; longitude: number }> {
       return new Promise((resolve, reject) => {
         if (navigator.geolocation) {
@@ -727,98 +705,6 @@ export class ReportPage implements OnInit {
     return { mimeType, byteArray };
   }
 
-  // retrieveSessionData() {
-  //   const userDataString = sessionStorage.getItem('userData');
-
-  //   if (userDataString) {
-
-  //     this.userData = JSON.parse(userDataString);
-  //     console.log('Retrieved user data:', this.userData);
-      
-  //     let targetObject: any;
-  //     if (this.reporterType === 'victim') {
-  //       targetObject = this.victim;
-  //     } else if (this.reporterType === 'witness') {
-  //       targetObject = this.witness;
-  //     } else {
-  //       console.log('Unknown reporter type:', this.reporterType);
-  //       return; 
-  //     }
-  
-
-  //     const genderMap: { [key: string]: string } = {
-  //       'M': 'Male',
-  //       'F': 'Female'
-  //     };
-  
-     
-  //     targetObject.firstname = this.userData.first_name || '';
-  //     targetObject.middlename = this.userData.middle_name || '';
-  //     targetObject.lastname = this.userData.last_name || '';
-  //     targetObject.birthdate = this.userData.birth_date || '';
-  //     targetObject.sex = genderMap[this.userData.sex] || this.userData.sex || '';
-  //     targetObject.contactDetails = {
-  //       telNum: this.userData.tel_num || '',
-  //       mobileNum: this.userData.contact_num || '',
-  //       email: this.userData.email || ''
-  //     };
-  //     targetObject.personId = this.userData.personId || 0;
-  //     targetObject.role = this.userData.role || '';
-  //     targetObject.civilStatus = this.userData.civilStatus || '';
-  //     targetObject.bioStatus = this.userData.bioStatus || false;
-  
-   
-  //     targetObject.description = {
-  //       descriptionId: 0,
-  //       ethnicity: ''
-  //     };
-  
-   
-  //     targetObject.occupation = {
-  //       occupationId: 0,
-  //       name: ''
-  //     };
-  
-    
-  //     if (this.userData.home_address_id) {
-  //       targetObject.homeAddressId = this.userData.home_address_id;
-  //       targetObject.homeAddress = {
-  //         locationId: 0,
-  //         province: '',
-  //         municipality: '',
-  //         street: '',
-  //         region: '',
-  //         barangay: '',
-  //         block: ''
-  //       };
-        
-  //     }
-  //     if (this.userData.work_address_id) {
-  //       targetObject.workAddressId = this.userData.work_address_id;
-  //       targetObject.workAddress = {
-  //         locationId: 0,
-  //         province: '',
-  //         municipality: '',
-  //         street: '',
-  //         region: '',
-  //         barangay: '',
-  //         block: ''
-  //       };
-        
-  //     }
-  
-  //     console.log('Populated data:', targetObject);
-      
-  //     if (this.reporterType === 'victim') {
-  //       this.victim = { ...targetObject };
-  //     } else if (this.reporterType === 'witness') {
-  //       this.witness = { ...targetObject };
-  //     }
-  //     this.isDataLoaded = true;
-  //   } else {
-  //     console.log('No user data found in session');
-  //   }
-  // }
 
  getLocation(locationId: number): Promise<any> {
     return this.locationService.getLocation(locationId).toPromise();
@@ -1780,11 +1666,6 @@ goBack() {
   async save() {
     const form = new FormData();
 
-    // Establish report
-    // this.loadingMessage = 'Loading...';
-    // this.loading = true;
-  
-    // Validate data
     const isValidWitness = this.validateObject(this.witness);
     const isValidSuspect = this.validateObject(this.suspect);
     const isValidVictim = this.validateObject(this.victim);
@@ -1825,7 +1706,7 @@ goBack() {
           return;
         }
   
-        // Navigate to payment
+        // Navigate to add-evidence
         this.router.navigate(['/add-evidence'], {
           state: {
             citizenId: this.userData.citizenId,

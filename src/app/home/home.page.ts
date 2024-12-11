@@ -296,10 +296,15 @@ async getSolvedCrimesForLocation() {
   }
   
 
-
+  private isValidBase64Image(base64String: string): boolean {
+    const base64Pattern = /^data:image\/(png|jpg|jpeg|gif);base64,/;
+    return base64Pattern.test(base64String);
+  }
+  
   loadUserProfile() {
     setTimeout(() => {
       const userData = sessionStorage.getItem('userData');
+      console.log('USER DATA SESSION', userData)
       if (userData) {
         try {
           const parsedData = JSON.parse(userData);
@@ -325,6 +330,25 @@ async getSolvedCrimesForLocation() {
             personId: parsedData.personId || 0,
             profile_pic: new Uint16Array(),
           };
+
+          
+          this.accountService.getProfPic(parsedData.acc_id).subscribe(
+            (profilePicBlob: Blob) => {
+                if (profilePicBlob) {
+                    // Create a URL for the Blob
+                    this.avatarUrl = URL.createObjectURL(profilePicBlob);
+                    console.log('PROFILE PIC URL', this.avatarUrl);
+                } else {
+                    console.log('ERROR, DEFAULT PROF PIC STREAMED', this.avatarUrl);
+                    this.avatarUrl = 'assets/user-default.jpg';
+                }
+            },
+            (error) => {
+                console.error('Error fetching profile picture:', error);
+                this.avatarUrl = 'assets/user-default.jpg'; 
+            }
+        );
+
 
         
           // console.log('Person Data from Session:', this.personData);

@@ -21,13 +21,12 @@ ion-toolbar {
     color: #000000;
   }
 
-  ion-label {
-    font-size: 25px; 
-  }
+ 
 
-  .report-as, ion-label{
+  .report-as{
     color: #000000;
     font-weight: bold;
+    font-size: 25px; 
   }
 
   .victim, .witness {
@@ -56,3 +55,96 @@ ion-toolbar {
     height: 200px;
     border-radius: 20px;
   }
+
+  .custom-modal {
+    --height: 25%;
+    --width: 80%; 
+    --padding: 0;
+    --background: #ffffff;
+    --color: #000000
+  }
+  
+  .custom-modal ion-header {
+    background-color: #f8f8f8;
+  }
+
+  .custom-modal ion-toolbar {
+    --background: #007acc;
+    --color: #ffffff;
+    height: 50px;
+  }
+  
+  .custom-modal ion-content {
+    padding: 16px;
+    --color: #000000
+  }
+  
+  // .custom-modal ion-button {
+  //   --background: #007acc;
+  //     --color: #ffffff;
+  //     --border-width: 20px;
+  //     --border-radius: 50px;
+  //     width: 80%;
+  //     top: 10px;
+      
+
+  // }
+  
+  .custom-modal ion-item{
+    margin: 20px;
+    --color: #000000;
+    --background: #ffffff;
+  }
+  
+  .custom-modal ion-buttons {
+    --background: none;
+  }
+
+  .menu-button-modal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .home-button-modal {
+    display: flex;
+    justify-content: center;
+    align-items:  center;
+    padding-top: 17px;
+    --background: #40dc59;
+    //margin-left: 20px;
+    --border-radius: 10px;
+    width: 60%;
+  }
+
+
+  .proceed-button-modal {
+    display: flex;
+    justify-content: center;
+    align-items:  center;
+    padding-top: 10px;
+    //margin-left: 20px;
+    --border-radius: 10px;
+    width: 60%;
+  }
+ 
+
+  .close-button{
+    margin-top: 15px;
+    margin-bottom: 20px;
+  }
+
+  .proceed-button {
+    display: flex;
+    justify-content: center;
+    align-items:  center;
+    padding-top: 17px;
+  }
+
+  .content {
+    display: flex;
+    justify-content: center;
+    align-items:  center;
+    margin: 20px;
+}

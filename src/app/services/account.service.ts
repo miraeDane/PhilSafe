@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -67,6 +67,19 @@ export class AccountService {
         catchError(this.handleError)
       );
   }
+
+  getProfPic(accountId: number): Observable<Blob> {
+    return this.http.get(`https://192.168.1.13:7108/api/account/get/profilepic/${accountId}`, { responseType: 'blob' })
+        .pipe(
+            tap((response: any) => {
+                console.log('Response from getProfPic:', response);
+            }),
+            catchError(error => {
+                console.error('Error fetching profile picture:', error);
+                return throwError(error);
+            })
+        );
+}
 
  
   updateAccount(id: number, data: any): Observable<any> {

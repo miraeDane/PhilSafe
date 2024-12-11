@@ -278,9 +278,15 @@
         <ion-label class="checkbox-label">I hereby certify to the correctness of the foregoing to the best of my knowledge and belief</ion-label>
         </div>
         <ion-label *ngIf="showValidationMessages && !termsAccepted" color="danger" style="margin-left:20px;">Please accept the terms</ion-label>
-        <ion-item>
-          <ion-input type="file" [(ngModel)]="upgraded.profile_pic" placeholder="Profile Picture"> </ion-input>
-        </ion-item>
+        
+        
+        <div class="upload-pic">
+          <ion-label>Upload your profile picture</ion-label>
+          <ion-input type="file"  [(ngModel)]="upgraded.profile_pic" placeholder="Profile Picture" (change)="onProfilePicSelected($event)"> </ion-input>
+        </div>
+        
+        
+        
       <div class="next-container">
         <ion-button id="register" class="confirm" (click)="register()">Proceed to Register</ion-button
         >

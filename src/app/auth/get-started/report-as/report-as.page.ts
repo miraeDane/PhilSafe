@@ -14,6 +14,7 @@ export class ReportAsPage implements OnInit {
 
   selectedSegment: string = '1';
   reporterType: string = '';
+  isModalOpen: boolean = false;
 
   ngOnInit() {
     
@@ -21,11 +22,28 @@ export class ReportAsPage implements OnInit {
 
 
   onReporterSelect(type: string) {
-    this.router.navigate(['/report/1'], { queryParams: { reporterType: type } });
-    console.log(type)
+    this.reporterType = type; // Store the reporter type if needed later
+    this.isModalOpen = true; // Open the modal
+    console.log(type); // Log the reporter type
     
   }
+
   
+closeModal() {
+  this.isModalOpen = false; 
+}
+
+goBack() {
+  this.closeModal(); 
+  setTimeout(() => {
+    this.router.navigate(['/tabs/home']);
+  }, 100);
+}
+
+proceedToReport() {
+  this.closeModal(); // Close the modal
+  this.router.navigate(['/report/1'], { queryParams: { reporterType: this.reporterType } }); // Navigate with query params
+}
  
 }
 
