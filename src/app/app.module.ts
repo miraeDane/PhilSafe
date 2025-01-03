@@ -10,6 +10,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SignatureModalComponent } from './signature-modal/signature-modal.component';
 import { CookieService } from 'ngx-cookie-service';
+import { MinuteSecondsPipe } from './pipes/minute-seconds.pipe';
 
 
 
@@ -20,7 +21,8 @@ import { CookieService } from 'ngx-cookie-service';
     IonicModule.forRoot(), 
     AppRoutingModule, 
     HttpClientModule,
-    SignatureModalComponent
+    SignatureModalComponent,
+    MinuteSecondsPipe
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     CookieService

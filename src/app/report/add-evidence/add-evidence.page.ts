@@ -4,6 +4,7 @@
   import { Medium } from 'src/app/models/medium';
   import { Router } from '@angular/router';
   import { CitizenService } from 'src/app/services/citizen.service';
+import { ModalController } from '@ionic/angular';
 
   @Component({
     selector: 'app-add-evidence',
@@ -24,12 +25,15 @@
     evidences: any[] = [];
     citizenId: number = 0;
     reportId: number = 0;
+    isModalOpen = false; 
+    currentStep = 1;
 
     constructor(
       private http: HttpClient,
       private mediaService: MediumService,
       private citizenService: CitizenService,
       private router: Router,
+      private modalController: ModalController
     ) {}
 
     ngOnInit(): void {
@@ -111,7 +115,8 @@
 
     submitEvidences() {
       const formData = new FormData();
-      // const reportId = 31024117;
+      // const reportId = 10243088236;
+      // const citizenId = 2024925789;
       const crimeId = null; 
 
       this.evidences.forEach((evidence, index) => {
@@ -120,7 +125,7 @@
               // const fileBlob = new Blob([evidence.file], { type: evidence.contentType });
               const fileWithMeta = new File([evidence.file], evidence.filename, { type: evidence.contentType });
               formData.append(`items[${index}].File`, fileWithMeta);
-              formData.append(`items[${index}].content_Type`, evidence.contentType);
+              formData.append(`items[${index}].content_type`, evidence.contentType);
               formData.append(`items[${index}].description`, evidence.description);
               formData.append(`items[${index}].filename`, evidence.filename);
               formData.append(`items[${index}].extension`, evidence.extension);
@@ -133,14 +138,7 @@
           (response) => {
             console.log('Evidences Data:', this.evidences);
               console.log('Evidences uploaded successfully:', response);
-
-              this.router.navigate(['/payment'], {
-                state: {
-              
-                  citizenId: this.citizenId,
-                  reportId: this.reportId,
-                },
-              });
+              this.openModal();
           },
           (error) => {
             console.log('Evidences Data:', formData);
@@ -148,6 +146,52 @@
           }
       );
   }
+
+  openModal() {
+   this.isModalOpen = true;
+  }
+  
+  closeModal() {
+    this.modalController.dismiss();
+    this.resetSteps(); 
+    this.isModalOpen = false;
+  }
+  
+  previousStep() {
+    if (this.currentStep > 1) {
+      this.currentStep--;
+    }
+  }
+
+
+  nextStep() {
+    if (this.currentStep < 3) {
+      this.currentStep++;
+    }
+  }
+
+ 
+  private resetSteps() {
+
+    this.currentStep = 1;
+  }
+
+
+  proceedToReport() {
+    console.log('Proceeding to report...');
+
+    this.modalController.dismiss();
+    this.router.navigate(['/payment'], {
+      state: {
+    
+        citizenId: this.citizenId,
+        reportId: this.reportId,
+      },
+    });
+   
+  }
+
+
     
     
   }

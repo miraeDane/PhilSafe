@@ -117,6 +117,18 @@ const routes: Routes = [
   {
     path: 'payment',
     loadChildren: () => import('./payment/payment.module').then( m => m.PaymentPageModule), canActivate: [AuthGuard]
+  },
+  {
+    path: 'otp',
+    loadChildren: () => import('./otp/otp.module').then( m => m.OtpPageModule)
+  },
+  {
+    path: 'payment-success',
+    loadChildren: () => import('./payment-success/payment-success.module').then( m => m.PaymentSuccessPageModule), canActivate: [AuthGuard]
+  },
+  {
+    path: 'jurisdiction',
+    loadChildren: () => import('./jurisdiction/jurisdiction.module').then( m => m.JurisdictionPageModule)
   }
   // {
   //   path: 'report/:segment',

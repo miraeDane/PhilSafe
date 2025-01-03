@@ -34,13 +34,22 @@ export class VictimService {
   }
 
 
-  establishVictim(victim: any): Observable<any> {
+  postVictim(victim: any): Observable<any> {
     const fullUrl = `${this.victimUrl}api/victim`
     console.log('Full URL', fullUrl);
     return this.http.post(fullUrl, victim).pipe(
       catchError(this.handleError)
     );
   }
+
+  establishVictim(victim: any, reportId: number): Observable<any> {
+    const fullUrl = `${this.victimUrl}api/victim/fromreport/${reportId}`
+    console.log('Full URL', fullUrl);
+    return this.http.post(fullUrl, victim).pipe(
+      catchError(this.handleError)
+    );
+  }
+
 
   editVictim(id: number, victim: any): Observable<any> {
     return this.http.put(`${this.victimUrl}api/victim/edit/${id}`, victim).pipe(

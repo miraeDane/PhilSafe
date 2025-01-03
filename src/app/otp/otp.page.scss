@@ -1,5 +1,5 @@
 ion-content {
-    --background: url("../assets/bacgkround.svg") no-repeat fixed center / cover;
+    --background: url("/assets/bacgkround-copy.svg") no-repeat fixed center / cover;
   }
 
  
@@ -40,7 +40,7 @@ img {
     border-radius: 50px;
     border: solid 0.3px #b4b1b1;
     text-align: center;
-    margin: 0 auto;
+    margin: 20px;
   }
 
   .wrapper ion-item {
@@ -99,6 +99,7 @@ img {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 30px;
+    margin: 10px
   }
 
   .loginSegment {
@@ -148,6 +149,7 @@ img {
     font-weight: bold;
     text-align: center;
     padding-top: 10px;
+    padding-bottom: 10px;
     display: flex;
     justify-content: center;
   }
@@ -158,3 +160,18 @@ img {
   
     color: #1c6dff;
   }
+
+  .sign-in-here {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+  
+  }
+
+  .sign-in{
+    color: #000000;
+    font-size: 15px;
+  }
+  

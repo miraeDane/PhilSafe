@@ -33,15 +33,18 @@
     </ion-toolbar>
   </ion-header>
   <ion-content>
-    <div class="content">
+    <div class="div-note">
+      <img src="/assets/note.png" class="note">
+    </div>
+    <div class="content"> 
       <ion-label class="label-modal">
         Please note that a report fee of PHP 50.00 will be charged. Would you like to proceed?
       </ion-label>
     </div>
 
     <div class="menu-button-modal">
+      <ion-button class="proceed-button-modal"(click)="proceedToReport()">Proceed</ion-button>
       <ion-button  class="home-button-modal" (click)="goBack()">Go back to Homepage</ion-button>
-      <ion-button class="proceed-button-modal" color="primary" (click)="proceedToReport()">Proceed</ion-button>
     </div>
     
     

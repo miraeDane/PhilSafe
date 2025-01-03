@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AccountSignInFromContactDto, AccountSignInFromEmailDto } from 'src/app/models/login';
 import { LoadingService } from 'src/app/services/loading.service';
 import { LoginService } from 'src/app/services/login.service';
+import { SmtpService } from 'src/app/services/smtp.service';
 
 @Component({
   selector: 'app-login',
@@ -42,7 +43,8 @@ export class LoginPage implements OnInit {
     private loginService: LoginService,
     private router: Router,
     private changeDetectorRef: ChangeDetectorRef,
-    private loadingService: LoadingService 
+    private loadingService: LoadingService,
+    private smtpService: SmtpService 
   ) { }
 
   ngOnInit() {
@@ -152,7 +154,7 @@ export class LoginPage implements OnInit {
                 this.router.navigate(['/tabs']);
               } else {
                 console.error('Failed to store session data');
-                alert('Login Failed: Unable to store session data');
+                alert('Login Failed');
            
                 
               }
@@ -191,10 +193,29 @@ export class LoginPage implements OnInit {
   //   localStorage.removeItem('sessionData');
   // }
 
+  resetPass(){
+
+this.smtpService.sendOtpCode(this.withEmail.email)
+    .subscribe(
+      (response) => {
+        console.log('OTP sent successfully:', response);
+        alert('An OTP has been sent to your email address.');
+      },
+      (error) => {
+        console.error('Error sending OTP:', error);
+        alert('Failed to send OTP. Please try again later.');
+      }
+    );
+  }
+
   isValidEmail(email: string): boolean {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
 }
+
+
+
+
 }
 
 

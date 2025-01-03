@@ -54,6 +54,21 @@ export class SuspectService {
     );
   }
 
+  establishCriminal(reportId: number, suspectRequest: any): Observable<any> {
+    const url = `${this.suspectUrl}api/suspect/fromreport/${reportId}`;
+    // const headers = new HttpHeaders({
+    //   'Content-Type': 'application/json',
+    // });
+
+    return this.http.post(url, suspectRequest)
+      .pipe(
+        catchError((error) => {
+          console.error('Error occurred:', error);
+          return throwError(() => new Error('Failed to establish criminal. Please try again.'));
+        })
+      );
+  }
+
 
   deleteSuspect(id: number): Observable<any> {
     return this.http.delete(`${this.suspectUrl}api/suspect/discard/${id}`).pipe(

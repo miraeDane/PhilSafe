@@ -1,0 +1,104 @@
+<ion-content class="custom-background">
+  <div class="wrapper">
+    <div class="logo">
+      <img src="assets/PhilSafe Logo.png" />
+    </div>
+  </div>
+
+  <div class="loginpage">
+    <ion-label class="title-info">RESET PASSWORD</ion-label>
+
+    <div class="login-input" *ngIf="step === 1">
+      <ion-item lines="none">
+        <ion-input
+          [(ngModel)]="email"
+          id="username"
+          placeholder="Enter Email"
+        ></ion-input>
+        <ion-icon name="person" slot="start"></ion-icon>
+        <ion-icon slot="end"></ion-icon>
+      </ion-item>
+
+      <div class="next-container">
+        <ion-button id="login" class="confirm" (click)="sendOTP()"
+          >Reset</ion-button
+        >
+        <ion-loading
+          class="custom-loading"
+          [isOpen]="loading"
+          message="Logging in.."
+        >
+        </ion-loading>
+      </div>
+    </div>
+
+   
+    <ion-label style="margin-left:20px;" *ngIf="successMessage" color="success">{{successMessage}}</ion-label>
+   
+
+    <div *ngIf="step === 2">
+      <ion-item lines="none">
+        <ion-input [(ngModel)]="otpCode" placeholder="Enter OTP"></ion-input>
+        <ion-icon name="key" slot="start"></ion-icon>
+      </ion-item>
+      <p>Time remaining: {{ otpTimer }}s</p>
+      <ion-button expand="block" (click)="validateOtp()">Verify OTP</ion-button>
+
+      <div *ngIf="otpTimer > 0 && !isOtpExpired" style="text-align: center; margin-top: 20px;">
+        <ion-label color="medium">
+          OTP will expire in: {{ otpTimer | minuteSeconds }}
+        </ion-label>
+      </div>
+  
+      <!-- Resend OTP Button -->
+      <div *ngIf="isOtpExpired" style="text-align: center; margin-top: 20px;">
+        <ion-button color="danger" (click)="resendOtp()">
+          Resend OTP
+        </ion-button>
+      </div>
+    </div>
+
+    <div *ngIf="step === 3">
+
+      <ion-item lines="none">
+        <ion-input [type]="oldPasswordVisible ? 'text' : 'password'" [(ngModel)]="oldPassword" id="pass" placeholder="Old Password"></ion-input>
+        <ion-icon src="assets/lock.svg" slot="start"></ion-icon>
+        <ion-icon 
+          [name]="oldPasswordVisible ? 'eye-outline' : 'eye-off-outline'" 
+          slot="end" 
+          (click)="togglePasswordVisibility()">
+        </ion-icon>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-input [type]="newPasswordVisible ? 'text' : 'password'" [(ngModel)]="newPassword" id="pass" placeholder="New Password"></ion-input>
+        <ion-icon src="assets/lock.svg" slot="start"></ion-icon>
+        <ion-icon 
+          [name]="newPasswordVisible ? 'eye-outline' : 'eye-off-outline'" 
+          slot="end" 
+          (click)="togglePasswordVisibility()">
+        </ion-icon>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-input [type]="newPasswordVisible ? 'text' : 'password'" [(ngModel)]="confirmPassword" id="pass" placeholder="New Password"></ion-input>
+        <ion-icon src="assets/lock.svg" slot="start"></ion-icon>
+        <ion-icon 
+          [name]="newPasswordVisible ? 'eye-outline' : 'eye-off-outline'" 
+          slot="end" 
+          (click)="togglePasswordVisibility()">
+        </ion-icon>
+      </ion-item>
+
+      
+
+      <ion-button expand="block" (click)="resetPassword()">Reset Password</ion-button>
+    </div>
+
+
+    <div class="sign-in-here">
+      <ion-label class="sign-in">For successful Reset Password</ion-label>
+      <a class="sign-in-link" routerLink="/login">Sign in here</a>
+    </div>
+  </div>
+</ion-content>

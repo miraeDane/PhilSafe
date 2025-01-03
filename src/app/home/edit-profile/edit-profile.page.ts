@@ -169,6 +169,23 @@ export class EditProfilePage implements OnInit {
           this.avatarUrl = parsedData.profile_pic; 
         }
 
+        this.accountService.getProfPic(parsedData.acc_id).subscribe(
+          (profilePicBlob: Blob) => {
+              if (profilePicBlob) {
+                  // Create a URL for the Blob
+                  this.avatarUrl = URL.createObjectURL(profilePicBlob);
+                  console.log('PROFILE PIC URL', this.avatarUrl);
+              } else {
+                  console.log('ERROR, DEFAULT PROF PIC STREAMED', this.avatarUrl);
+                  this.avatarUrl = 'assets/user-default.jpg';
+              }
+          },
+          (error) => {
+              console.error('Error fetching profile picture:', error);
+              this.avatarUrl = 'assets/user-default.jpg'; 
+          }
+      );
+
 
         if(this.accountData.homeAddressId){
           this.locationService.getLocation(this.accountData.homeAddressId).subscribe(

@@ -97,6 +97,8 @@ total_incidents: number = 0
 incidentName: string = '';
 topCrimeLocations: { location: string; count: number }[] = [];
 crimeLocationPieChart!: Chart<'pie', number[], string>;
+crimeProfileStatement: string = '';
+
 
 
   private locationCache: { [key: string]: string } = {};
@@ -132,6 +134,7 @@ crimeLocationPieChart!: Chart<'pie', number[], string>;
     this.loadBarangays();
     this.loadIncidentTypes();
     this.loadTotalCrimeDensity();
+    
   }
 
   ngAfterViewInit() {
@@ -265,7 +268,7 @@ initializeMap(applyFilter: boolean) {
 
   async openCrimeAnalysisModal() {
     this.isModalOpen = true;
-
+    this.generateCrimeProfile();
 
     setTimeout(() => {
       if (this.topHours.length && this.topCounts.length) {
@@ -443,9 +446,9 @@ initializeMap(applyFilter: boolean) {
       : 'No data';
 
     // Log the results
-    // console.log('Most frequent hour:', this.highestCrimeTime);
-    // console.log('Top 5 hours:', topHours);
-    // console.log('Top 5 counts:', topCounts);
+    console.log('Most frequent hour:', this.highestCrimeTime);
+    console.log('Top 5 hours:', topHours);
+    console.log('Top 5 counts:', topCounts);
 
     this.topHours = topHours;
     this.topCounts = topCounts;
@@ -602,6 +605,28 @@ async calculateCrimeAnalysis(geoJSONData: GeoJSON.FeatureCollection) {
   // Prepare pie chart data
   this.createCrimeLocationPieChart(topLocationNames, topLocationCounts);
   this.openCrimeAnalysisModal();
+}
+
+async generateCrimeProfile() {
+
+  if (!this.topCrimeLocations || !this.topHours || !this.topCounts || this.topCrimeLocations.length === 0 || this.topHours.length === 0) {
+      console.warn('Insufficient data for generating crime profile.');
+      return;
+  }
+
+  // Top crime location and highest crime count
+  const highestCrimeLocation = this.topCrimeLocations[0].location;
+  const highestCrimeLocationCount = this.topCrimeLocations[0].count;
+
+  // Most frequent crime hour and its count
+  const mostFrequentCrimeHour = this.topHours[0];
+  const mostFrequentCrimeCount = this.topCounts[0];
+
+  // Create the profiling statement
+  this.crimeProfileStatement = `${highestCrimeLocation} has the highest crime rate, with the peak occurring at ${mostFrequentCrimeHour}. This hour sees ${mostFrequentCrimeCount} incidents of crime.`;
+
+  // Log or display the result in the UI
+  console.log(this.crimeProfileStatement);
 }
 
 

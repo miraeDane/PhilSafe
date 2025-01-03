@@ -69,7 +69,7 @@ export class AccountService {
   }
 
   getProfPic(accountId: number): Observable<Blob> {
-    return this.http.get(`https://192.168.1.13:7108/api/account/get/profilepic/${accountId}`, { responseType: 'blob' })
+    return this.http.get(`${this.accountURL}api/account/get/profilepic/${accountId}`, { responseType: 'blob' })
         .pipe(
             tap((response: any) => {
                 console.log('Response from getProfPic:', response);
@@ -85,6 +85,16 @@ export class AccountService {
   updateAccount(id: number, data: any): Observable<any> {
     const url = `${this.accountURL}api/account/up/${id}`;
     return this.http.put(url, data).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  resetPassword(data: any): Observable<any> {
+    const url = `${this.accountURL}api/account/reset/password`;
+    return this.http.put(url, data).pipe(
+      tap((response) => {
+        console.log('Password reset successful:', response);
+      }),
       catchError(this.handleError)
     );
   }

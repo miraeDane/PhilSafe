@@ -34,5 +34,52 @@
 
     <ion-button expand="block" fill="outline" (click)="addEvidence()">Add Evidence</ion-button>
     <ion-button expand="block" [disabled]="!isFilesUploaded()" (click)="submitEvidences()">Submit Evidences</ion-button>
- 
+
+    <ion-modal class="custom-modal" id="confirmationModal" [isOpen]="isModalOpen" (willDismiss)="closeModal()">
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>IMPORTANT NOTE</ion-title>
+            <ion-buttons slot="end">
+              <ion-button class="close-button" (click)="closeModal()">Close</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content>
+          <div class="div-note">
+            <img src="/assets/note.png" class="note">
+          </div>
+    
+          <div class="content">
+            <!-- <p class="modal-description">This modal provides essential warnings and disclaimers about report submissions and associated conditions. Please read each step carefully before proceeding.</p> -->
+    
+            <ng-container *ngIf="currentStep === 1">
+              <ion-label class="label-modal">
+                <strong>No Evident Media Content:</strong> Identifying someone without providing evidence may expose you to defamation risks. Submitting a report without evidence might be flagged as "potential spam."
+              </ion-label>
+            </ng-container>
+    
+            <ng-container *ngIf="currentStep === 2">
+              <ion-label class="label-modal">
+                <strong>Potential Spam:</strong> If you report the same incident more than once within 3 days, it might be marked as spam.
+              </ion-label>
+            </ng-container>
+    
+            <ng-container *ngIf="currentStep === 3">
+              <ion-label class="label-modal">
+                Please note that a report fee of PHP 50.00 will be charged. Would you like to proceed?
+              </ion-label>
+            </ng-container>
+          </div>
+    
+          <div class="menu-button-modal">
+            <ion-button *ngIf="currentStep > 1" class="prev" (click)="previousStep()">Prev</ion-button>
+            <ion-button *ngIf="currentStep < 3" class="next" (click)="nextStep()">Next</ion-button>
+            <ion-button *ngIf="currentStep === 3" class="proceed" (click)="proceedToReport()">Proceed</ion-button>
+            <!-- <ion-button *ngIf="currentStep === 3" class="home-button-modal" (click)="goBack()">Go back to Homepage</ion-button> -->
+          </div>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+    
 </ion-content>

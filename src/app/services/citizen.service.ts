@@ -17,7 +17,9 @@ export class CitizenService {
     return this.http.get(`${this.citizenUrl}api/citizen/collect/citizens/all`);
   }
 
-
+  uploadMugshot(formData: FormData): Observable<any> {
+    return this.http.post<any>(`${this.citizenUrl}api/citizen/identity/pic`, formData)
+  }
 
   verifyRegularStatus(personId: number): Observable<boolean> {
     const url = `${this.citizenUrl}api/citizen/verify/${personId}`;
@@ -35,8 +37,8 @@ export class CitizenService {
     );
   }
 
-  ascertainCitizen(data: any): Observable<any> {
-    const url = `${this.citizenUrl}api/citizen/identity/prove`;
+  updateCitizen(data: any, citizenId: number): Observable<any> {
+    const url = `${this.citizenUrl}api/citizen/submit/proof/${citizenId}`;
     return this.http.put(url, data).pipe(
       catchError(this.handleError)
     );

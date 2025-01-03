@@ -5,7 +5,7 @@ export interface BasePerson {
     lastname: string;
     sex: string;
     birthdate: string;
-    civilStatus: string;
+    civilStatus?: string;
     bioStatus: boolean;
   }
   

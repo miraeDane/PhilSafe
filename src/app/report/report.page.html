@@ -48,22 +48,7 @@
   <div *ngIf="selectedSegment === '1' && reporterType !== 'victim'" class="segment-content">
     <div class="item-a">
       <ion-list class="incident" lines="none">
-        <ion-item class="incident-item">
-          <ion-select
-          [(ngModel)]="selectedIncidentID"
-            class="custom-select"
-            placeholder="Type of incident"
-            interface="popover"
-            (ionChange)="onCrimeChange($event)"
-          >
-          <ion-select-option
-                *ngFor="let incident of incidentTypes"
-                [value]="incident.incident_id"
-              >
-                {{ incident.name }}
-              </ion-select-option>
-          </ion-select>
-        </ion-item>
+        
         <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !selectedIncidentID" color="danger">Please fill out this item</ion-label>
       </ion-list>
       <div class="anonymous-person-info">
@@ -355,36 +340,10 @@
        
         </ng-container>
       
-        <ion-label class="title-info">ID DETAILS</ion-label>
-
-        <ion-item>
-          <ion-select placeholder="ID Presented">
-            <ion-select-option *ngFor="let id of idOptions">
-              {{ id }}
-            </ion-select-option>
-          </ion-select>
-        </ion-item>
-     
-
-        <ion-item [class.shake]="showValidationMessages && !idData.description">
-          <ion-input [(ngModel)]="idData.description" id="idNum" placeholder="ID Number"> </ion-input>
-        </ion-item>
-        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !idData.description" color="danger">Please fill out this item</ion-label>
+       
       </ion-list>
 
-      <div id="uploadfile" class="uploadfile">
-       <ion-label class="title-info">Upload your valid ID</ion-label>
-          <input type="file" class="file" id="actual-btn"  (change)="onFileSelected($event)"  hidden/>
-          <div class="icon-label">
-            <ion-icon src="assets/upload.svg" class="upload-icon"></ion-icon>
-            <label for="actual-btn">Upload file/s</label>
-          </div>  
-          <div *ngIf="fileName" class="file-name">{{ fileName }}
-          <!-- <ion-button (click)="uploadFile()" *ngIf="selectedFile">Upload</ion-button>  -->
-        </div>
-          <p class="max-size">Maximum size up to 2GB</p>
-      </div>
-
+      
       <div class="next-container">
         <ion-button class="next" (click)="goToNextSegment(1)"
           >Next</ion-button
@@ -723,10 +682,10 @@
         </ion-item>
       </ion-list>
   
-      <ion-button class="add-btn" (click)="navigateToAddSuspect()" [disabled]="suspect.isUnidentified">
+      <!-- <ion-button class="add-btn" (click)="navigateToAddSuspect()" [disabled]="suspect.isUnidentified">
         <ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add suspect
       </ion-button>
-  
+   -->
       <div class="next-container">
         <ion-button class="next" (click)="goToNextSegment(2)">Next</ion-button>
         <!-- <ion-button style="--background: blue;" (click)="save()">Save</ion-button> -->
@@ -760,21 +719,9 @@
         >
       </div> -->
 
-      <ion-list class="incident" lines="none">
-        <ion-item class="incident-item" [class.shake]="showValidationMessages && !selectedmodus" >
-          <ion-select
-          [(ngModel)]="selectedmodus"
-            class="custom-select"
-            placeholder="Modus Operandi"
-            interface="popover"
-            (ionChange)="onModusChange($event)"
-          >
-          
-            <ion-select-option *ngFor="let method of modus" [value]="method">{{ method.method_name }}</ion-select-option>
-          </ion-select>
-        </ion-item>
-        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !selectedmodus" color="danger">Please fill out this item</ion-label>
-      </ion-list>
+      <!-- <ion-list class="incident" lines="none">
+        
+      </ion-list> -->
 
       <div class="anonymous-person-info">
         <ion-label class="title-info-personal">PERSONAL INFORMATION</ion-label>
@@ -801,14 +748,14 @@
         </ion-item>
         <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.lastname" color="danger">Please fill out this item</ion-label>
 
-        <ion-item [class.shake]="showValidationMessages && !victim.description.ethnicity">
-          <ion-select id="citizenship" placeholder="Citizenship" [(ngModel)]="victim.description.ethnicity" [disabled]="isSamePerson">
-            <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality" [disabled]="suspect.isUnidentified">
+        <!-- <ion-item [class.shake]="showValidationMessages && !victim.description.ethnicity">
+          <ion-select id="citizenship" placeholder="Citizenship" [(ngModel)]="victim.description.ethnicity" >
+            <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality" >
               {{ nationality }}
             </ion-select-option> 
           </ion-select>
         </ion-item>
-        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.description.ethnicity" color="danger">Please fill out this item</ion-label>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.description.ethnicity" color="danger">Please fill out this item</ion-label> -->
 
         <!-- <ion-item [class.shake]="showValidationMessages && !victim.description.occupation.name" >
           <ion-input [(ngModel)]="victim.description.occupation.name" name="occupation" placeholder="Occupation" ></ion-input>
@@ -817,7 +764,7 @@
 
         <div class="detail-select">
           <ion-item class="dob" [class.shake]="showValidationMessages && !victim.birthdate">
-            <ion-icon name="calendar" color="black"></ion-icon>
+            <ion-icon name="calendar" color="black" ></ion-icon>
             <ion-input
               [(ngModel)]="victim.birthdate"
               name="victimDateOfBirth"
@@ -825,6 +772,7 @@
               placeholder="Date of Birth"
               class="ion-text-end"
               id="victimDate"
+              [disabled]="isSamePerson"
             ></ion-input>
             <ion-popover trigger="victimDate">
               <ng-template>
@@ -938,7 +886,7 @@
         <ion-label class="title-info">WORK ADDRESS</ion-label>
         
         <div class="checkbox-container">
-          <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="isSameAddressVictim" [disabled]="isSamePerson" (ionChange)="onAddressCheckboxChange($event, 'victim')"></ion-checkbox>
+          <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="isSameAddressVictim" [disabled]="isSamePerson"(ionChange)="onAddressCheckboxChange($event, 'victim')"></ion-checkbox>
           <ion-label class="checkbox-label">Same as Home Address</ion-label>
         </div>
 
@@ -1010,7 +958,8 @@
         <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.workAddress.street" color="danger">Please fill out this item</ion-label>
     
           <ion-item [class.shake]="showValidationMessages && !victim.workAddress.block">
-            <ion-input [(ngModel)]="victim.workAddress.block" name="workblockName" placeholder="Office/Bldg Name" [disabled]="isSamePerson"></ion-input>
+            <ion-input [(ngModel)]="victim.workAddress.block" name="workblockName" placeholder="Office/Bldg Name" 
+             [disabled]="isSamePerson"></ion-input>
           </ion-item>
         <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.workAddress.block" color="danger">Please fill out this item</ion-label>
   
@@ -1056,7 +1005,7 @@
       </ion-list>
     </div>
         
-        <ion-button class="add-btn" [disabled]="isSamePerson"><ion-icon name="add-circle" style="margin: 5px;" ></ion-icon>Add victim</ion-button>
+        <!-- <ion-button class="add-btn" [disabled]="isSamePerson"><ion-icon name="add-circle" style="margin: 5px;" ></ion-icon>Add victim</ion-button> -->
       
       <div class="next-container">
         <ion-button class="next" (click)="goToNextSegment(3)"
@@ -1095,6 +1044,36 @@
     <ion-list class="info" lines="none">
 
       <ion-label class="title-info">INCIDENT DETAILS</ion-label>
+      <ion-item class="incident-item">
+          <ion-select
+          [(ngModel)]="selectedIncidentID"
+            class="custom-select"
+            placeholder="Type of incident"
+            interface="popover"
+            (ionChange)="onCrimeChange($event)"
+          >
+          <ion-select-option
+                *ngFor="let incident of incidentTypes"
+                [value]="incident.incident_id"
+              >
+                {{ incident.name }}
+              </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item class="incident-item" [class.shake]="showValidationMessages && !selectedmodus" >
+          <ion-select
+          [(ngModel)]="selectedmodus"
+            class="custom-select"
+            placeholder="Modus Operandi"
+            interface="popover"
+            (ionChange)="onModusChange($event)"
+          >
+          
+            <ion-select-option *ngFor="let method of modus" [value]="method">{{ method.method_name }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !selectedmodus" color="danger">Please fill out this item</ion-label>
 
       <ion-item class="incident-date" [class.shake]="showValidationMessages && !reportData.incidentDate">
         <ion-icon name="calendar" color="black"></ion-icon>
@@ -1124,7 +1103,7 @@
       
 
 
-        <ion-label class="title-info">Place of Incident</ion-label>
+        <ion-label class="title-info">PLACE OF INCIDENT</ion-label>
 
         <ion-item [class.shake]="showValidationMessages && !incidentPlace.region">
           <ion-select [(ngModel)]="incidentPlace.region" name="incidentRegion" placeholder="Region" 
@@ -1189,13 +1168,50 @@
         </ion-textarea> 
       </ion-item>
         <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !reportData.reportBody" color="danger">Please fill out this item</ion-label>
-      <div class="add-items">
+      <!-- <div class="add-items">
         <ion-button class="add-btn" routerLink="/add-witness"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add witness</ion-button>
       
        <ion-button class="add-btn" routerLink="/add-evidence"><ion-icon name="add-circle" style="margin: 5px;"></ion-icon>Add Evidence</ion-button>
 
-      </div>
+      </div> -->
    <!-- <ion-button (click)="openSignatureModal()" >Sign Here</ion-button> -->
+        <ion-label class="title-info">ID DETAILS</ion-label>
+
+        <ion-item>
+          <ion-select placeholder="ID Presented">
+            <ion-select-option *ngFor="let id of idOptions">
+              {{ id }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <!-- <ion-item [class.shake]="showValidationMessages && !idData.description">
+          <ion-input [(ngModel)]="idData.description" id="idNum" placeholder="ID Number"> </ion-input>
+        </ion-item> -->
+
+        <div id="uploadfile" class="uploadfile">
+          <ion-label class="title-info">Upload your valid ID</ion-label>
+             <input type="file" class="file" id="actual-btn"  (change)="onFileSelected($event)"  hidden/>
+             <div class="icon-label">
+               <ion-icon src="assets/upload.svg" class="upload-icon"></ion-icon>
+               <label for="actual-btn">Upload file/s</label>
+             </div>  
+             <div *ngIf="fileName" class="file-name">{{ fileName }}
+             <!-- <ion-button (click)="uploadFile()" *ngIf="selectedFile">Upload</ion-button>  -->
+           </div>
+             <p class="max-size">Maximum size up to 2GB</p>
+         </div>
+  
+        <!-- <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !idData.description" color="danger">Please fill out this item</ion-label> -->
+
+        <ion-label>
+          <div class="disclaimer">
+            By submitting this report, you confirm that the information provided is true and correct to the best of your knowledge. 
+            Any false or misleading report may result in defamation charges.
+          </div>
+        </ion-label>
+        
+
    <ion-item class="signature-item"  id="signature-item" [class.shake]="showValidationMessages && !reportData.eSignature">
     <ion-button id="signature-item" (click)="openSignatureModal()">Sign Here</ion-button>
   </ion-item>

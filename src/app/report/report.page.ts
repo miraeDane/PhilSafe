@@ -35,6 +35,7 @@ import { IncidentType } from '../models/incident-type';
 import { CitizenService } from '../services/citizen.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { Citizen } from '../models/citizen';
 
 
 
@@ -89,7 +90,7 @@ export class ReportPage implements OnInit {
     birthdate: '',
     civilStatus: '',
     bioStatus: true,
-    description: {descriptionId: 0, ethnicity: '', personId: 0},
+    // description: {descriptionId: 0, ethnicity: '', personId: 0},
     //contactDetails: { email: '',  mobileNum: '' },
     homeAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '',block:'', zipCode: 0 },
     workAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', block:'', zipCode: 0 },
@@ -99,11 +100,19 @@ export class ReportPage implements OnInit {
   };
 
   idData: Medium = {
+    file: null,
     mediaId:  0,
     content: new Uint8Array(),
     contentType: '',
     description: '',
     filename: null as File | null
+  }
+
+  idDetails: Citizen = {
+    citizenId: 0,
+    personId: 0,
+    citizenProof: new Uint8Array,
+    proofExt: ''
   }
 
   witnessData: CreateAccountData = {
@@ -638,25 +647,49 @@ export class ReportPage implements OnInit {
     );
   }
 
+  // onFileSelected(event: Event) {
+  //   const fileInput = event.target as HTMLInputElement;
+  
+  //   if (fileInput.files && fileInput.files.length > 0) {
+  //     const selectedFile = fileInput.files[0];
+  //     this.idData.filename = selectedFile;
+  //      this.idData.contentType = selectedFile.type;
+      
+  
+  //     console.log('Selected file:', selectedFile);
+  //     console.log('Content Type:', this.idData.contentType);
+  //     console.log('Description:', this.idData.description);
+  
+    
+  //     this.setRoleBasedOnUpload(true);
+  //   } else {
+  //     this.setRoleBasedOnUpload(false);
+  //   }
+  // }
+
   onFileSelected(event: Event) {
     const fileInput = event.target as HTMLInputElement;
   
     if (fileInput.files && fileInput.files.length > 0) {
       const selectedFile = fileInput.files[0];
-      this.idData.filename = selectedFile;
-       this.idData.contentType = selectedFile.type;
-      
+  
+      // Directly store the file object in idData
+      this.idData.file = selectedFile;
+      this.idData.contentType = selectedFile.type;
+      this.idData.filename = selectedFile.name;
+      this.idData.description = this.idData.description || ''; // Default to empty string
+      this.idData.extension = selectedFile.type.split('/')[1]; // Extract the file extension from MIME type
   
       console.log('Selected file:', selectedFile);
       console.log('Content Type:', this.idData.contentType);
       console.log('Description:', this.idData.description);
   
-    
-      this.setRoleBasedOnUpload(true);
+      this.setRoleBasedOnUpload(true); // Assuming you have this method to handle state change
     } else {
-      this.setRoleBasedOnUpload(false);
+      this.setRoleBasedOnUpload(false); // Handle case where no file is selected
     }
   }
+  
 
 
   setRoleBasedOnUpload(isUploaded: boolean) {
@@ -687,8 +720,8 @@ export class ReportPage implements OnInit {
       this.reportData.eSignature = byteArray;
       this.reportData.signatureExt = mimeType.split('/')[1];
   
-      console.log('Signature captured as byte array:', this.reportData.eSignature);
-      console.log('Signature MIME type:', mimeType);
+      // console.log('Signature captured as byte array:', this.reportData.eSignature);
+      // console.log('Signature MIME type:', mimeType);
     }
   }
   
@@ -773,7 +806,7 @@ export class ReportPage implements OnInit {
           if(this.reporterType === 'witness'){
             this.comp_home_zip_code = this.extractZipCode(this.userData.home_address_id);
             console.log("Home Address Zip Code After Assignment:", this.comp_home_zip_code);
-          }else {
+          }else if (this.reporterType === 'victim'){
             this.vic_home_zip_code = this.extractZipCode(this.userData.home_address_id);
             console.log("Home Address Zip Code After Assignment:", this.vic_home_zip_code);
           } 
@@ -1276,7 +1309,7 @@ goBack() {
   }
   
 
-   async saveSuspect(){
+   async saveSuspect(reportId: number){
 
       this.suspect.homeAddress.zipCode = Number(this.sus_home_zip_code);
       this.suspect.workAddress.zipCode = Number(this.sus_work_zip_code);
@@ -1394,7 +1427,7 @@ goBack() {
                   
                 };
   
-                return this.suspectService.establishSuspect(suspect);
+                return this.suspectService.establishCriminal(reportId, suspect);
               })
             );
           })
@@ -1412,7 +1445,7 @@ goBack() {
 
   }
 
-  async saveVictim() {
+  async saveVictim(reportId: number) {
     const victimPerson = {
       personId: this.victim.personId,
       firstname: this.victim.firstname,
@@ -1435,7 +1468,7 @@ goBack() {
         const personId = personResponse.id || this.victim.personId; 
   
         // Add the personId to victim's description
-        this.victim.description.personId = personId;
+        // this.victim.description.personId = personId;
   
         const hasHomeAddress = this.victim.homeAddress && this.victim.homeAddress.zipCode;
         const hasWorkAddress = this.victim.workAddress && this.victim.workAddress.zipCode;
@@ -1481,7 +1514,7 @@ goBack() {
               }
             };
   
-            return this.victimService.establishVictim(victim).pipe(
+            return this.victimService.establishVictim(victim, reportId).pipe(
               switchMap((victimResponse: any) => {
                 console.log('Victim saved successfully', victimResponse);
   
@@ -1592,6 +1625,35 @@ goBack() {
 
   }
 
+  async saveProof() {
+    const citizenID = this.reportData.citizenId;
+  
+    const formDataMedium = new FormData();
+    formDataMedium.append('CitizenId', citizenID.toString());
+  
+    // Ensure `Proof` is the actual file object
+    if (this.idData.file instanceof File) {
+      formDataMedium.append('Proof', this.idData.file, this.idData.filename); // Pass the file object and the file name
+    } else {
+      console.error('No valid file object found in idData.file');
+      return;
+    }
+  
+    formDataMedium.append('Description', this.idData.description || '');
+    formDataMedium.append('ProofExt', this.idData.extension || '');
+  
+    this.citizenService.updateCitizen(formDataMedium, citizenID).subscribe(
+      (mediaResponse) => {
+        console.log('Media uploaded successfully:', mediaResponse);
+      },
+      (mediaError) => {
+        console.error('Error uploading media:', mediaError);
+      }
+    );
+  }
+  
+
+
 
   async saveNearby() {
 
@@ -1600,7 +1662,7 @@ goBack() {
       station.jurisdiction.includes(locationName),
       console.log('Your current location is:', locationName )
     );
-    this.reportData.stationId = 7
+    this.reportData.stationId = 7;
   
   //   if (station) {
   //     console.log(`Found station: ${station.stationName} with ID: ${station.stationId}`);
@@ -1664,79 +1726,99 @@ goBack() {
 
 
   async save() {
-    const form = new FormData();
 
-    const isValidWitness = this.validateObject(this.witness);
-    const isValidSuspect = this.validateObject(this.suspect);
-    const isValidVictim = this.validateObject(this.victim);
-    const isValidReport = this.validateObject(this.reportData);
-  
-    if (!isValidWitness || !isValidSuspect || !isValidVictim || !isValidReport) {
-      this.showValidationMessages = true;
-      console.error('Validation Errors:', {
-        witness: !isValidWitness,
-        suspect: !isValidSuspect,
-        victim: !isValidVictim,
-        report: !isValidReport,
-      });
-      return; // Stop execution if validation fails
-    }
-  
-    this.showValidationMessages = false;
-  
-    // Save related data
-    await this.saveWitness();
-    await this.saveSuspect();
-    await this.saveVictim();
+
     await this.saveIncidentLocation();
     await this.getCurrentLocation();
     await this.saveNearby();
+    await this.saveProof();
+
+    const form = new FormData();
+    // let isValidReporter: boolean = false;
+    // let isValidSuspect: boolean = false;
   
+    // if (this.reporterType === 'witness') {
+     
+    //   isValidReporter = this.validateObject(this.witness);
+    //   if (!isValidReporter) {
+    //     console.error('Invalid witness data');
+    //     return;
+    //   }
+    // } else if (this.reporterType === 'victim') {
+   
+    //   isValidReporter = this.validateObject(this.victim);
+    //   if (!isValidReporter) {
+    //     console.error('Invalid victim data');
+    //     return;
+    //   }
+    // }
     
+    // if (this.suspect.isUnidentified) {
+    //   console.log('Suspect is unidentified, validation skipped.');
+    //   isValidSuspect = true;
+    
+    // } else {
+    //   isValidSuspect = this.validateObject(this.suspect);
+    //   if (!isValidSuspect) {
+    //     console.error('Suspect validation failed:', this.suspect);
+    //   }
+    // }
+    
+    // const isValidReport = this.validateObject(this.reportData);
   
-    this.reportService.establishReport(await this.prepareFormData(form)).subscribe(
-      (response) => {
-        console.log('Report submitted successfully:', response);
+ 
+    // if (!isValidReporter || !isValidSuspect || !isValidReport) {
+    //   this.showValidationMessages = true;
+    //   console.error('Validation Errors:', {
+    //     reporter: !isValidReporter,
+    //     suspect: !isValidSuspect,
+    //     report: !isValidReport,
+    //   });
+    //   return; 
+    // }
+  
+    // this.showValidationMessages = false;
 
-        // this.loading = false;
   
-        const reportId = response.id;
-        if (!reportId) {
-          console.error('Report ID is undefined in the response.');
-          return;
-        }
+   
+    try {
+      const response = await this.reportService.establishReport(await this.prepareFormData(form)).toPromise();
+      console.log('Report submitted successfully:', response);
   
-        // Navigate to add-evidence
-        this.router.navigate(['/add-evidence'], {
-          state: {
-            citizenId: this.userData.citizenId,
-            reportId: reportId,
-          },
-        });
-  
-        // Prepare and upload media
-        const formDataMedium = new FormData();
-        formDataMedium.append('File', this.idData.filename);
-        formDataMedium.append('Description', this.idData.description || '');
-        formDataMedium.append('ContentType', this.idData.contentType || '');
-  
-        this.mediumService.uploadItemWithDetails(formDataMedium, reportId).subscribe(
-          (mediaResponse) => {
-            console.log('Media uploaded successfully:', mediaResponse);
-          },
-          (mediaError) => {
-            console.error('Error uploading media:', mediaError);
-          }
-        );
-      },
-      (error) => {
-        console.error('Error submitting report:', error);
-        
+      const reportId = response.id;
+      if (!reportId) {
+        console.error('Report ID is undefined in the response.');
+        return;
       }
-    );
-  this.loading = false; 
-}
-
+  
+      await this.saveSuspect(reportId);
+      await this.saveReporter(reportId);
+      await this.saveVictim(reportId); 
+  
+      this.router.navigate(['/add-evidence'], {
+        state: {
+          citizenId: this.userData.citizenId,
+          reportId: reportId,
+        },
+      });
+  
+      
+    } catch (error) {
+      console.error('Error submitting report:', error);
+    }
+    this.loading = false;
+  }
+  
+ 
+  async saveReporter(reportId: number) {
+    if (this.reporterType === 'witness') {
+    
+      await this.saveWitness();
+    } else if (this.reporterType === 'victim') {
+    
+      await this.saveVictim(reportId);
+    }
+  }
 
 
 }

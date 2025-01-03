@@ -135,9 +135,9 @@ ion-title {
   }
 
 
-  .incident-item {
-    width: 200px;
-  }
+  // .incident-item {
+  //   width: 200px;
+  // }
 
 
   .title-info-personal {
@@ -456,4 +456,27 @@ ion-title {
   .required.custom-class {
     border-color: #ff0000; /* Optional: Highlight required items visually */
   }
+
+  .disclaimer {
+    margin: 0 20px; /* Adds margin to both left and right for better responsiveness */
+    font-style: italic;
+    color: #888;
+    text-align: justify;
+    font-size: 14px; /* Default font size for smaller screens */
+    line-height: 1.5; /* Improves readability by increasing line spacing */
+  }
   
+  /* Responsive adjustments */
+  @media (min-width: 768px) {
+    .disclaimer {
+      font-size: 16px; /* Increases font size for tablets and larger screens */
+      margin: 0 40px; /* Adds more margin on larger screens */
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .disclaimer {
+      font-size: 18px; /* Further increases font size for desktops */
+      margin: 0 60px; /* Adds more margin for wide screens */
+    }
+  }

@@ -5,7 +5,7 @@ export interface VictimCommon extends BasePerson {
   contactDetails?: ContactDetails;
   homeAddress: Address;
   workAddress: Address;
-  description: Description
+  description?: Description
   occupation?: Occupation;
   victim: Victim
 }

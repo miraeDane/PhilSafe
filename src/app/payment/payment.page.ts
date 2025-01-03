@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { TransactionService } from '../services/transaction.service';
 import { Transaction } from '../models/transaction';
 import { TransactionLink } from '../models/transaction-link';
+import { SmtpService } from '../services/smtp.service';
 
 
 @Component({
@@ -24,6 +25,7 @@ export class PaymentPage implements OnInit {
   selectedPaymentMethod: string = 'paypal';
   loadingMessage: string = '';
   loading: boolean = false; 
+  transactionId: number = 0;
 
   paypal: any;
 
@@ -43,7 +45,8 @@ export class PaymentPage implements OnInit {
     private toastController: ToastController, 
     private http: HttpClient,
     private router: Router,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private smtpService: SmtpService 
   ) {}
 
   ngOnInit(){
@@ -126,9 +129,12 @@ export class PaymentPage implements OnInit {
         }).toPromise();
   
         console.log('PayPal payment successful:', response);
-  
-        // Call backend with PayPal details
         this.sendTransactionToBackend('paypal', 'https://api.sandbox.paypal.com', 'PayPal');
+        this.sendEmailDetails();
+        // this.retrieveReceipt();
+        // this.paymentSuccessPage();
+
+      
       } catch (error) {
         console.error('Error processing PayPal payment:', error);
         this.loading = false;
@@ -153,11 +159,27 @@ export class PaymentPage implements OnInit {
    
   
     // Call the backend service
+    // this.transactionService.transactBlotter(this.transaction).subscribe({
+    //   next: (result) => {
+    //     console.log('Transaction successfully posted:', result);
+    //     this.loading = false;
+    //     this.showToast = true;
+    //     setTimeout(() => {
+    //       this.isModalOpen = true;
+    //     }, 3000);
+    //   },
+    //   error: (error) => {
+    //     console.error('Error posting transaction:', error);
+    //     this.loading = false;
+    //   },
+    // });
     this.transactionService.transactBlotter(this.transaction).subscribe({
       next: (result) => {
         console.log('Transaction successfully posted:', result);
         this.loading = false;
         this.showToast = true;
+        this.transactionId = result.id;
+        console.log("Saved Transaction ID: ", this.transactionId)
         setTimeout(() => {
           this.isModalOpen = true;
         }, 3000);
@@ -165,6 +187,36 @@ export class PaymentPage implements OnInit {
       error: (error) => {
         console.error('Error posting transaction:', error);
         this.loading = false;
+    
+        // Look for the "Duplicate key value" in the error message
+        if (error?.error?.toString().includes("Duplicate key value") || error?.code === 500) {
+          alert("You've already made payment for this report.");
+        // } else {
+        //   alert("An unexpected error occurred. Please try again.");
+        // }
+        }  
+      }
+    });
+  }
+
+  sendEmailDetails() {
+    this.smtpService.sendEmailDetails(this.transaction.reportId, this.transaction.citizenId).subscribe({
+      next: (response) => {
+        console.log('Email sent successfully:', response);
+      },
+      error: (error) => {
+        console.error('Error sending email details:', error);
+      },
+    });
+  }
+
+  retrieveReceipt() {
+    this.smtpService.retrieveReceipt(this.transaction.reportId, this.transaction.citizenId).subscribe({
+      next: (response) => {
+        console.log('Receipt retrieved successfully:', response);
+      },
+      error: (error) => {
+        console.error('Error retrieving receipt:', error);
       },
     });
   }
@@ -179,6 +231,17 @@ export class PaymentPage implements OnInit {
     setTimeout(() => {
       this.router.navigate(['/tabs/home']);
     }, 100);
+  }
+
+  paymentSuccessPage(){
+    this.router.navigate(['/payment-success'], {
+      state: {
+    
+        citizenId: this.transaction.citizenId,
+        reportId: this.transaction.reportId,
+        trans_id: this.transactionId,
+      },
+    });
   }
   
 }

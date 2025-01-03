@@ -7,7 +7,7 @@
 
     <div class="loginpage">
 
-       <ion-label class="title-info">LOG IN WITH</ion-label>>
+       <ion-label class="title-info">LOG IN WITH</ion-label>
     <ion-segment [(ngModel)]="SignInType" value="Email" class="loginSegment">
       <ion-segment-button value="Email" class="segment-button">
         Email
@@ -67,7 +67,7 @@
         </div>
 
       
-        <ion-label class="forgot-pwd">Forgot Password? <a>Click here</a></ion-label>
+        <ion-label class="forgot-pwd">Forgot Password? <a routerLink="/otp">Click here</a></ion-label>
 
         <div class="next-container">
           <ion-button id="login" class="confirm" (click)="login()">Sign in</ion-button>

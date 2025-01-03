@@ -9,7 +9,7 @@ export interface Medium {
     crimeId?: number; 
     extension?: string;
     filename: any;
-  
+    file?: any;
     crime?: Crime; 
     report?: Report; 
   } 

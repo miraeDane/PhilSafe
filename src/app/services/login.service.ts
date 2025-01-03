@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { catchError, Observable, throwError, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { AlertController } from '@ionic/angular';
 
 
 
@@ -21,7 +22,11 @@ export class LoginService {
     })
   };
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private alertController: AlertController
+  
+  ) {}
 
 
 
@@ -107,18 +112,38 @@ export class LoginService {
     const { expirationTime } = JSON.parse(sessionData);
     return new Date().getTime() < expirationTime;
   }
-  
 
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Unknown error!';
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = `Error: ${error.error.message}`;
-    } else {
-      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-    }
-    return throwError(errorMessage);
+  private async presentAlert(message: string) {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: message,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
-
+  
+  private handleError = (error: HttpErrorResponse) => {
+    let errorMessage = 'An unknown error occurred!';
+  
+    // Check for specific error messages based on status code
+    if (error.status === 401) {
+      // If the error response contains a custom message
+      if (error.error && error.error.message) {
+        errorMessage = error.error.message; // For example: "Incorrect Username & Password."
+      } else {
+        errorMessage = 'Unauthorized, You must be a citizen'; // Fallback message if no custom message
+      }
+    } else if (error.status === 0) {
+      errorMessage = 'Server not found';
+    } else if (error.status === 500) {
+      errorMessage = 'Internal Server Error';
+    }
+  
+    // Display the error message in an alert
+    this.presentAlert(errorMessage);
+    return throwError(() => new Error(errorMessage));
+  }
+  
 
   // loginWithContactNum(data: any): Observable<any> {
   //   return this.http.post(`${this.personUrl}/login/contactNum`, data).pipe(
