@@ -197,7 +197,7 @@ async getSolvedCrimes(stationId: number): Promise<number> {
   this.loadingMessage = 'Loading solved crimes in nearby station...';
   
   const url = `${environment.ipAddUrl}api/case/retrieve/local/${stationId}`;
-  let token = localStorage.getItem('token');
+  let token = localStorage.getItem('user_token');
 
   // Ensure the token exists and prepend "Bearer " if it does
   if (token) {
@@ -208,10 +208,11 @@ async getSolvedCrimes(stationId: number): Promise<number> {
   const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       ...(token && { 'Authorization': token }) 
+      
   });
 
   try {
-      const cases = await this.http.get<any[]>(url, { headers }).toPromise();
+      const cases = await this.http.get<any[]>(url, { withCredentials: true }).toPromise();
       
       if (cases && cases.length > 0) {
           const count = cases.filter(c => c.status?.trim() === 'Solved').length;

@@ -24,7 +24,7 @@ export class LocationService {
       'Content-Type': 'application/json' 
     })
   };
-  private token = localStorage.getItem('token') ?? '';
+  private token = localStorage.getItem('user_token') ?? '';
 
   private auth = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -55,16 +55,16 @@ export class LocationService {
   }
 
   // getCoordinates(): Observable<Cluster[]> {
-  //   return this.http.get<Cluster[]>(`${this.locationURL}api/location/retrieve/mapcoordinates`);
+  //   return this.http.get<Cluster[]>(`${this.locationURL}api/location/retrieve/mapcoordinates`, {withCredentials: true});
     
   // }
 
   // getFullCoordinates(incidentID: number): Observable<Cluster[]> {
-  //   return this.http.get<Cluster[]>(`${this.locationURL}api/location/retrieve/mapcoordinates/${incidentID}`);
+  //   return this.http.get<Cluster[]>(`${this.locationURL}api/location/retrieve/mapcoordinates/${incidentID}`, {withCredentials: true});
   // }
   
   getCoordinates(): Observable<Cluster[]> {
-    return this.http.get<Cluster[]>(`${this.locationURL}api/location/retrieve/mapcoordinates`).pipe(
+    return this.http.get<Cluster[]>(`${this.locationURL}api/location/retrieve/mapcoordinates`, {withCredentials: true}).pipe(
       map(clusters => 
         clusters.sort((a, b) => {
           const nameA = a.barangay || ''; // Fallback to an empty string if undefined
@@ -76,7 +76,7 @@ export class LocationService {
   }
   
   getFullCoordinates(incidentID: number): Observable<Cluster[]> {
-    return this.http.get<Cluster[]>(`${this.locationURL}api/location/retrieve/mapcoordinates/${incidentID}`).pipe(
+    return this.http.get<Cluster[]>(`${this.locationURL}api/location/retrieve/mapcoordinates/${incidentID}`, {withCredentials: true}).pipe(
       map(clusters => 
         clusters.sort((a, b) => {
           const nameA = a.barangay || ''; // Fallback to an empty string if undefined
@@ -94,7 +94,7 @@ export class LocationService {
     return this.http.post(
       `${this.locationURL}api/location/create/${zipCode}`, 
       locationData, 
-      { ...this.options, observe: 'response' }
+      { ...this.options, observe: 'response', withCredentials: true }
     ).pipe(
       map((response: HttpResponse<any>) => {
         if (response.status === 200) {
@@ -111,7 +111,7 @@ export class LocationService {
   }
 
     getLocation(locationId: number): Observable<any> {
-      return this.http.get(`${this.locationURL}api/location/retrieve/${locationId}`, { observe: 'response' })
+      return this.http.get(`${this.locationURL}api/location/retrieve/${locationId}`, { observe: 'response', withCredentials: true })
         .pipe(
           map((response: HttpResponse<any>) => {
             if (response.status === 200) {
@@ -127,7 +127,7 @@ export class LocationService {
     }
 
     getAllLocation(): Observable<Location[]> {
-      return this.http.get<Location[]>(`${this.locationURL}api/location/retrieve/all`, { observe: 'response' })
+      return this.http.get<Location[]>(`${this.locationURL}api/location/retrieve/all`, { observe: 'response', withCredentials: true })
         .pipe(
           map((response: HttpResponse<Location[]>) => {
             if (response.status === 200) {
@@ -143,7 +143,7 @@ export class LocationService {
 
     updateLocation(id: number, data: any): Observable<any> {
       const url = `${this.locationURL}api/up/${id}`;
-      return this.http.put(url, data).pipe(
+      return this.http.put(url, data, {withCredentials: true}).pipe(
         catchError(this.handleError)
       );
     }
@@ -151,7 +151,7 @@ export class LocationService {
 
     deleteLocation(id: number): Observable<any> {
       const url = `${this.locationURL}api/del/${id}`;
-      return this.http.delete(url).pipe(
+      return this.http.delete(url, {withCredentials: true}).pipe(
         catchError(this.handleError)
       );
     }

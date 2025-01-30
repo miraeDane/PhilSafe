@@ -36,6 +36,7 @@ import { CitizenService } from '../services/citizen.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Citizen } from '../models/citizen';
+import { NameGeneratorService } from '../services/name-generator.service';
 
 
 
@@ -281,6 +282,7 @@ export class ReportPage implements OnInit {
   witnessDateOfBirth: string = '';
   suspectDateOfBirth: string = '';
   victimDateOfBirth: string = '';
+  victim_isUnidentified: boolean = false;
 
 
 
@@ -301,7 +303,8 @@ export class ReportPage implements OnInit {
     private occupationService: OccupationService,
     private reportService: ReportService,
     private citizenService: CitizenService,
-    private http: HttpClient
+    private http: HttpClient,
+    private nameGeneratorService: NameGeneratorService
     
   ) {
     this.witnessDateOfBirth = new Date().toISOString().substring(0, 10);
@@ -583,16 +586,32 @@ export class ReportPage implements OnInit {
   }
 
   onSuspectIdentificationChange() {
-    if (this.suspect.isUnidentified) {
-      // Clear personal information and address fields
-      this.clearSuspectPersonalInfo();
+    alert('Please select Gender to generate names');
+   
+  }
+
+  onVictimIdentificationChange() {
+    alert('Please select Gender to generate names');
+   
+  }
+  
+  onSusGenderChange(gender: string) {
+    if (this.suspect.isUnidentified ) {
+      this.generateSusRandomName(gender);
     }
   }
 
+  onVicGenderChange(gender: string) {
+    if (this.victim_isUnidentified ) {
+      this.generateVicRandomName(gender);
+    }
+  }
+  
+
   clearSuspectPersonalInfo() {
-    this.suspect.firstname = '';
-    this.suspect.middlename = '';
-    this.suspect.lastname = '';
+    // this.suspect.firstname = '';
+    // this.suspect.middlename = '';
+    // this.suspect.lastname = '';
     this.suspect.description.ethnicity = '';
     this.suspect.sex = '';
     this.suspect.civilStatus = '';
@@ -621,6 +640,39 @@ export class ReportPage implements OnInit {
     this.sus_work_zip_code = '';
   }
 
+
+  async generateSusRandomName(gender: string) {
+    try {
+      const name = await this.nameGeneratorService.generateRandomName(gender);
+      const [firstName, middleName, lastName] = name.split(' ');
+      this.suspect.firstname = firstName;
+      this.suspect.middlename = middleName;
+      this.suspect.lastname = lastName;
+
+      console.log('Generated First Name', this.suspect.firstname)
+      console.log('Generated Middle Name', this.suspect.middlename)
+      console.log('Generated Last Name', this.suspect.lastname)
+    } catch (error) {
+      console.error('Error generating name:', error);
+    }
+  }
+
+
+  async generateVicRandomName(gender: string) {
+    try {
+      const name = await this.nameGeneratorService.generateRandomName(gender);
+      const [firstName, middleName, lastName] = name.split(' ');
+      this.victim.firstname = firstName;
+      this.victim.middlename = middleName;
+      this.victim.lastname = lastName;
+
+      console.log('Generated First Name', this.victim.firstname)
+      console.log('Generated Middle Name', this.victim.middlename)
+      console.log('Generated Last Name', this.victim.lastname)
+    } catch (error) {
+      console.error('Error generating name:', error);
+    }
+  }
 
 
   async navigateToAddSuspect() {
@@ -1918,47 +1970,47 @@ goBack() {
     let isValidReporter: boolean = false;
     let isValidSuspect: boolean = false;
   
-    if (this.reporterType === 'witness') {
+    // if (this.reporterType === 'witness') {
      
-      isValidReporter = this.validateObject(this.witness);
-      if (!isValidReporter) {
-        console.error('Invalid witness data');
-        return;
-      }
-    } else if (this.reporterType === 'victim') {
+    //   isValidReporter = this.validateObject(this.witness);
+    //   if (!isValidReporter) {
+    //     console.error('Invalid witness data');
+    //     return;
+    //   }
+    // } else if (this.reporterType === 'victim') {
    
-      isValidReporter = this.validateObject(this.victim);
-      if (!isValidReporter) {
-        console.error('Invalid victim data');
-        return;
-      }
-    }
+    //   isValidReporter = this.validateObject(this.victim);
+    //   if (!isValidReporter) {
+    //     console.error('Invalid victim data');
+    //     return;
+    //   }
+    // }
     
-    if (this.suspect.isUnidentified) {
-      console.log('Suspect is unidentified, validation skipped.');
-      isValidSuspect = true;
+    // if (this.suspect.isUnidentified) {
+    //   console.log('Suspect is unidentified, validation skipped.');
+    //   isValidSuspect = true;
     
-    } else {
-      isValidSuspect = this.validateObject(this.suspect);
-      if (!isValidSuspect) {
-        console.error('Suspect validation failed:', this.suspect);
-      }
-    }
+    // } else {
+    //   isValidSuspect = this.validateObject(this.suspect);
+    //   if (!isValidSuspect) {
+    //     console.error('Suspect validation failed:', this.suspect);
+    //   }
+    // }
     
-    const isValidReport = this.validateObject(this.reportData);
+    // const isValidReport = this.validateObject(this.reportData);
   
  
-    if (!isValidReporter || !isValidSuspect || !isValidReport) {
-      this.showValidationMessages = true;
-      console.error('Validation Errors:', {
-        reporter: !isValidReporter,
-        suspect: !isValidSuspect,
-        report: !isValidReport,
-      });
-      return; 
-    }
+    // if (!isValidReporter || !isValidSuspect || !isValidReport) {
+    //   this.showValidationMessages = true;
+    //   console.error('Validation Errors:', {
+    //     reporter: !isValidReporter,
+    //     suspect: !isValidSuspect,
+    //     report: !isValidReport,
+    //   });
+    //   return; 
+    // }
   
-    this.showValidationMessages = false;
+    // this.showValidationMessages = false;
 
   
    

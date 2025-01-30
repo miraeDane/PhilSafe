@@ -21,7 +21,6 @@ export class AccountService {
   private token = localStorage.getItem('user_token') ?? '';
 
   private auth = new HttpHeaders({
-      'Content-Type': 'application/json',
       'Authorization': this.token
     });
 
@@ -77,7 +76,7 @@ export class AccountService {
   getProfPic(accountId: number): Observable<Blob> {
 
 
-    return this.http.get(`${this.accountURL}api/account/get/profilepic/${accountId}`, { headers: this.auth, responseType: 'blob' })
+    return this.http.get(`${this.accountURL}api/account/get/profilepic/${accountId}`, { withCredentials: true, responseType: 'blob' })
         .pipe(
             tap((response: any) => {
                 console.log('Response from getProfPic:', response);

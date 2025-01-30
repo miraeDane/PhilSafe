@@ -13,14 +13,15 @@ export class SmtpService {
   private options = { 
       headers: new HttpHeaders({ 
         'Content-Type': 'application/json' 
-      })
+      }),
+      withCredentials: true
     };
     private pdf = { 
       headers: new HttpHeaders({ 
         'Content-Type': 'application/pdf' 
       })
     };
-    private token = localStorage.getItem('token') ?? '';
+    private token = localStorage.getItem('user_token') ?? '';
 
   private auth = new HttpHeaders({
       'Content-Type': 'application/json',

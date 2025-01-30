@@ -709,6 +709,27 @@
     </div>
   </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <div *ngIf="selectedSegment === '2'" class="segment-content">
     <div class="item-b">
       <div class="checkbox-container">
@@ -722,7 +743,7 @@
         >
       </div>
 
-      <div [hidden]="suspect.isUnidentified">
+      
         <div class="anonymous-person-info">
           <ion-label class="title-info-personal"
             >PERSONAL INFORMATION</ion-label
@@ -803,7 +824,30 @@
           </ion-item>
         <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !suspect.description.occupation.name" color="danger">Please fill out this item</ion-label> -->
 
-          <div class="detail-select">
+          <!-- <div class="detail-select"> -->
+
+            <ion-item [class.shake]="showValidationMessages && !suspect.sex">
+              <ion-select
+                [(ngModel)]="suspect.sex"
+                id="gender"
+                placeholder="Gender"
+                (ionChange)="onSusGenderChange(suspect.sex)"
+              >
+                <ion-select-option value="male">Male</ion-select-option>
+                <ion-select-option value="female">Female</ion-select-option>
+                <!-- <ion-select-option>Prefer not to say</ion-select-option> -->
+              </ion-select>
+            </ion-item>
+            <ion-label
+              style="margin-left: 20px"
+              *ngIf="showValidationMessages && !suspect.sex"
+              color="danger"
+              >Please fill out this item</ion-label
+            >
+
+
+            <div [hidden]="suspect.isUnidentified">
+
             <ion-item
               class="dob"
               [class.shake]="showValidationMessages && !suspect.birthdate"
@@ -835,24 +879,7 @@
               >Please fill out this item</ion-label
             >
 
-            <ion-item [class.shake]="showValidationMessages && !suspect.sex">
-              <ion-select
-                [(ngModel)]="suspect.sex"
-                id="gender"
-                placeholder="Gender"
-              >
-                <ion-select-option>Male</ion-select-option>
-                <ion-select-option>Female</ion-select-option>
-                <ion-select-option>Prefer not to say</ion-select-option>
-              </ion-select>
-            </ion-item>
-            <ion-label
-              style="margin-left: 20px"
-              *ngIf="showValidationMessages && !suspect.sex"
-              color="danger"
-              >Please fill out this item</ion-label
-            >
-          </div>
+          <!-- </div> -->
 
           <ion-item
             [class.shake]="showValidationMessages && !suspect.civilStatus"
@@ -1247,8 +1274,9 @@
               <ion-label>{{ sus_home_zip_code }}</ion-label>
             </ion-item>
           </ng-container>
+        </div>
         </ion-list>
-      </div>
+      
 
       <ion-label class="title-info">DESCRIPTION</ion-label>
       <ion-list class="info" lines="none">
@@ -1374,6 +1402,30 @@
     </div>
   </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <div *ngIf="selectedSegment === '3'" class="segment-content">
     <div class="item-b">
       <!-- <div class="checkbox-container">
@@ -1386,6 +1438,18 @@
       <!-- <ion-list class="incident" lines="none">
         
       </ion-list> -->
+
+      <div class="item-b">
+        <div class="checkbox-container">
+          <ion-checkbox
+            labelPlacement="end"
+            [(ngModel)]="victim_isUnidentified"
+            (ionChange)="onVictimIdentificationChange()"
+          ></ion-checkbox>
+          <ion-label class="checkbox-label"
+            >Click here if the victim is unidentified</ion-label
+          >
+        </div>
 
       <div class="anonymous-person-info">
         <ion-label class="title-info-personal">PERSONAL INFORMATION</ion-label>
@@ -1402,7 +1466,7 @@
             [(ngModel)]="victim.firstname"
             id="fname"
             placeholder="First Name"
-            [disabled]="isDataLoaded"
+            [disabled]="isSamePerson"
           >
           </ion-input>
         </ion-item>
@@ -1418,7 +1482,7 @@
             [(ngModel)]="victim.middlename"
             id="mname"
             placeholder="Middle Name"
-            [disabled]="isDataLoaded"
+            [disabled]="isSamePerson"
           >
           </ion-input>
         </ion-item>
@@ -1434,7 +1498,7 @@
             [(ngModel)]="victim.lastname"
             id="lname"
             placeholder="Last Name"
-            [disabled]="isDataLoaded"
+            [disabled]="isSamePerson"
           >
           </ion-input>
         </ion-item>
@@ -1459,7 +1523,29 @@
         </ion-item>
               <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.description.occupation.name" color="danger">Please fill out this item</ion-label> -->
 
-        <div class="detail-select">
+        <!-- <div class="detail-select"> -->
+
+          <ion-item [class.shake]="showValidationMessages && !victim.sex">
+            <ion-select
+              [(ngModel)]="victim.sex"
+              id="gender"
+              placeholder="Gender"
+              [disabled]="isSamePerson"
+              (ionChange)="onVicGenderChange(victim.sex)"
+            >
+              <ion-select-option value="male">Male</ion-select-option>
+              <ion-select-option value="female">Female</ion-select-option>
+              
+            </ion-select>
+          </ion-item>
+          <ion-label
+            style="margin-left: 20px"
+            *ngIf="showValidationMessages && !victim.sex"
+            color="danger"
+            >Please fill out this item</ion-label
+          >
+
+          <div [hidden]="victim_isUnidentified">
           <ion-item
             class="dob"
             [class.shake]="showValidationMessages && !victim.birthdate"
@@ -1472,7 +1558,7 @@
               placeholder="Date of Birth"
               class="ion-text-end"
               id="victimDate"
-              [disabled]="isDataLoaded"
+              [disabled]="isSamePerson"
             ></ion-input>
             <ion-popover trigger="victimDate">
               <ng-template>
@@ -1493,31 +1579,14 @@
             >Please fill out this item</ion-label
           >
 
-          <ion-item [class.shake]="showValidationMessages && !victim.sex">
-            <ion-select
-              [(ngModel)]="victim.sex"
-              id="gender"
-              placeholder="Gender"
-              [disabled]="isDataLoaded"
-            >
-              <ion-select-option>Male</ion-select-option>
-              <ion-select-option>Female</ion-select-option>
-              <ion-select-option>Prefer not to say</ion-select-option>
-            </ion-select>
-          </ion-item>
-          <ion-label
-            style="margin-left: 20px"
-            *ngIf="showValidationMessages && !victim.sex"
-            color="danger"
-            >Please fill out this item</ion-label
-          >
-        </div>
+         
+        <!-- </div> -->
 
         <ion-item [class.shake]="showValidationMessages && !victim.civilStatus">
           <ion-select
             [(ngModel)]="victim.civilStatus"
             placeholder="Civil Status"
-            [disabled]="isDataLoaded"
+            [disabled]="isSamePerson"
           >
             <ion-select-option>Single</ion-select-option>
             <ion-select-option>Married</ion-select-option>
@@ -1534,7 +1603,7 @@
         >
         <!-- 
         <ion-item [class.shake]="showValidationMessages && !victim.contactDetails.telNum">
-          <ion-input [(ngModel)]="victim.contactDetails.telNum" placeholder="Home Phone" [disabled]="isDataLoaded"> </ion-input>
+          <ion-input [(ngModel)]="victim.contactDetails.telNum" placeholder="Home Phone" [disabled]="isSamePerson"> </ion-input>
         </ion-item>
         <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.contactDetails.telNum" color="danger">Please fill out this item</ion-label>
         <ion-item [class.shake]="showValidationMessages && !witness.middlename">
@@ -1543,7 +1612,7 @@
         <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.contactDetails.mobileNum" color="danger">Please fill out this item</ion-label>
 
         <ion-item [class.shake]="showValidationMessages && !victim.contactDetails.email">
-          <ion-input [(ngModel)]="victim.contactDetails.email" id="email" placeholder="Email" [disabled]="isDataLoaded"> </ion-input>
+          <ion-input [(ngModel)]="victim.contactDetails.email" id="email" placeholder="Email" [disabled]="isSamePerson"> </ion-input>
         </ion-item>
         <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !victim.contactDetails.email" color="danger">Please fill out this item</ion-label> -->
 
@@ -1561,7 +1630,7 @@
             [(ngModel)]="victim.homeAddress.region"
             name="homeregionName"
             placeholder="Region"
-            [disabled]="isDataLoaded"
+            [disabled]="isSamePerson"
             (ionChange)="onHomeRegionChange($event)"
           >
             <ion-select-option
@@ -1587,7 +1656,7 @@
             name="homeprovinceName"
             placeholder="Province"
             (ionChange)="onHomeProvinceChange($event)"
-            [disabled]="isDataLoaded"
+            [disabled]="isSamePerson"
           >
             <ion-select-option
               *ngFor="let province of homeProvinces"
@@ -1611,7 +1680,7 @@
             [(ngModel)]="victim.homeAddress.municipality"
             name="homemunicipalName"
             placeholder="Municipality"
-            [disabled]="isDataLoaded"
+            [disabled]="isSamePerson"
             (ionChange)="onHomeMunicipalityChange($event)"
           >
             <ion-select-option
@@ -1636,7 +1705,7 @@
             [(ngModel)]="victim.homeAddress.barangay"
             name="homebrgyName"
             placeholder="Barangay"
-            [disabled]="isDataLoaded"
+            [disabled]="isSamePerson"
           >
             <ion-select-option
               *ngFor="let barangay of homeBarangays"
@@ -1656,16 +1725,16 @@
         </ng-container>
 
         <ng-container *ngIf="isVictimDataLoaded">
-          <ion-item [disabled]="isDataLoaded"
+          <ion-item [disabled]="isSamePerson"
             >{{ victim.homeAddress.region }}</ion-item
           >
-          <ion-item [disabled]="isDataLoaded"
+          <ion-item [disabled]="isSamePerson"
             >{{ victim.homeAddress.province }}</ion-item
           >
-          <ion-item [disabled]="isDataLoaded"
+          <ion-item [disabled]="isSamePerson"
             >{{ victim.homeAddress.municipality }}</ion-item
           >
-          <ion-item [disabled]="isDataLoaded"
+          <ion-item [disabled]="isSamePerson"
             >{{ victim.homeAddress.barangay }}</ion-item
           >
 
@@ -1676,7 +1745,7 @@
             [(ngModel)]="victim.homeAddress.street"
             name="homestreetName"
             placeholder="Street"
-            [disabled]="isDataLoaded"
+            [disabled]="isSamePerson"
           ></ion-input>
         </ion-item>
         <ion-label
@@ -1693,7 +1762,7 @@
             [(ngModel)]="victim.homeAddress.block"
             name="homeblockName"
             placeholder="Block/Lot/Unit Number"
-            [disabled]="isDataLoaded"
+            [disabled]="isSamePerson"
           ></ion-input>
         </ion-item>
         <ion-label
@@ -1708,7 +1777,7 @@
             [(ngModel)]="vic_home_zip_code"
             name="workzip"
             placeholder="Zip Code"
-            [disabled]="isDataLoaded"
+            [disabled]="isSamePerson"
           ></ion-input>
         </ion-item>
         <ion-label
@@ -1721,8 +1790,7 @@
 
        
 
-      
-
+  
         <ion-label class="title-info">WORK ADDRESS</ion-label>
 
         <div class="checkbox-container">
@@ -1730,7 +1798,7 @@
             name="disclaimer"
             labelPlacement="end"
             [(ngModel)]="isSameAddressVictim"
-            [disabled]="isDataLoaded"
+            [disabled]="isSamePerson"
             (ionChange)="onAddressCheckboxChange($event, 'victim')"
           ></ion-checkbox>
           <ion-label class="checkbox-label">Same as Home Address</ion-label>
@@ -1746,7 +1814,7 @@
                 [(ngModel)]="victim.workAddress.region"
                 name="workregionName"
                 placeholder="Region"
-                [disabled]="isDataLoaded"
+                [disabled]="isSamePerson"
                 (ionChange)="onWorkRegionChange($event)"
               >
                 <ion-select-option
@@ -1771,7 +1839,7 @@
                 [(ngModel)]="victim.workAddress.province"
                 name="workprovinceName"
                 placeholder="Province"
-                [disabled]="isDataLoaded"
+                [disabled]="isSamePerson"
                 (ionChange)="onWorkProvinceChange($event)"
               >
                 <ng-container *ngIf="isSameAddress; else workProvinceOptions">
@@ -1806,7 +1874,7 @@
                 [(ngModel)]="victim.workAddress.municipality"
                 name="workmunicipalName"
                 placeholder="Municipality"
-                [disabled]="isDataLoaded"
+                [disabled]="isSamePerson"
                 (ionChange)="onWorkMunicipalityChange($event)"
               >
                 <ng-container *ngIf="isSameAddress; else workMunicipalityOptions">
@@ -1841,7 +1909,7 @@
                 [(ngModel)]="victim.workAddress.barangay"
                 name="workbrgyName"
                 placeholder="Barangay"
-                [disabled]="isDataLoaded"
+                [disabled]="isSamePerson"
               >
                 <ng-container *ngIf="isSameAddress; else workBarangayOptions">
                   <ion-select-option
@@ -1875,7 +1943,7 @@
                 [(ngModel)]="victim.workAddress.street"
                 name="workstreetName"
                 placeholder="Street"
-                [disabled]="isDataLoaded"
+                [disabled]="isSamePerson"
               ></ion-input>
             </ion-item>
             <ion-label
@@ -1892,7 +1960,7 @@
                 [(ngModel)]="victim.workAddress.block"
                 name="workblockName"
                 placeholder="Office/Bldg Name"
-                [disabled]="isDataLoaded"
+                [disabled]="isSamePerson"
               ></ion-input>
             </ion-item>
             <ion-label
@@ -1909,7 +1977,7 @@
                 [(ngModel)]="vic_work_zip_code"
                 name="homezip"
                 placeholder="Zip Code"
-                [disabled]="isDataLoaded"
+                [disabled]="isSamePerson"
               ></ion-input>
             </ion-item>
             <ion-label
@@ -1921,54 +1989,54 @@
           </ng-container>
   
           <ng-container *ngIf="isSameAddressVictim">
-            <ion-item [disabled]="isDataLoaded">
+            <ion-item [disabled]="isSamePerson">
               <ion-label
                 >{{ getRegionName(victim.homeAddress.region) }}</ion-label
               >
             </ion-item>
   
-            <ion-item [disabled]="isDataLoaded">
+            <ion-item [disabled]="isSamePerson">
               <ion-label
                 >{{ getProvinceName(victim.homeAddress.province) }}</ion-label
               >
             </ion-item>
   
-            <ion-item [disabled]="isDataLoaded">
+            <ion-item [disabled]="isSamePerson">
               <ion-label
                 >{{ getMunicipalityName(victim.homeAddress.municipality)
                 }}</ion-label
               >
             </ion-item>
   
-            <ion-item [disabled]="isDataLoaded">
+            <ion-item [disabled]="isSamePerson">
               <ion-label
                 >{{ getBarangayName(victim.homeAddress.barangay) }}</ion-label
               >
             </ion-item>
   
-            <ion-item [disabled]="isDataLoaded">
+            <ion-item [disabled]="isSamePerson">
               <ion-label>{{ victim.homeAddress.street }}</ion-label>
             </ion-item>
   
-            <ion-item [disabled]="isDataLoaded">
+            <ion-item [disabled]="isSamePerson">
               <ion-label>{{ victim.homeAddress.block }}</ion-label>
             </ion-item>
   
-            <ion-item [disabled]="isDataLoaded">
+            <ion-item [disabled]="isSamePerson">
               <ion-label>{{ vic_home_zip_code }}</ion-label>
             </ion-item>
           </ng-container>
         </ng-container>
 
         <ng-container *ngIf="isVictimDataLoaded">
-          <ion-item [disabled]="isDataLoaded"
+          <ion-item [disabled]="isSamePerson"
           >{{ victim.workAddress.region }}</ion-item
         >
-        <ion-item [disabled]="isDataLoaded">{{ victim.workAddress.province }}</ion-item>
-        <ion-item [disabled]="isDataLoaded"
+        <ion-item [disabled]="isSamePerson">{{ victim.workAddress.province }}</ion-item>
+        <ion-item [disabled]="isSamePerson"
           >{{ victim.workAddress.municipality }}</ion-item
         >
-        <ion-item [disabled]="isDataLoaded">{{ victim.workAddress.barangay }}</ion-item>
+        <ion-item [disabled]="isSamePerson">{{ victim.workAddress.barangay }}</ion-item>
 
         <ion-item
         [class.shake]="showValidationMessages && !victim.workAddress.street"
@@ -1977,7 +2045,7 @@
           [(ngModel)]="victim.workAddress.street"
           name="workstreetName"
           placeholder="Street"
-          [disabled]="isDataLoaded"
+          [disabled]="isSamePerson"
         ></ion-input>
       </ion-item>
       <ion-label
@@ -1994,7 +2062,7 @@
           [(ngModel)]="victim.workAddress.block"
           name="workblockName"
           placeholder="Office/Bldg Name"
-          [disabled]="isDataLoaded"
+          [disabled]="isSamePerson"
         ></ion-input>
       </ion-item>
       <ion-label
@@ -2009,7 +2077,7 @@
           [(ngModel)]="vic_work_zip_code"
           name="workzip"
           placeholder="Zip Code"
-          [disabled]="isDataLoaded"
+          [disabled]="isSamePerson"
         ></ion-input>
       </ion-item>
       <ion-label
@@ -2019,7 +2087,7 @@
         >Please fill out this item</ion-label
       >
         </ng-container>
-
+      </div>
        
       </ion-list>
     </div>
@@ -2031,6 +2099,26 @@
       <!-- <ion-button style="--background: blue;" (click)="save()">Save</ion-button> -->
     </div>
   </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <div *ngIf="selectedSegment === '4'" class="segment-content">
     <ion-list class="info" lines="none">
@@ -2386,4 +2474,4 @@
       </ng-template>
     </ion-modal>
   </div>
-</ion-content>
+

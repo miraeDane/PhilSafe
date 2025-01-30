@@ -12,7 +12,7 @@ export class CrimeService {
   private crimeUrl = environment.ipAddUrl;
   private crimeLists = 'assets/crimes';
   private modusLists = 'assets/modus';
-  private token = localStorage.getItem('token') ?? '';
+  private token = localStorage.getItem('user_token') ?? '';
 
   private auth = new HttpHeaders({
       'Content-Type': 'application/json',

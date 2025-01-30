@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
 })
 export class OccupationService {
   private apiUrl = `${environment.ipAddUrl}api/occupation`;
-  private token = localStorage.getItem('token') ?? '';
+  private token = localStorage.getItem('user_token') ?? '';
   
     private auth = new HttpHeaders({
         'Content-Type': 'application/json',
@@ -20,14 +20,15 @@ export class OccupationService {
   constructor(private http: HttpClient) { }
 
   loadProperOccupations(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/load/proper`).pipe(
+    return this.http.get(`${this.apiUrl}/load/proper`, {withCredentials: true}).pipe(
       catchError(this.handleError)
     );
   }
 
   createOccupation(name: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/create`, JSON.stringify(name), {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true
     }).pipe(
       catchError(this.handleError)
     );

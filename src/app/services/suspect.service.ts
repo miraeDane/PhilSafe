@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 })
 export class SuspectService {
   private suspectUrl = environment.ipAddUrl;
-  private token = localStorage.getItem('token') ?? '';
+  private token = localStorage.getItem('user_token') ?? '';
 
   private auth = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -20,42 +20,42 @@ export class SuspectService {
 
  
   retrieveAllSuspects(): Observable<any> {
-    return this.http.get(`${this.suspectUrl}api/suspect/collect/all`).pipe(
+    return this.http.get(`${this.suspectUrl}api/suspect/collect/all`, {withCredentials: true}).pipe(
       catchError(this.handleError)
     );
   }
 
 
   retrieveAllPrisoners(): Observable<any> {
-    return this.http.get(`${this.suspectUrl}api/suspect/collect/prison`).pipe(
+    return this.http.get(`${this.suspectUrl}api/suspect/collect/prison`, {withCredentials: true}).pipe(
       catchError(this.handleError)
     );
   }
 
 
   retrieveAllWanteds(): Observable<any> {
-    return this.http.get(`${this.suspectUrl}api/suspect/collect/freedom`).pipe(
+    return this.http.get(`${this.suspectUrl}api/suspect/collect/freedom`, {withCredentials: true}).pipe(
       catchError(this.handleError)
     );
   }
 
  
   identifySuspect(id: number): Observable<any> {
-    return this.http.get(`${this.suspectUrl}api/suspect/verify/${id}`).pipe(
+    return this.http.get(`${this.suspectUrl}api/suspect/verify/${id}`, {withCredentials: true}).pipe(
       catchError(this.handleError)
     );
   }
 
  
   establishSuspect(suspect: any): Observable<any> {
-    return this.http.post(`${this.suspectUrl}api/suspect`, suspect).pipe(
+    return this.http.post(`${this.suspectUrl}api/suspect`, suspect, {withCredentials: true}).pipe(
       catchError(this.handleError)
     );
   }
 
   
   editSuspect(id: number, suspect: any): Observable<any> {
-    return this.http.put(`${this.suspectUrl}api/suspect/edit/${id}`, suspect).pipe(
+    return this.http.put(`${this.suspectUrl}api/suspect/edit/${id}`, suspect, {withCredentials: true}).pipe(
       catchError(this.handleError)
     );
   }
@@ -66,7 +66,7 @@ export class SuspectService {
     //   'Content-Type': 'application/json',
     // });
 
-    return this.http.post(url, suspectRequest)
+    return this.http.post(url, suspectRequest, {withCredentials: true})
       .pipe(
         catchError((error) => {
           console.error('Error occurred:', error);
@@ -77,7 +77,7 @@ export class SuspectService {
 
 
   deleteSuspect(id: number): Observable<any> {
-    return this.http.delete(`${this.suspectUrl}api/suspect/discard/${id}`).pipe(
+    return this.http.delete(`${this.suspectUrl}api/suspect/discard/${id}`, {withCredentials: true}).pipe(
       catchError(this.handleError)
     );
   }

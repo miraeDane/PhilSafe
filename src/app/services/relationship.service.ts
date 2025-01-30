@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 })
 export class RelationshipService {
   private relUrl = environment.ipAddUrl; 
-  private token = localStorage.getItem('token') ?? '';
+  private token = localStorage.getItem('user_token') ?? '';
 
   private auth = new HttpHeaders({
       'Content-Type': 'application/json',
