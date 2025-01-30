@@ -12,6 +12,12 @@ export class DescriptionService {
 
   private nationalities = 'assets/nationalities.json';
   private descriptionUrl = environment.ipAddUrl;
+  private token = localStorage.getItem('token') ?? '';
+
+  private auth = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': this.token
+    });
 
   constructor(private http: HttpClient) {}
 

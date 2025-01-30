@@ -12,28 +12,27 @@
     <ion-label style="font-weight: bold; text-align: center; font-size: 20px; display: flex; align-items: center; justify-content: center;">List of Reports</ion-label>
     <ion-list class="incident-list" lines="none">
       
-      <!-- Iterate through the 'report' array instead of 'incidents' -->
+   
       <ion-item class="item-class" *ngFor="let report of reports" (click)="goToDetails(report.report_id)">
         
         <div class="incident-type-child">
           <div class="incident-item">
             <ion-label class="incident-date" style="margin: 5px">Date Reported: {{ report.reported_date | date }}</ion-label>      
             <ion-label class="incident-title">Incident Type</ion-label>
-            <!-- Display the subcategory name and other report details -->
+          
             <ion-label class="incident-detail">{{ report.subcategory_name }}</ion-label>
           </div>
           <div class="progress-bar-section">
             <!-- <ion-label class="incident-body">Description: {{ report.report_body }}</ion-label> --> 
             
-            <ion-progress-bar [value]="incident.progress" [class]="getStatusClass(incident.status)"></ion-progress-bar>
-            <ion-label class="incident-status">{{ incident.status }}</ion-label>
+            <ion-progress-bar [value]="report.progress" [class]="report.status"></ion-progress-bar>
+            <ion-label class="incident-status">{{ report.statusLabel }}</ion-label>
             
-            <!-- Replace progress logic with something appropriate if needed -->
           </div>
         </div>
         
       </ion-item>
-      <!-- Handle empty reports -->
+    
       <ng-container *ngIf="reports.length === 0">
         <ion-item>
           <ion-label>No reports available.</ion-label>

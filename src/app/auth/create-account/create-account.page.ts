@@ -9,6 +9,7 @@ import { PersonService } from 'src/app/services/person.service';
 import { UpgradeAccount } from 'src/app/models/account-upgrade.model';
 import { Citizen } from 'src/app/models/citizen';
 import { CitizenService } from 'src/app/services/citizen.service';
+import { Address } from 'src/app/models/0common.model';
 
 @Component({
   selector: 'app-create-account',
@@ -27,7 +28,7 @@ export class CreateAccountPage implements OnInit {
     civilStatus: '',
     bioStatus: true,
   };
-  userHomeAddress: Location = {
+  userHomeAddress: Address = {
     locationId: 0,
     province: '',
     municipality: '',
@@ -37,7 +38,7 @@ export class CreateAccountPage implements OnInit {
     block: '',
     zipCode: 0,
   };
-  userWorkAddress: Location = {
+  userWorkAddress: Address = {
     locationId: 0,
     province: '',
     municipality: '',
@@ -75,12 +76,20 @@ export class CreateAccountPage implements OnInit {
     role: 'Certified',
     personId: 0,
     profile_pic: null,
-    profile_ext: ''
+    profile_ext: '',
+
+    homeAddress: {
+      locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', block:'', zipCode: 0
+    },
+
+    workAddress: {
+      locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', block:'', zipCode: 0
+    }
 
   };
 
   citizenData: Citizen = {
-    citizenId: 0,
+    citizenId: 0, 
     personId: this.upgraded.personId || 0,
     person: this.upgraded
   };
@@ -160,42 +169,77 @@ export class CreateAccountPage implements OnInit {
   onAddressCheckboxChange(event: any) {
     this.isSameAddress = event.detail.checked;
 
-    if (this.isSameAddress && typeof this.copyHomeToWorkAddress === 'function') {
-      this.copyHomeToWorkAddress();
-      console.log(this.copyHomeToWorkAddress)
-  } else if (typeof this.resetWorkAddress === 'function') {
-      this.resetWorkAddress();
-      console.log(this.resetWorkAddress)
-  }
-  
-}
-
-copyHomeToWorkAddress() {
-  
-  this.userWorkAddress.region = this.userHomeAddress.region;
-  this.userWorkAddress.province = this.userHomeAddress.province;
-  this.userWorkAddress.municipality = this.userHomeAddress.municipality;
-  this.userWorkAddress.barangay = this.userHomeAddress.barangay;
-  this.userWorkAddress.street = '';
-  this.userWorkAddress.block = '';
-  this.userWorkAddress.zipCode = 0;
-
-
-}
-  resetWorkAddress() {
-    this.userWorkAddress.region = '';
-    this.userWorkAddress.province = '';
-    this.userWorkAddress.municipality = '';
-    this.userWorkAddress.barangay = '';
-    this.userWorkAddress.street = '';
-    this.userWorkAddress.zipCode = 0;
-  }
-
-  onHomeAddressChange() {
     if (this.isSameAddress) {
-      this.copyHomeToWorkAddress();
-    }
+      this.copyAddress(this.userHomeAddress, this.userWorkAddress);
+      console.log('User work address:', this.userWorkAddress)
+  } else  {
+      this.resetAddress(this.userWorkAddress);
+      console.log("Work Address Resetted",this.userWorkAddress)
   }
+  
+}
+
+copyAddress(source: Location, target: Location) {
+  target.region = source.region;
+  target.province = source.province;
+  target.municipality = source.municipality;
+  target.barangay = source.barangay;
+  target.street = source.street; 
+  target.block = source.block;   
+  target.zipCode = source.zipCode;  
+
+  
+ 
+    this.convertLocationIdsToNames(
+      target,
+      this.homeProvinces,
+      this.homeMunicipalities,
+      this.homeBarangays
+    );
+ 
+
+  console.log(`Address copied:`);
+  console.log(`Region: ${target.region}`);
+  console.log(`Province: ${target.province}`);
+  console.log(`Municipality: ${target.municipality}`);
+  console.log(`Barangay: ${target.barangay}`);
+}
+
+resetAddress(address: Location) {
+  address.region = '';
+  address.province = '';
+  address.municipality = '';
+  address.barangay = '';
+  address.street = '';
+  address.block = '';
+  address.zipCode = 0;
+}
+
+getRegionName(regionId: string): string {
+  const region = this.regions.find(r => r.region_id === regionId);
+  return region ? region.region_name : '';
+}
+
+getProvinceName(provinceId: string): string {
+  const province = this.homeProvinces.find(p => p.province_id === provinceId);
+  return province ? province.province_name : '';
+}
+
+getMunicipalityName(municipalityId: string): string {
+  const municipality = this.homeMunicipalities.find(m => m.municipality_id === municipalityId);
+  return municipality ? municipality.municipality_name : '';
+}
+
+getBarangayName(barangayId: string): string {
+  const barangay = this.homeBarangays.find(b => b.barangay_id === barangayId);
+  return barangay ? barangay.barangay_name : '';
+}
+
+  // onHomeAddressChange() {
+  //   if (this.isSameAddress) {
+  //     this.copyHomeToWorkAddress();
+  //   }
+  // }
 
   onProfilePicSelected(event: any) {
     const file = event.target.files[0];
@@ -328,18 +372,6 @@ copyHomeToWorkAddress() {
         this.homeBarangays
     );
 
-    // let profilePicFile: File | null = null;
-    // if (this.upgraded.profile_pic) {
-    //     profilePicFile = new File(
-    //         [this.upgraded.profile_pic],
-    //         "profile_pic.jpg",
-    //         { type: "image/jpeg"  }
-    //     );
-    //     console.log("Profile Pic Data", profilePicFile)
-    // } else {
-    //     console.error('Profile picture is required');
-    //     return;
-    // }
     let profilePicFile: File | null = null;
     let profilePicExt: string = '';
   
@@ -358,26 +390,6 @@ copyHomeToWorkAddress() {
     }
   
   
-
-    if (this.isSameAddress) {
-        this.userWorkAddress = {
-            locationId: 0,
-            region: this.userHomeAddress.region,
-            province: this.userHomeAddress.province,
-            municipality: this.userHomeAddress.municipality,
-            barangay: this.userHomeAddress.barangay,
-            street: '',
-            zipCode: 0,
-        };
-    } else {
-        this.convertLocationIdsToNames(
-            this.userWorkAddress,
-            this.workProvinces,
-            this.workMunicipalities,
-            this.workBarangays
-        );
-    }
-
    
     try {
         const homeAddressPromise = this.locationService
@@ -394,8 +406,8 @@ copyHomeToWorkAddress() {
                 }
             });
 
-        const workAddressPromise = !this.isSameAddress
-            ? this.locationService
+        const workAddressPromise = 
+             this.locationService
                 .createOrRetrieveLocation(this.userWorkAddress, this.userWorkAddress.zipCode)
                 .toPromise()
                 .then((workResponse) => {
@@ -408,7 +420,7 @@ copyHomeToWorkAddress() {
                         console.log('New work address created with ID:', workResponse.locationId);
                     }
                 })
-            : Promise.resolve();
+            // : Promise.resolve();
 
    
 
@@ -438,7 +450,7 @@ copyHomeToWorkAddress() {
           formDataUpgraded.append('ProfilePic', profilePicFile);
           formDataUpgraded.append('ProfileExt', profilePicExt);
         } else {
-          // Handle case where profile_pic is null or undefined, if necessary
+          
           console.log("No profile picture to upload.");
         }
 
@@ -467,10 +479,11 @@ copyHomeToWorkAddress() {
         }
       
     } finally {
-      console.log('Hiding loading indicator'); // Debugging log
-        this.loading = false; // Hide loading indicator
+      console.log('Hiding loading indicator');
+        this.loading = false; 
     }
 }
+
 
 
 base64ToBlob(base64: string): Blob {

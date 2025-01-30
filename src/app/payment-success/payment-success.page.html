@@ -1,9 +1,11 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/home"></ion-back-button>
+      <ion-button (click)="goToHome()">
+        <ion-icon name="arrow-back"></ion-icon>
+        Back to Homepage
+      </ion-button>
     </ion-buttons>
-    <ion-title>Back to Homepage</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -37,14 +39,14 @@
     <ion-label>{{ transactionDetails.trans_id }}</ion-label>
     <ion-label>{{ transactionDetails.brand }}</ion-label>
     <ion-label>{{ transactionDetails.amount }}</ion-label>
-    <ion-label>{{ reportData.reported_date }}</ion-label>
+    <ion-label>{{ reportData.reported_date | date }}</ion-label>
     <ion-label>{{ stationData.hq }}</ion-label> 
   </div>
   </div>
      
-  <div class="download">
+  <!-- <div class="download">
     <button (click)="retrieveReceipt()">Download Receipt</button>
-  </div>
+  </div> -->
   
 
 </ion-content>

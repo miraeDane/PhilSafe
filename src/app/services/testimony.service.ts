@@ -10,6 +10,12 @@ import { environment } from 'src/environments/environment';
 })
 export class TestimonyService {
   private testimonyUrl = environment.ipAddUrl; 
+  private token = localStorage.getItem('token') ?? '';
+
+  private auth = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': this.token
+    });
 
   constructor(private http: HttpClient) {}
 

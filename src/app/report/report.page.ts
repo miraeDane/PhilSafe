@@ -245,11 +245,13 @@ export class ReportPage implements OnInit {
   selectedCrime: number = 0;
   isIndexCrime: boolean = false;
   isDataLoaded: boolean = false;
+  isVictimDataLoaded: boolean = false;
+  isWitnessDataLoaded: boolean = false;
   selectedReporterType: string = '';
   
   userData: any;
   reporterType: string = '';
-  incidentDate: string = this.getCurrentDate();
+  incidentDate: string = '';
   reportedDate: string = this.getCurrentDate();
   modus: any[] = [];
   selectedmodus: any = null;
@@ -800,13 +802,20 @@ export class ReportPage implements OnInit {
             ...homeAddress, 
             zipCode: this.extractZipCode(this.userData.home_address_id)
           };
+
+        //  this.copyAddress(homeAddress, this.witness.homeAddress)
+
       
           console.log("Extracted home zip code:", this.extractZipCode(this.userData.home_address_id));
 
           if(this.reporterType === 'witness'){
+            this.isWitnessDataLoaded = true;
+            this.witness.homeAddress = targetObject.homeAddress
             this.comp_home_zip_code = this.extractZipCode(this.userData.home_address_id);
             console.log("Home Address Zip Code After Assignment:", this.comp_home_zip_code);
           }else if (this.reporterType === 'victim'){
+            this.isVictimDataLoaded = true;
+            this.victim.homeAddress = targetObject.homeAddress
             this.vic_home_zip_code = this.extractZipCode(this.userData.home_address_id);
             console.log("Home Address Zip Code After Assignment:", this.vic_home_zip_code);
           } 
@@ -818,18 +827,24 @@ export class ReportPage implements OnInit {
         if (workAddress) {
           console.log("Work Address:", workAddress);
       
-          // Spread the workAddress properties and add zipCode
+         // Spread the workAddress properties and add zipCode
           targetObject.workAddress = { 
             ...workAddress,
             zipCode: this.extractZipCode(this.userData.work_address_id)  // Set zipCode from work address
           };
+
+         
       
           console.log("Extracted work zip code:", this.extractZipCode(this.userData.work_address_id));
 
           if(this.reporterType === 'witness'){
+            this.isWitnessDataLoaded = true;
+            this.witness.workAddress = targetObject.workAddress
             this.comp_work_zip_code = this.extractZipCode(this.userData.work_address_id);
             console.log("Work Address Zip Code After Assignment:", this.comp_work_zip_code);
-          } else {
+          } else if(this.reporterType === 'victim') {
+            this.isVictimDataLoaded = true;
+            this.victim.workAddress = targetObject.workAddress
             this.vic_work_zip_code = this.extractZipCode(this.userData.work_address_id);
             console.log("Work Address Zip Code After Assignment:", this.vic_work_zip_code);
           }
@@ -973,10 +988,16 @@ extractZipCode(locationId: number): number {
   
 
   updateIncidentDate() {
+    if (this.incidentDate) {
+      // Replace 'T' with a space
+      const formattedDate = this.incidentDate.replace('T', ' ');
+      console.log('Incident date and time updated:', formattedDate);
   
-    console.log('Incident date updated:', this.incidentDate);
-    this.reportData.incidentDate = this.incidentDate;
+      // Assign the formatted date to reportData
+      this.reportData.incidentDate = formattedDate;
+    }
   }
+  
 
   updateReportedDate() {
     console.log('Reported date updated:', this.reportedDate);
@@ -1275,7 +1296,7 @@ goBack() {
                 console.log('Witness saved successfully', witnessResponse);
               }),
               switchMap(() => {
-                // Save the witness description after witness is successfully saved
+               
                 const descriptionData = {
                   descriptionId: this.witness.description?.descriptionId,
                   ethnicity: this.witness.description?.ethnicity,
@@ -1445,6 +1466,112 @@ goBack() {
 
   }
 
+  // async saveVictim(reportId: number) {
+  //   const victimPerson = {
+  //     personId: this.victim.personId,
+  //     firstname: this.victim.firstname,
+  //     middlename: this.victim.middlename,
+  //     lastname: this.victim.lastname,
+  //     sex: this.genderToLetter(this.victim.sex),
+  //     birthdate: this.victim.birthdate,
+  //     civilStatus: this.victim.civilStatus,
+  //     bioStatus: this.victim.bioStatus,
+  //   };
+  
+  //   if (!this.validateObject(this.victim)) {
+  //     console.error('Victim validation failed.');
+  //     return;
+  //   }
+
+  //   if(this.reporterType === 'witness'){
+
+  //     this.personService.createPerson(victimPerson).pipe(
+  //       switchMap((personResponse: any) => {
+  //         console.log('Victim Person saved successfully', personResponse);
+  //         const personId = personResponse.id || this.victim.personId; 
+    
+  //         // Add the personId to victim's description
+  //         // this.victim.description.personId = personId;
+    
+  //         const hasHomeAddress = this.victim.homeAddress && this.victim.homeAddress.zipCode;
+  //         const hasWorkAddress = this.victim.workAddress && this.victim.workAddress.zipCode;
+    
+  //         const homeLocation$ = hasHomeAddress
+  //           ? this.locationService.createOrRetrieveLocation(this.victim.homeAddress, this.victim.homeAddress.zipCode).pipe(
+  //               tap((homeLocationResponse) => {
+  //                 console.log('Victim Home location saved successfully:', homeLocationResponse);
+  //               }),
+  //               catchError((error) => {
+  //                 console.error('Failed to save victim home location:', error);
+  //                 return EMPTY;
+  //               })
+  //             )
+  //           : of(null);
+    
+  //         const workLocation$ = hasWorkAddress
+  //           ? this.locationService.createOrRetrieveLocation(this.victim.workAddress, this.victim.workAddress.zipCode).pipe(
+  //               tap((workLocationResponse) => {
+  //                 console.log('Victim Work location saved successfully:', workLocationResponse);
+  //               }),
+  //               catchError((error) => {
+  //                 console.error('Failed to save victim work location:', error);
+  //                 return EMPTY;
+  //               })
+  //             )
+  //           : of(null);
+    
+  //         return forkJoin({
+  //           homeLocation: homeLocation$,
+  //           workLocation: workLocation$
+  //         }).pipe(
+  //           switchMap((results) => {
+  //             console.log('Additional data saved successfully:', results);
+    
+  //             const victim: Victim = {
+  //               victimId: this.victim.victim.victimId,
+  //               personId: personId,
+  //               vicMethodId: this.selectedmodus.vicmethod_id, 
+  //               vicMethod: {
+  //                 vicMethodId: this.selectedmodus.vicmethod_id, 
+  //                 methodName: this.selectedmodus.method_name
+  //               }
+  //             };
+    
+  //             return this.victimService.establishVictim(victim, reportId).pipe(
+  //               switchMap((victimResponse: any) => {
+  //                 console.log('Victim saved successfully', victimResponse);
+    
+  //                 // After saving victim, save the description
+  //                 return this.descriptionService.establishDescription(this.victim.description).pipe(
+  //                   tap((descriptionResponse) => {
+  //                     console.log('Victim Description saved successfully', descriptionResponse);
+  //                   }),
+  //                   catchError((error) => {
+  //                     console.error('Failed to save victim description:', error);
+  //                     return EMPTY;
+  //                   })
+  //                 );
+  //               })
+  //             );
+  //           })
+  //         );
+  //       })
+  //     ).subscribe({
+  //       next: () => {
+  //         console.log('All data saved successfully');
+  //       },
+  //       error: (error) => {
+  //         console.error('Error occurred during save process:', error);
+  //       }
+  //     });
+
+  //   } else if (this.reporterType === 'victim') {
+      
+  //   }
+  
+   
+  // }
+
   async saveVictim(reportId: number) {
     const victimPerson = {
       personId: this.victim.personId,
@@ -1462,87 +1589,141 @@ goBack() {
       return;
     }
   
-    this.personService.createPerson(victimPerson).pipe(
-      switchMap((personResponse: any) => {
-        console.log('Victim Person saved successfully', personResponse);
-        const personId = personResponse.id || this.victim.personId; 
+    if (this.reporterType === 'witness') {
+      this.personService.createPerson(victimPerson).pipe(
+        switchMap((personResponse: any) => {
+          console.log('Victim Person saved successfully', personResponse);
+          const personId = personResponse.id || this.victim.personId;
   
-        // Add the personId to victim's description
-        // this.victim.description.personId = personId;
+          const hasHomeAddress = this.victim.homeAddress && this.victim.homeAddress.zipCode;
+          const hasWorkAddress = this.victim.workAddress && this.victim.workAddress.zipCode;
   
-        const hasHomeAddress = this.victim.homeAddress && this.victim.homeAddress.zipCode;
-        const hasWorkAddress = this.victim.workAddress && this.victim.workAddress.zipCode;
+          const homeLocation$ = hasHomeAddress
+            ? this.locationService.createOrRetrieveLocation(this.victim.homeAddress, this.victim.homeAddress.zipCode).pipe(
+                tap((homeLocationResponse) => {
+                  console.log('Victim Home location saved successfully:', homeLocationResponse);
+                }),
+                catchError((error) => {
+                  console.error('Failed to save victim home location:', error);
+                  return EMPTY;
+                })
+              )
+            : of(null);
   
-        const homeLocation$ = hasHomeAddress
-          ? this.locationService.createOrRetrieveLocation(this.victim.homeAddress, this.victim.homeAddress.zipCode).pipe(
-              tap((homeLocationResponse) => {
-                console.log('Victim Home location saved successfully:', homeLocationResponse);
-              }),
-              catchError((error) => {
-                console.error('Failed to save victim home location:', error);
-                return EMPTY;
-              })
-            )
-          : of(null);
+          const workLocation$ = hasWorkAddress
+            ? this.locationService.createOrRetrieveLocation(this.victim.workAddress, this.victim.workAddress.zipCode).pipe(
+                tap((workLocationResponse) => {
+                  console.log('Victim Work location saved successfully:', workLocationResponse);
+                }),
+                catchError((error) => {
+                  console.error('Failed to save victim work location:', error);
+                  return EMPTY;
+                })
+              )
+            : of(null);
   
-        const workLocation$ = hasWorkAddress
-          ? this.locationService.createOrRetrieveLocation(this.victim.workAddress, this.victim.workAddress.zipCode).pipe(
-              tap((workLocationResponse) => {
-                console.log('Victim Work location saved successfully:', workLocationResponse);
-              }),
-              catchError((error) => {
-                console.error('Failed to save victim work location:', error);
-                return EMPTY;
-              })
-            )
-          : of(null);
+          return forkJoin({
+            homeLocation: homeLocation$,
+            workLocation: workLocation$
+          }).pipe(
+            switchMap((results) => {
+              console.log('Additional data saved successfully:', results);
   
-        return forkJoin({
-          homeLocation: homeLocation$,
-          workLocation: workLocation$
-        }).pipe(
-          switchMap((results) => {
-            console.log('Additional data saved successfully:', results);
-  
-            const victim: Victim = {
-              victimId: this.victim.victim.victimId,
-              personId: personId,
-              vicMethodId: this.selectedmodus.vicmethod_id, 
-              vicMethod: {
+              const victim: Victim = {
+                victimId: this.victim.victim.victimId,
+                personId: personId,
                 vicMethodId: this.selectedmodus.vicmethod_id, 
-                methodName: this.selectedmodus.method_name
-              }
-            };
+                vicMethod: {
+                  vicMethodId: this.selectedmodus.vicmethod_id, 
+                  methodName: this.selectedmodus.method_name
+                }
+              };
   
-            return this.victimService.establishVictim(victim, reportId).pipe(
-              switchMap((victimResponse: any) => {
-                console.log('Victim saved successfully', victimResponse);
+              return this.victimService.establishVictim(victim, reportId).pipe(
+                switchMap((victimResponse: any) => {
+                  console.log('Victim saved successfully', victimResponse);
   
-                // After saving victim, save the description
-                return this.descriptionService.establishDescription(this.victim.description).pipe(
-                  tap((descriptionResponse) => {
-                    console.log('Victim Description saved successfully', descriptionResponse);
-                  }),
-                  catchError((error) => {
-                    console.error('Failed to save victim description:', error);
-                    return EMPTY;
-                  })
-                );
+                  return this.descriptionService.establishDescription(this.victim.description).pipe(
+                    tap((descriptionResponse) => {
+                      console.log('Victim Description saved successfully', descriptionResponse);
+                    }),
+                    catchError((error) => {
+                      console.error('Failed to save victim description:', error);
+                      return EMPTY;
+                    })
+                  );
+                })
+              );
+            })
+          );
+        })
+      ).subscribe({
+        next: () => {
+          console.log('All data saved successfully');
+        },
+        error: (error) => {
+          console.error('Error occurred during save process:', error);
+        }
+      });
+  
+    } else if (this.reporterType === 'victim') {
+      // Load userData from sessionStorage
+      const userData = sessionStorage.getItem('userData');
+      if (userData) {
+        const parsedUser = JSON.parse(userData);
+  
+        // Assign userData to victim
+       const victim = {
+          personId: parsedUser.personId,
+          firstname: parsedUser.firstname,
+          middlename: parsedUser.middlename,
+          lastname: parsedUser.lastname,
+          sex: parsedUser.sex,
+          birthdate: parsedUser.birthdate,
+          civilStatus: parsedUser.civilStatus,
+          bioStatus: parsedUser.bioStatus,
+          homeAddress: parsedUser.homeAddress || {},  
+          workAddress: parsedUser.workAddress || {},
+          vicMethodId: this.selectedmodus.vicmethod_id, 
+          vicMethod: {
+            vicMethodId: this.selectedmodus.vicmethod_id, 
+            methodName: this.selectedmodus.method_name
+          }  
+        };
+  
+        console.log('Loaded existing userData as victim:', this.victim);
+  
+        // Save the victim using the retrieved data
+        this.victimService.establishVictim(victim, reportId).pipe(
+          switchMap((victimResponse: any) => {
+            console.log('Victim saved successfully:', victimResponse);
+  
+            // Save victim description
+            return this.descriptionService.establishDescription(this.victim.description).pipe(
+              tap((descriptionResponse) => {
+                console.log('Victim Description saved successfully:', descriptionResponse);
+              }),
+              catchError((error) => {
+                console.error('Failed to save victim description:', error);
+                return EMPTY;
               })
             );
           })
-        );
-      })
-    ).subscribe({
-      next: () => {
-        console.log('All data saved successfully');
-      },
-      error: (error) => {
-        console.error('Error occurred during save process:', error);
+        ).subscribe({
+          next: () => {
+            console.log('Victim and description saved successfully.');
+          },
+          error: (error) => {
+            console.error('Error occurred while saving victim description:', error);
+          }
+        });
+  
+      } else {
+        console.error('No existing userData found in sessionStorage.');
       }
-    });
+    }
   }
-
+  
  
   
   async saveIncidentLocation() {
@@ -1734,50 +1915,50 @@ goBack() {
     await this.saveProof();
 
     const form = new FormData();
-    // let isValidReporter: boolean = false;
-    // let isValidSuspect: boolean = false;
+    let isValidReporter: boolean = false;
+    let isValidSuspect: boolean = false;
   
-    // if (this.reporterType === 'witness') {
+    if (this.reporterType === 'witness') {
      
-    //   isValidReporter = this.validateObject(this.witness);
-    //   if (!isValidReporter) {
-    //     console.error('Invalid witness data');
-    //     return;
-    //   }
-    // } else if (this.reporterType === 'victim') {
+      isValidReporter = this.validateObject(this.witness);
+      if (!isValidReporter) {
+        console.error('Invalid witness data');
+        return;
+      }
+    } else if (this.reporterType === 'victim') {
    
-    //   isValidReporter = this.validateObject(this.victim);
-    //   if (!isValidReporter) {
-    //     console.error('Invalid victim data');
-    //     return;
-    //   }
-    // }
+      isValidReporter = this.validateObject(this.victim);
+      if (!isValidReporter) {
+        console.error('Invalid victim data');
+        return;
+      }
+    }
     
-    // if (this.suspect.isUnidentified) {
-    //   console.log('Suspect is unidentified, validation skipped.');
-    //   isValidSuspect = true;
+    if (this.suspect.isUnidentified) {
+      console.log('Suspect is unidentified, validation skipped.');
+      isValidSuspect = true;
     
-    // } else {
-    //   isValidSuspect = this.validateObject(this.suspect);
-    //   if (!isValidSuspect) {
-    //     console.error('Suspect validation failed:', this.suspect);
-    //   }
-    // }
+    } else {
+      isValidSuspect = this.validateObject(this.suspect);
+      if (!isValidSuspect) {
+        console.error('Suspect validation failed:', this.suspect);
+      }
+    }
     
-    // const isValidReport = this.validateObject(this.reportData);
+    const isValidReport = this.validateObject(this.reportData);
   
  
-    // if (!isValidReporter || !isValidSuspect || !isValidReport) {
-    //   this.showValidationMessages = true;
-    //   console.error('Validation Errors:', {
-    //     reporter: !isValidReporter,
-    //     suspect: !isValidSuspect,
-    //     report: !isValidReport,
-    //   });
-    //   return; 
-    // }
+    if (!isValidReporter || !isValidSuspect || !isValidReport) {
+      this.showValidationMessages = true;
+      console.error('Validation Errors:', {
+        reporter: !isValidReporter,
+        suspect: !isValidSuspect,
+        report: !isValidReport,
+      });
+      return; 
+    }
   
-    // this.showValidationMessages = false;
+    this.showValidationMessages = false;
 
   
    

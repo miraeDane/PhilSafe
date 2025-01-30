@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -11,6 +11,12 @@ import { environment } from 'src/environments/environment';
 })
 export class JurisdictionService {
   private base = `${environment.ipAddUrl}`;
+  private token = localStorage.getItem('token') ?? '';
+  
+    private auth = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': this.token
+      });
 
   constructor(private http: HttpClient) { }
 

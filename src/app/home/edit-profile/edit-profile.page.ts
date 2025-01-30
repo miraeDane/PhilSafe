@@ -11,6 +11,8 @@ import { AccountService } from 'src/app/services/account.service';
 import { PersonService } from 'src/app/services/person.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import { UpgradeAccount } from 'src/app/models/account-upgrade.model';
+import { Address } from 'src/app/models/0common.model';
 
 
 @Component({
@@ -31,7 +33,7 @@ export class EditProfilePage implements OnInit {
     bioStatus: true,
   };
 
-  userHomeAddress: Location = {
+  userHomeAddress: Address = {
     locationId: 0,
     province: '',
     municipality: '',
@@ -41,7 +43,7 @@ export class EditProfilePage implements OnInit {
     block: '',
     zipCode: 0,
   };
-  userWorkAddress: Location = {
+  userWorkAddress: Address = {
     locationId: 0,
     province: '',
     municipality: '',
@@ -85,6 +87,34 @@ export class EditProfilePage implements OnInit {
     descriptionId: 0,
     ethnicity: ''
   }
+
+   upgraded: UpgradeAccount = {
+      firstname: '',
+      middlename: '',
+      lastname: '',
+      sex: '',
+      // birthdate: '',
+      // civilStatus: '',
+      bioStatus: true,
+      email: '',
+      password: '',
+      telNum: '',
+      contactNum: '',
+      homeAddressId: 0,
+      workAddressId: 0,
+      role: 'Certified',
+      personId: 0,
+      profile_pic: null,
+      profile_ext: '',
+
+      homeAddress: {
+        locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', block:'', zipCode: 0
+      },
+  
+      workAddress: {
+        locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', block:'', zipCode: 0
+      }
+    };
   
   home_zip_code: string = '';
   work_zip_code: string = '';
@@ -113,6 +143,7 @@ export class EditProfilePage implements OnInit {
    selectedFile!: File;
    isSameAddress = false;
    personId: number = 0;
+   userDetails: any;
 
    @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
   constructor(
@@ -139,11 +170,13 @@ export class EditProfilePage implements OnInit {
 
 
   loadUserProfile() {
-    const userData = sessionStorage.getItem('userData');
+    let userData = sessionStorage.getItem('userData');
+    
+   
     if (userData) {
       try {
         const parsedData = JSON.parse(userData);
-        this.personData = {
+        this.upgraded = {
           personId: parsedData.personId || 0,
           firstname: this.capitalizeWords(parsedData.first_name || ''),
           middlename: this.capitalizeWords(parsedData.middle_name || ''),
@@ -152,9 +185,6 @@ export class EditProfilePage implements OnInit {
           birthdate: parsedData.birthdate, 
           civilStatus: parsedData.civil_status, 
           bioStatus: true, 
-        };
-  
-        this.accountData = {
           email: parsedData.email || '',
           password: '', 
           telNum: parsedData.tel_num, 
@@ -162,8 +192,10 @@ export class EditProfilePage implements OnInit {
           homeAddressId: parsedData.home_address_id, 
           workAddressId: parsedData.work_address_id, 
           role: 'Certified', 
-          personId: parsedData.personId || 0,
-          profile_pic: new Uint16Array, 
+          profile_pic: null, 
+
+          homeAddress: this.userHomeAddress,
+          workAddress: this.userWorkAddress,
         };
         if (parsedData.profile_pic) {
           this.avatarUrl = parsedData.profile_pic; 
@@ -268,6 +300,7 @@ export class EditProfilePage implements OnInit {
       
       reader.onload = (e) => {
         this.avatarUrl = e.target?.result as string;
+        this.upgraded.profile_pic = this.avatarUrl;
       };
       reader.readAsDataURL(file);
     }
@@ -321,7 +354,7 @@ export class EditProfilePage implements OnInit {
 
   save() {
 
-    if (!this.accountData.password) {
+    if (!this.upgraded.password) {
       alert("Please input password before updating");
       return; // Stop further execution if password is not provided
     }
@@ -379,72 +412,145 @@ export class EditProfilePage implements OnInit {
   }
 
 
+  processProfilePic(): File | null {
+   
+
+    if (this.upgraded.profile_pic == null) {
+      console.error('Profile picture is required');
+      return null;
+    }
+  
+    let byteArray: Uint8Array;
+  
+    if (this.upgraded.profile_pic instanceof Uint8Array) {
+      byteArray = this.upgraded.profile_pic;
+    } else if (typeof this.upgraded.profile_pic === 'string') {
+      try {
+        // Multiple strategies for base64 conversion
+        const base64Patterns = [
+          /^data:image\/\w+;base64,/,
+          /^base64,/,
+          /^\s*data:([a-z]+\/[a-z0-9-+.]+(;[a-z-]+=[a-z0-9-]+)?)?(;base64)?,/i
+        ];
+  
+        let cleanBase64: string = this.upgraded.profile_pic;
+        for (const pattern of base64Patterns) {
+          cleanBase64 = cleanBase64.replace(pattern, '');
+        }
+  
+        // Remove whitespace and newline characters
+        cleanBase64 = cleanBase64.replace(/[\n\r\s]/g, '');
+  
+        // Validate base64 string length and characters
+        if (!/^[A-Za-z0-9+/=]+$/.test(cleanBase64)) {
+          throw new Error('Invalid base64 string');
+        }
+  
+        byteArray = new Uint8Array(
+          window.atob(cleanBase64)
+          .split('')
+          .map(char => char.charCodeAt(0))
+        );
+      } catch (error) {
+        console.error('Failed to convert base64', error);
+        return null;
+      }
+    } else {
+      console.error('Invalid profile picture format');
+      return null;
+    }
+      // Use the stored extension or default to jpg
+      const fileExtension = this.upgraded.profile_ext || 'jpg';
+    
+      // Create File from Uint8Array
+      const profilePicFile = new File(
+        [byteArray], 
+        `profile_pic.${fileExtension}`, 
+        { type: `image/${fileExtension}` }
+      );
+    
+      return profilePicFile;
+    }
 
 
 updateData() {
-  // Convert `accountData` to FormData
-  const accountFormData = new FormData();
-  this.appendFormData(accountFormData, this.accountData);
 
-  const personFormData = new FormData();
-  this.appendFormData(personFormData, this.personData);
+  let profilePicFile: File | null = null;
+  let profilePicExt: string = '';
 
-  const homeAddressFormData = new FormData();
-  this.appendFormData(homeAddressFormData, this.userHomeAddress);
+  const userData = sessionStorage.getItem('userData');
 
-  const workAddressFormData = new FormData();
-  this.appendFormData(workAddressFormData, this.userWorkAddress);
+  if(userData)
+  this.userDetails = JSON.parse(userData)
+  console.log('User Details', this.userDetails)
 
-  // Updating Person Data
-  if (this.hasNonEmptyValues(this.person)) {
-    this.personService.update(this.person.personId, personFormData).subscribe({
-      next: (res) => {
-        console.log('Person data updated successfully', res);
-      },
-      error: (err) => {
-        console.error('Error updating person data', err);
-      }
-    });
-  }
-
-  // Updating Home Address
-  if (this.hasNonEmptyValues(this.userHomeAddress)) {
-    this.locationService.updateLocation(this.userHomeAddress.locationId, homeAddressFormData).subscribe({
-      next: (res) => {
-        console.log('Home address updated successfully', res);
-      },
-      error: (err) => {
-        console.error('Error updating home address', err);
-      }
-    });
-  }
-
-  // Updating Work Address
-  if (this.hasNonEmptyValues(this.userWorkAddress)) {
-    this.locationService.updateLocation(this.userWorkAddress.locationId, workAddressFormData).subscribe({
-      next: (res) => {
-        console.log('Work address updated successfully', res);
-      },
-      error: (err) => {
-        console.error('Error updating work address', err);
-      }
-    });
-  }
-
-  // Updating Account Data
-  const personId = this.accountData.personId;
-  if (personId && this.hasNonEmptyValues(this.accountData)) {
-    this.accountService.updateAccount(personId, accountFormData).subscribe({
-      next: (res) => {
-        console.log('Account data updated successfully', res);
-      },
-      error: (err) => {
-        console.error('Error updating account data', err);
-      }
-    });
+  if (this.upgraded.profile_pic) {
+    const processedProfilePic = this.processProfilePic();
+    if (processedProfilePic) {
+      profilePicFile = processedProfilePic;
+      profilePicExt = this.upgraded.profile_ext || 'jpg';
+    } else {
+      console.error('Failed to process profile picture');
+      return;
+    }
   } else {
-    console.error('Error: Account data is empty or personId is undefined.');
+    console.error('Profile picture is required');
+    return;
   }
+
+
+
+  const formDataUpgraded = new FormData();
+  const profileForm = new FormData();
+
+  console.log("Data for update", this.upgraded)
+  formDataUpgraded.append('Firstname', this.upgraded.firstname);
+  formDataUpgraded.append('Middlename', this.upgraded.middlename);
+  formDataUpgraded.append('Lastname', this.upgraded.lastname);
+  formDataUpgraded.append('Password', this.upgraded.password);
+  formDataUpgraded.append('Sex', this.upgraded.sex);
+  // formDataUpgraded.append('Birthdate', this.upgraded.birthdate);
+  // formDataUpgraded.append('CivilStatus', this.upgraded.civilStatus || '');
+  formDataUpgraded.append('BioStatus', this.upgraded.bioStatus.toString());
+  formDataUpgraded.append('Email', this.upgraded.email);
+  formDataUpgraded.append('TelNum', this.upgraded.telNum?.toString() || '');
+  formDataUpgraded.append('ContactNum', this.upgraded.contactNum);
+  // formDataUpgraded.append('HomeAddressId', this.upgraded.homeAddressId ? this.upgraded.homeAddressId.toString() : '');
+  // formDataUpgraded.append('WorkAddressId', this.upgraded.workAddressId ? this.upgraded.workAddressId.toString() : '');
+  // formDataUpgraded.append('Role', this.upgraded.role); 
+
+
+  
+  if (this.upgraded.profile_pic) {
+    profileForm.append('ProfilePic', profilePicFile);
+    profileForm.append('ProfileExt', profilePicExt);
+
+    this.accountService.updateProfPic(this.userDetails.acc_id, profileForm).subscribe(
+      (res) => {
+        console.log('Profile pic updated successfully!', res)
+      },
+      (error) => {
+        console.error('Profile pic failed to update', error)
+      })
+    
+  } else {
+    // Handle case where profile_pic is null or undefined, if necessary
+    console.log("No profile picture to upload.");
+  }
+
+  this.accountService.updateAccount(this.userDetails.acc_id, formDataUpgraded).subscribe(
+    (res) => {
+      console.log('Profile updated successfully!', res)
+    },
+    (error) => {
+      console.error('Profile failed to update', error)
+    }
+
+    
+
+  )
+
+
 }
 
 // Utility Method to Check for Non-Empty Values in an Object
@@ -454,13 +560,13 @@ hasNonEmptyValues(obj: any): boolean {
 
   
  
-  appendFormData(formData: FormData, dataObject: any) {
-    for (const key in dataObject) {
-      if (dataObject.hasOwnProperty(key)) {
-        formData.append(key, dataObject[key]);
-      }
+appendFormData(formData: FormData, dataObject: any) {
+  for (const key in dataObject) {
+    if (dataObject.hasOwnProperty(key) && dataObject[key] !== null && dataObject[key] !== undefined) {
+      formData.append(key, dataObject[key].toString());
     }
   }
+}
   
   onAddressCheckboxChange(event: any) {
     this.isSameAddress = event.detail.checked;

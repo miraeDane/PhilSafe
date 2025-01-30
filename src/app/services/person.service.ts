@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -10,6 +10,12 @@ export class PersonService {
 
   // private personURL = 'https://localhost:7108/api/person';
   private personURL = environment.ipAddUrl;
+  private token = localStorage.getItem('token') ?? '';
+  
+    private auth = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': this.token
+      });
 
   constructor(private http: HttpClient) { }
 

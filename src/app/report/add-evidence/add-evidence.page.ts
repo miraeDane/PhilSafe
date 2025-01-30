@@ -115,8 +115,6 @@ import { ModalController } from '@ionic/angular';
 
     submitEvidences() {
       const formData = new FormData();
-      // const reportId = 10243088236;
-      // const citizenId = 2024925789;
       const crimeId = null; 
 
       this.evidences.forEach((evidence, index) => {

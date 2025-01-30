@@ -142,87 +142,117 @@
       </ion-item>
       <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !home_zip_code" color="danger">Please fill out this item<br><br></ion-label>
 
+
+
+
+
+
+      
+
       <ion-label class="title-info">WORK ADDRESS</ion-label>
 
-      <!-- <div class="checkbox-container">
+      <div class="checkbox-container">
         <ion-checkbox name="disclaimer" labelPlacement="end" [(ngModel)]="isSameAddress" (ionChange)="onAddressCheckboxChange($event)"></ion-checkbox>
         <ion-label class="checkbox-label">Same as Home Address</ion-label>
 
-      </div> -->
-
-      <ion-item>
-        <ion-select [(ngModel)]="userWorkAddress.region" name="workregionName" placeholder="Region" (ionChange)="onWorkRegionChange($event)">
-          <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
-            {{ region.region_name }}
-          </ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.region" color="danger">Please fill out this item</ion-label>
+      </div>
+      <ng-container *ngIf="!isSameAddress">
+        <ion-item [class.shake]="showValidationMessages && !userWorkAddress.region">
+          <ion-select [(ngModel)]="userWorkAddress.region" name="workregionName" placeholder="Region" (ionChange)="onWorkRegionChange($event)">
+            <ion-select-option *ngFor="let region of regions" [value]="region.region_id">
+              {{ region.region_name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.region" color="danger">Please fill out this item</ion-label>
       
-
-      <ion-item>
-        <ion-select [(ngModel)]="userWorkAddress.province" name="workprovinceName" placeholder="Province" (ionChange)="onWorkProvinceChange($event)">
-          <ng-container *ngIf="isSameAddress; else workProvinceOptions">
-            <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
-              {{ province.province_name }}
-            </ion-select-option>
-          </ng-container>
-          <ng-template #workProvinceOptions>
-            <ion-select-option *ngFor="let province of workProvinces" [value]="province.province_id">
-              {{ province.province_name }}
-            </ion-select-option>
-          </ng-template>
-        </ion-select>
-      </ion-item>
-      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.province" color="danger">Please fill out this item</ion-label>
+        <ion-item [class.shake]="showValidationMessages && !userWorkAddress.province">
+          <ion-select [(ngModel)]="userWorkAddress.province" name="workprovinceName" placeholder="Province" (ionChange)="onWorkProvinceChange($event)">
+            <ng-container *ngIf="isSameAddress; else workProvinceOptions">
+              <ion-select-option *ngFor="let province of homeProvinces" [value]="province.province_id">
+                {{ province.province_name }}
+              </ion-select-option>
+            </ng-container>
+            <ng-template #workProvinceOptions>
+              <ion-select-option *ngFor="let province of workProvinces" [value]="province.province_id">
+                {{ province.province_name }}
+              </ion-select-option>
+            </ng-template>
+          </ion-select>
+        </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.province" color="danger">Please fill out this item</ion-label>
       
-      <ion-item>
-        <ion-select [(ngModel)]="userWorkAddress.municipality" name="workmunicipalName" placeholder="Municipality" (ionChange)="onWorkMunicipalityChange($event)">
-          <ng-container *ngIf="isSameAddress; else workMunicipalityOptions">
-            <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
-              {{ municipality.municipality_name }}
-            </ion-select-option>
-          </ng-container>
-          <ng-template #workMunicipalityOptions>
-            <ion-select-option *ngFor="let municipality of workMunicipalities" [value]="municipality.municipality_id">
-              {{ municipality.municipality_name }}
-            </ion-select-option>
-          </ng-template>
-        </ion-select>
-      </ion-item>
-      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.municipality" color="danger">Please fill out this item</ion-label>
+        <ion-item [class.shake]="showValidationMessages && !userWorkAddress.municipality">
+          <ion-select [(ngModel)]="userWorkAddress.municipality" name="workmunicipalName" placeholder="Municipality" (ionChange)="onWorkMunicipalityChange($event)">
+            <ng-container *ngIf="isSameAddress; else workMunicipalityOptions">
+              <ion-select-option *ngFor="let municipality of homeMunicipalities" [value]="municipality.municipality_id">
+                {{ municipality.municipality_name }}
+              </ion-select-option>
+            </ng-container>
+            <ng-template #workMunicipalityOptions>
+              <ion-select-option *ngFor="let municipality of workMunicipalities" [value]="municipality.municipality_id">
+                {{ municipality.municipality_name }}
+              </ion-select-option>
+            </ng-template>
+          </ion-select>
+        </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.municipality" color="danger">Please fill out this item</ion-label>
       
-      <ion-item>
-        <ion-select [(ngModel)]="userWorkAddress.barangay" name="workbrgyName" placeholder="Barangay">
-          <ng-container *ngIf="isSameAddress; else workBarangayOptions">
-            <ion-select-option *ngFor="let barangay of homeBarangays" [value]="barangay.barangay_id">
-              {{ barangay.barangay_name }}
-            </ion-select-option>
-          </ng-container>
-          <ng-template #workBarangayOptions>
+        <ion-item [class.shake]="showValidationMessages && !userWorkAddress.barangay">
+          <ion-select [(ngModel)]="userWorkAddress.barangay" name="workbarangayName" placeholder="Barangay">
             <ion-select-option *ngFor="let barangay of workBarangays" [value]="barangay.barangay_id">
               {{ barangay.barangay_name }}
             </ion-select-option>
-          </ng-template>
-        </ion-select>
-      </ion-item>
-      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.barangay" color="danger">Please fill out this item</ion-label>
-
-      <ion-item>
-        <ion-input [(ngModel)]="userWorkAddress.street" name="workstreetName" placeholder="Street"></ion-input>
-      </ion-item>
-      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.street" color="danger">Please fill out this item</ion-label>
-
-
-      <ion-item>
-        <ion-input [(ngModel)]="userWorkAddress.block" name="workblockName" placeholder="Office/Bldg Name"></ion-input>
-      </ion-item>
-      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.block" color="danger">Please fill out this item</ion-label>
-
-      <ion-item>
-        <ion-input [(ngModel)]="work_zip_code" name="workzip" placeholder="Zip Code"></ion-input>
-      </ion-item>
-      <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !work_zip_code" color="danger">Please fill out this item<br><br></ion-label>
+          </ion-select>
+        </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.barangay" color="danger">Please fill out this item</ion-label>
+      
+        <ion-item [class.shake]="showValidationMessages && !userWorkAddress.street">
+          <ion-input [(ngModel)]="userWorkAddress.street" placeholder="Street"></ion-input>
+        </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.street" color="danger">Please fill out this item</ion-label>
+      
+        <ion-item [class.shake]="showValidationMessages && !userWorkAddress.block">
+          <ion-input [(ngModel)]="userWorkAddress.block" placeholder="Block"></ion-input>
+        </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.block" color="danger">Please fill out this item</ion-label>
+      
+        <ion-item [class.shake]="showValidationMessages && !userWorkAddress.zipCode">
+          <ion-input [(ngModel)]="userWorkAddress.zipCode" placeholder="Zip Code"></ion-input>
+        </ion-item>
+        <ion-label style="margin-left:20px;" *ngIf="showValidationMessages && !userWorkAddress.zipCode" color="danger">Please fill out this item</ion-label>
+      </ng-container>
+      
+      <ng-container *ngIf="isSameAddress">
+        <ion-item>
+          <ion-label>{{ getRegionName(userHomeAddress.region) }}</ion-label>
+        </ion-item>
+      
+        <ion-item>
+          <ion-label>{{ getProvinceName(userHomeAddress.province) }}</ion-label>
+        </ion-item>
+      
+        <ion-item>
+          <ion-label>{{ getMunicipalityName(userHomeAddress.municipality) }}</ion-label>
+        </ion-item>
+      
+        <ion-item>
+          <ion-label>{{ getBarangayName(userHomeAddress.barangay) }}</ion-label>
+        </ion-item>
+      
+        <ion-item>
+          <ion-label>{{ userHomeAddress.street }}</ion-label>
+        </ion-item>
+      
+        <ion-item>
+          <ion-label>{{ userHomeAddress.block }}</ion-label>
+        </ion-item>
+      
+        <ion-item>
+          <ion-label>{{ home_zip_code }}</ion-label>
+        </ion-item>
+      </ng-container>
+      
 
       
       <ion-label class="title-info">ACCOUNT INFORMATION</ion-label>

@@ -17,10 +17,11 @@ export class MyreportsPage implements OnInit {
   citizenId: string | null = null; 
   reports: any[] = [];
   crimeID: number = 1;
-  status: string = 'Reviewing';
-  progress: any = 0.2;
+  status: string = 'Report Accepted';
+  progress: any;
+  statusLabel: string = '';
   private refreshSubscription: Subscription | undefined;
-
+  
 
 
 
@@ -86,11 +87,15 @@ export class MyreportsPage implements OnInit {
     if (this.citizenId) {
       this.reportService.getReports(this.citizenId).subscribe(
         (reports) => {
-          this.reports = reports; // Store the reports
-          this.reports
+          this.reports = reports; 
           console.log('CitizenID in reports', this.citizenId)
-          console.log('Reports retrieved:', reports);
+          console.log('Reports retrieved:', this.reports);
+          
+          this.reports.forEach((report) => {
+            this.getStatus(report); 
+          });
         },
+      
         (error) => {
           console.error('Error retrieving reports:', error);
           console.log('CitizenID in reports', this.citizenId)
@@ -103,23 +108,65 @@ export class MyreportsPage implements OnInit {
   }
 
   
+  getProgress(){
 
-  incident: any = {
-    crime_id: this.crimeID,
-    status: this.status, 
-    progress: this.progress 
+    if(status === 'Report Accepted'){
+      this.progress = 0.5;
+      
+    } 
   }
   
-  getStatusClass(status: string): string {
-    if (status === 'Reviewing') {
-      return 'reviewing';
-    } else if (status === 'Progressing') {
-      return 'progressing';
-    } else if (status === 'Solved') {
-      return 'solved';
+
+  // incident: any = {
+  //   crime_id: this.crimeID,
+  //   status: this.status, 
+  //   progress: this.progress 
+  // }
+
+  
+  
+  // getStatusClass(status: string): string {
+  //   if (status === 'Report Accepted') {
+  //     return 'progressing';
+  //   } else if (status === 'Progressing') {
+  //     return 'progressing';
+  //   } else if (status === 'Solved') {
+  //     return 'solved';
+  //   }
+  //   return '';
+  // }
+
+
+  // getStatus(report: any){
+
+  //   // console.log('Report object:', report);
+  //   if(report.report_id && !report.crime_id){
+  //     // console.log('Report Accepted for report ID:', report.report_id);
+  //     this.statusLabel = 'Report Accepted',
+  //     this.progress = 0.5
+  //     this.status = 'progressing'
+  //   } else if (report.report_id && report.crime_id) {
+  //     console.log('Case Filed for report ID:', report.report_id);
+  //     this.statusLabel = 'Case Filed',
+  //     this.progress = 1.0
+  //     this.status = 'solved'
+  //   }
+  // }
+
+  getStatus(report: any) {
+    if (report.report_id && !report.crime_id) {
+      console.log('Report Accepted for report ID:', report.report_id);
+      report.statusLabel = 'Report Accepted';
+      report.progress = 0.5;
+      report.status = 'progressing';
+    } else if (report.crime_id) {
+      console.log('Case Filed for report ID:', report.report_id);
+      report.statusLabel = 'Case Filed';
+      report.progress = 1.0;
+      report.status = 'solved';
     }
-    return '';
   }
+  
 
   goToDetails(reportId: string) {
     this.router.navigate(['/incident-details'], { queryParams: { reportId } });

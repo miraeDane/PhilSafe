@@ -98,6 +98,10 @@ export class PaymentSuccessPage implements OnInit {
     }  
   }
 
+  goToHome() {
+    this.router.navigate(['/tabs/home']);
+  }
+
 }
     
 

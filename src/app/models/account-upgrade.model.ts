@@ -1,6 +1,7 @@
 import { CreateAccountData } from "./create-account-data";
 import { Person } from "./person";
 import { Location } from "./location";
+import { Address } from "./0common.model";
 
 
 export interface UpgradeAccount {
@@ -9,7 +10,7 @@ export interface UpgradeAccount {
     middlename: string;
     lastname: string;
     sex: string;
-    birthdate: string; 
+    birthdate?: string; 
     bioStatus: boolean ;
     civilStatus?: string;
     deathDate?: string;
@@ -21,6 +22,9 @@ export interface UpgradeAccount {
     workAddressId: number;
     personId?: number;
     role: string;
-    profile_pic?:  Uint8Array | null;
+    profile_pic?:  any;
     profile_ext?: string;
+
+    homeAddress: Address
+    workAddress: Address
 }

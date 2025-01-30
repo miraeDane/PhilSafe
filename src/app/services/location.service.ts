@@ -24,6 +24,12 @@ export class LocationService {
       'Content-Type': 'application/json' 
     })
   };
+  private token = localStorage.getItem('token') ?? '';
+
+  private auth = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': this.token
+    });
 
 
   constructor(private http: HttpClient) {}

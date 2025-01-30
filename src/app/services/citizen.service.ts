@@ -10,6 +10,12 @@ import { environment } from 'src/environments/environment';
 export class CitizenService {
   private citizenUrl = environment.ipAddUrl;
   // private citizenUrl = 'https://192.168.181.11:7108/api/citizen';
+  private token = localStorage.getItem('token') ?? '';
+
+  private auth = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': this.token
+    });
 
   constructor(private http: HttpClient) {}
 

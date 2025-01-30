@@ -14,7 +14,7 @@ export interface Person {
     middlename: string;
     lastname: string;
     sex: string;
-    birthdate: string; 
+    birthdate?: string; 
     bioStatus: boolean;
     civilStatus?: string;
     deathDate?: string;

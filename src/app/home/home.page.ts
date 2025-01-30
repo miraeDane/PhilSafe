@@ -8,7 +8,7 @@ import { LoginService } from '../services/login.service';
 import { PersonService } from '../services/person.service';
 import { filter } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
@@ -174,23 +174,60 @@ export class HomePage implements OnInit, AfterViewInit {
 }
 
 
-  async getSolvedCrimes(stationId: number): Promise<number> { // Change return type to Promise<number>
-    this.isLoadingCrimes = true; // Set loading state to true
-    this.loadingMessage = 'Loading solved crimes in nearby station...'; // Set loading message
-    const url = `${environment.ipAddUrl}api/case/retrieve/local/${stationId}`;
-    return this.http.get<any[]>(url).toPromise().then((cases) => {
-        if (cases) {
-            const count = cases.filter(c => c.status.trim() === 'Solved').length;
-            console.log('Total Solved Crimes:', count);
-            return count; // Return the count
-        } else {
-            return 0; // Return 0 if no cases found
-        }
-    }).catch((error) => {
-        console.error('Error fetching solved crimes:', error);
-        return 0; // Return 0 on error
-    });
+//   async getSolvedCrimes(stationId: number): Promise<number> { // Change return type to Promise<number>
+//     this.isLoadingCrimes = true; // Set loading state to true
+//     this.loadingMessage = 'Loading solved crimes in nearby station...'; // Set loading message
+//     const url = `${environment.ipAddUrl}api/case/retrieve/local/${stationId}`;
+//     return this.http.get<any[]>(url).toPromise().then((cases) => {
+//         if (cases) {
+//             const count = cases.filter(c => c.status.trim() === 'Solved').length;
+//             console.log('Total Solved Crimes:', count);
+//             return count; // Return the count
+//         } else {
+//             return 0; // Return 0 if no cases found
+//         }
+//     }).catch((error) => {
+//         console.error('Error fetching solved crimes:', error);
+//         return 0; // Return 0 on error
+//     });
+// }
+
+async getSolvedCrimes(stationId: number): Promise<number> { 
+  this.isLoadingCrimes = true; 
+  this.loadingMessage = 'Loading solved crimes in nearby station...';
+  
+  const url = `${environment.ipAddUrl}api/case/retrieve/local/${stationId}`;
+  let token = localStorage.getItem('token');
+
+  // Ensure the token exists and prepend "Bearer " if it does
+  if (token) {
+      token = `${token}`;
+  }
+
+  // Define headers
+  const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': token }) 
+  });
+
+  try {
+      const cases = await this.http.get<any[]>(url, { headers }).toPromise();
+      
+      if (cases && cases.length > 0) {
+          const count = cases.filter(c => c.status?.trim() === 'Solved').length;
+          console.log('Total Solved Crimes:', count);
+          return count;
+      }
+      
+      return 0;
+
+  } catch (error) {
+      console.error('Error fetching solved crimes:', error);
+      return 0; // Return 0 on error
+  }
 }
+
+
 
   async getTotalSolvedCrimes() {
     this.isLoadingCrimes = true; // Set loading state to true

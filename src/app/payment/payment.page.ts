@@ -234,6 +234,7 @@ export class PaymentPage implements OnInit {
   }
 
   paymentSuccessPage(){
+    this.loading = false;
     this.router.navigate(['/payment-success'], {
       state: {
     

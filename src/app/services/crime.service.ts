@@ -12,6 +12,12 @@ export class CrimeService {
   private crimeUrl = environment.ipAddUrl;
   private crimeLists = 'assets/crimes';
   private modusLists = 'assets/modus';
+  private token = localStorage.getItem('token') ?? '';
+
+  private auth = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': this.token
+    });
 
   constructor(private http: HttpClient) {}
 
@@ -30,22 +36,11 @@ export class CrimeService {
   }
 
   loadIncidentTypes(): Observable<IncidentType[]> {
-    return this.http.get<IncidentType[]>(`${this.crimeUrl}api/case/load/incidenttypes`)
+    return this.http.get<IncidentType[]>(`${this.crimeUrl}api/case/load/incidenttypes`, {headers: this.auth})
       .pipe(
         catchError(this.handleError)
       );
   }
-  
-  
-
-  establishCase(data: any): Observable<any> {
-    const url = `${this.crimeUrl}api/case`;
-    return this.http.post(url, data).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-
 
   private handleError(error: any): Observable<never> {
     console.error('An error occurred:', error);

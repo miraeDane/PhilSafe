@@ -9,6 +9,12 @@ import { environment } from 'src/environments/environment';
 })
 export class WitnessService {
   private witnessUrl = environment.ipAddUrl; 
+  private token = localStorage.getItem('token') ?? '';
+
+  private auth = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': this.token
+    });
 
   constructor(private http: HttpClient) {}
 

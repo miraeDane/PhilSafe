@@ -18,6 +18,12 @@ export class AccountService {
       'Content-Type': 'multipart/form-data' 
     })
   };
+  private token = localStorage.getItem('user_token') ?? '';
+
+  private auth = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': this.token
+    });
 
   
   constructor(private http: HttpClient) { }
@@ -69,7 +75,9 @@ export class AccountService {
   }
 
   getProfPic(accountId: number): Observable<Blob> {
-    return this.http.get(`${this.accountURL}api/account/get/profilepic/${accountId}`, { responseType: 'blob' })
+
+
+    return this.http.get(`${this.accountURL}api/account/get/profilepic/${accountId}`, { headers: this.auth, responseType: 'blob' })
         .pipe(
             tap((response: any) => {
                 console.log('Response from getProfPic:', response);
@@ -81,9 +89,18 @@ export class AccountService {
         );
 }
 
+
  
   updateAccount(id: number, data: any): Observable<any> {
     const url = `${this.accountURL}api/account/up/${id}`;
+    return this.http.put(url, data).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  updateProfPic(id: number, data: any): Observable<any> {
+    const url = `${this.accountURL}api/account/update/profilepic/${id}`;
+    
     return this.http.put(url, data).pipe(
       catchError(this.handleError)
     );

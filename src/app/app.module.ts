@@ -22,7 +22,8 @@ import { MinuteSecondsPipe } from './pipes/minute-seconds.pipe';
     AppRoutingModule, 
     HttpClientModule,
     SignatureModalComponent,
-    MinuteSecondsPipe
+    MinuteSecondsPipe,
+    
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     CookieService
