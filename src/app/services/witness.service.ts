@@ -20,14 +20,14 @@ export class WitnessService {
 
  
   establishWitness(personId: number): Observable<any> {
-    return this.http.post(`${this.witnessUrl}api/witness/establish/${personId}`, {withCredentials: true}).pipe(
+    return this.http.post(`${this.witnessUrl}api/witness/establish/${personId}`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   
   collectWitness(id: number): Observable<any> {
-    return this.http.get(`${this.witnessUrl}api/witness/select/${id}`, {withCredentials: true}).pipe(
+    return this.http.get(`${this.witnessUrl}api/witness/select/${id}`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }

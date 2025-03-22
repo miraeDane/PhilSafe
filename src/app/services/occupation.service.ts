@@ -20,15 +20,14 @@ export class OccupationService {
   constructor(private http: HttpClient) { }
 
   loadProperOccupations(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/load/proper`, {withCredentials: true}).pipe(
+    return this.http.get(`${this.apiUrl}/load/proper`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   createOccupation(name: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/create`, JSON.stringify(name), {
-      headers: { 'Content-Type': 'application/json' },
-      withCredentials: true
+      headers: this.auth
     }).pipe(
       catchError(this.handleError)
     );

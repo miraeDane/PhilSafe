@@ -20,16 +20,16 @@ export class CitizenService {
   constructor(private http: HttpClient) {}
 
   getCitizens(): Observable<any> {
-    return this.http.get(`${this.citizenUrl}api/citizen/collect/citizens/all`, {withCredentials: true});
+    return this.http.get(`${this.citizenUrl}api/citizen/collect/citizens/all`, {headers: this.auth});
   }
 
   uploadMugshot(formData: FormData): Observable<any> {
-    return this.http.post<any>(`${this.citizenUrl}api/citizen/identity/pic`, formData, {withCredentials: true})
+    return this.http.post<any>(`${this.citizenUrl}api/citizen/identity/pic`, formData, {headers: this.auth})
   }
 
   verifyRegularStatus(personId: number): Observable<boolean> {
     const url = `${this.citizenUrl}api/citizen/verify/${personId}`;
-    return this.http.get<boolean>(url, {withCredentials: true}).pipe(
+    return this.http.get<boolean>(url, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
@@ -38,14 +38,14 @@ export class CitizenService {
 
   establishCitizen(data: any): Observable<any> {
     const url = `${this.citizenUrl}api/citizen/identity/flesh`;
-    return this.http.post(url, data, {withCredentials: true}).pipe(
+    return this.http.post(url, data, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   updateCitizen(data: any, citizenId: number): Observable<any> {
     const url = `${this.citizenUrl}api/citizen/submit/proof/${citizenId}`;
-    return this.http.put(url, data).pipe(
+    return this.http.put(url, data, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
@@ -53,7 +53,7 @@ export class CitizenService {
 
   certifyCitizen(personId: number, accountId: number): Observable<any> {
     const url = `${this.citizenUrl}api/citizen/certify/${personId}/acc/${accountId}`;
-    return this.http.put(url, {withCredentials: true}).pipe(
+    return this.http.put(url, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
@@ -62,7 +62,7 @@ export class CitizenService {
  
   deleteCitizen(personId: number): Observable<any> {
     const url = `${this.citizenUrl}api/citizen/banish/citizen/${personId}`;
-    return this.http.delete(url, {withCredentials: true}).pipe(
+    return this.http.delete(url, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }

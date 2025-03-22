@@ -10,3 +10,54 @@ ion-title {
 }
 
   
+
+
+.article-page {
+  ion-card {
+    margin: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+  }
+
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3880ff; // Ionic blue color
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .article-image {
+    width: 100%; // Make the image responsive
+    height: auto; // Maintain aspect ratio
+    border-radius: 12px; // Match the card's rounded corners
+    margin-bottom: 16px; // Add spacing below the image
+  }
+
+  .introduction {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 24px;
+  }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 16px;
+  }
+
+  .guidelines {
+    list-style-type: disc;
+    padding-left: 20px;
+
+    li {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #444;
+      margin-bottom: 8px;
+    }
+  }
+}

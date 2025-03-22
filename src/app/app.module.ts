@@ -11,7 +11,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SignatureModalComponent } from './signature-modal/signature-modal.component';
 import { CookieService } from 'ngx-cookie-service';
 import { MinuteSecondsPipe } from './pipes/minute-seconds.pipe';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
@@ -23,6 +23,7 @@ import { MinuteSecondsPipe } from './pipes/minute-seconds.pipe';
     HttpClientModule,
     SignatureModalComponent,
     MinuteSecondsPipe,
+    BrowserAnimationsModule,
     
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -51,13 +52,13 @@ export class AccountService {
 
   upgradeAccount(data: any): Observable<any> {
     const url = `${this.accountURL}api/account/signup/upgrade`;
-    return this.http.post(url, data).pipe(
+    return this.http.post(url, data, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   getAccount(): Observable<any> {
-    return this.http.get(`${this.accountURL}api/account`, { observe: 'response' })
+    return this.http.get(`${this.accountURL}api/account`, { observe: 'response', headers: this.auth })
       .pipe(
         map((response: HttpResponse<any>) => {
           if (response.status === 200) {
@@ -73,26 +74,30 @@ export class AccountService {
       );
   }
 
-  getProfPic(accountId: number): Observable<Blob> {
 
 
-    return this.http.get(`${this.accountURL}api/account/get/profilepic/${accountId}`, { withCredentials: true, responseType: 'blob' })
-        .pipe(
-            tap((response: any) => {
-                console.log('Response from getProfPic:', response);
-            }),
-            catchError(error => {
-                console.error('Error fetching profile picture:', error);
-                return throwError(error);
-            })
-        );
+getProfPic(accountId: number): Observable<Blob> {
+
+  return this.http.get(`${this.accountURL}api/account/get/profilepic`, { 
+      headers: this.auth,  
+      responseType: 'blob' 
+    })
+    .pipe(
+      tap((response: any) => {
+        console.log('Response from getProfPic:', response);
+      }),
+      catchError(error => {
+        console.error('Error fetching profile picture:', error);
+        return throwError(error);
+      })
+    );
 }
 
 
  
   updateAccount(id: number, data: any): Observable<any> {
     const url = `${this.accountURL}api/account/up/${id}`;
-    return this.http.put(url, data).pipe(
+    return this.http.put(url, data, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
@@ -107,7 +112,7 @@ export class AccountService {
 
   resetPassword(data: any): Observable<any> {
     const url = `${this.accountURL}api/account/reset/password`;
-    return this.http.put(url, data).pipe(
+    return this.http.put(url, data, {headers: this.auth}).pipe(
       tap((response) => {
         console.log('Password reset successful:', response);
       }),

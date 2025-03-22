@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
+import { QuicklinkStrategy } from 'ngx-quicklink';
 
 const routes: Routes = [
   {
@@ -129,6 +130,10 @@ const routes: Routes = [
   {
     path: 'jurisdiction',
     loadChildren: () => import('./jurisdiction/jurisdiction.module').then( m => m.JurisdictionPageModule)
+  },
+  {
+    path: 'about',
+    loadChildren: () => import('./about/about.module').then( m => m.AboutPageModule)
   }
   // {
   //   path: 'report/:segment',
@@ -139,7 +144,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
+    RouterModule.forRoot(routes, { preloadingStrategy: QuicklinkStrategy }),
   ],
   exports: [RouterModule],
 })

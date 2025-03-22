@@ -21,7 +21,7 @@ export class PersonService {
 
 
   createPerson(data: any): Observable<any> {
-    return this.http.post(`${this.personURL}api/person`, data, {withCredentials: true}).pipe(
+    return this.http.post(`${this.personURL}api/person`, data, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
@@ -29,7 +29,7 @@ export class PersonService {
 
 
   getPerson(personId: number): Observable<any> {
-    return this.http.get(`${this.personURL}api/person/retrieve/${personId}`, { observe: 'response', withCredentials: true })
+    return this.http.get(`${this.personURL}api/person/retrieve/${personId}`, { observe: 'response', headers: this.auth })
       .pipe(
         map((response: HttpResponse<any>) => {
           if (response.status === 200) {
@@ -45,13 +45,13 @@ export class PersonService {
   }
 
 update(id: number, pDto: any): Observable<any> {
-  return this.http.put(`${this.personURL}api/person/up/${id}`, pDto, {withCredentials: true}).pipe(
+  return this.http.put(`${this.personURL}api/person/up/${id}`, pDto, {headers: this.auth}).pipe(
     catchError(this.handleError)
   );
 }
 
 delete(id: number): Observable<any> {
-  return this.http.delete(`${this.personURL}api/person/delete/${id}`, {withCredentials: true}).pipe(
+  return this.http.delete(`${this.personURL}api/person/delete/${id}`, {headers: this.auth}).pipe(
     catchError(this.handleError)
   );
 }

@@ -43,7 +43,7 @@ export class PaymentSuccessPage implements OnInit {
           this.transactionId = state.trans_id;
           this.fetchTransaction();
 
-          this.reportService.getReports(this.citizenId).subscribe(
+          this.reportService.getReports().subscribe(
             (response) => {
               const report = response.find((r: any) => r.report_id === this.reportId)
               this.reportData = report;

@@ -6,3 +6,79 @@
     <ion-title>Articles</ion-title>
   </ion-toolbar>
 </ion-header>
+
+<ion-content class="article-page">
+
+
+  <!-- Article 1 -->
+  <div [@flipAnimation] *ngIf="articleId===1">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title class="title">Protecting Yourself Against Fraud and Scams</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <!-- Add the image here -->
+        <img src="assets/scam.png" alt="Fraud Protection" class="article-image" />
+  
+        <p class="introduction">
+          Each year billions of dollars are lost to fraudulent activities. Telemarketing, health care, home equity and home improvement fraud and identity theft are just a few of the scams conducted over the phone, by mail, through the internet and door-to-door. Seniors are often targets as criminals focus on their vulnerabilities.
+        </p>
+        <h3 class="section-title">Here are some guidelines to help ensure the safety of your assets:</h3>
+        <ul class="guidelines">
+          <li>Never give out your Social Security, credit card or bank account numbers.</li>
+          <li>Destroy personal information on documents before discarding them—use a shredder if possible.</li>
+          <li>Don't fall for things that sound too good to be true—money, vacations, sweepstakes prizes, health cures, or low risk/high yield investment schemes.</li>
+          <li>Do not agree to any home improvement or sales contract until you verify the existence and reputation of the business. Be sure all contractors you hire are licensed, bonded and insured.</li>
+          <li>Have a lawyer or someone you trust examine any document before you sign it.</li>
+          <li>Don't give money to a charitable organization until you verify its legitimacy by contacting the Attorney General's Office. Legitimate organizations do not require immediate response and should provide information by mail.</li>
+          <li>Never send cash in the mail, or allow anyone to pick up a check at your home.</li>
+        </ul>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+
+
+  <!-- Article 2 -->
+  <div [@flipAnimation] *ngIf="articleId === 2">
+    <ion-card>
+      <img src="assets/vacation.jpg" alt="Vacation Safety" class="article-image" />
+      <ion-card-header>
+        <ion-card-title class="title">PNP’s Summer Vacation Safety Tips</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>
+          The Philippine National Police (PNP) urged the public on Wednesday to be mindful of summer vacation and travel safety tips.
+        </p>
+        <h3>Tips:</h3>
+        <ul>
+          <li>Avoid traveling alone, especially at night.</li>
+          <li>Keep your valuables secure and avoid displaying expensive items.</li>
+          <li>Always inform someone about your travel plans and expected return time.</li>
+        </ul>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Article 3 -->
+     <div [@flipAnimation] *ngIf="articleId === 3">
+    <ion-card>
+      <img src="assets/identity.jpg" alt="Identity Theft Protection" class="article-image" />
+      <ion-card-header>
+        <ion-card-title class="title">Protecting From Identity Theft</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>
+          Consumers cannot completely prevent themselves from becoming victims of identity theft, but there are several things you can do to prevent yourself from becoming an easy target.
+        </p>
+        <h3>Tips:</h3>
+        <ul>
+          <li>Regularly monitor your financial accounts and credit reports.</li>
+          <li>Use strong, unique passwords for all your online accounts.</li>
+          <li>Be cautious when sharing personal information online or over the phone.</li>
+        </ul>
+      </ion-card-content>
+    </ion-card>
+  </div>
+  
+</ion-content>

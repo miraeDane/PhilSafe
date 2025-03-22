@@ -28,14 +28,14 @@ export class DescriptionService {
 
   retrieveUnknowns(): Observable<any> {
     const url = `${this.descriptionUrl}api/description/unidentified`;
-    return this.http.get(url).pipe(
+    return this.http.get(url, {withCredentials: true}).pipe(
       catchError(this.handleError)
     );
   }
 
   retrieveKnowns(): Observable<any> {
     const url = `${this.descriptionUrl}api/description/identified`;
-    return this.http.get(url).pipe(
+    return this.http.get(url, {withCredentials: true}).pipe(
       catchError(this.handleError)
     );
   }
@@ -43,21 +43,21 @@ export class DescriptionService {
   
   establishDescription(data: any): Observable<any> {
     const url = `${this.descriptionUrl}api/description`;
-    return this.http.post(url, data).pipe(
+    return this.http.post(url, data, {withCredentials: true}).pipe(
       catchError(this.handleError)
     );
   }
 
   editDescription(id: number, data: any): Observable<any> {
     const url = `${this.descriptionUrl}api/description/up/${id}`;
-    return this.http.put(url, data).pipe(
+    return this.http.put(url, data, {withCredentials: true}).pipe(
       catchError(this.handleError)
     );
   }
 
   discardDescription(id: number): Observable<any> {
     const url = `${this.descriptionUrl}api/description/discard/${id}`;
-    return this.http.delete(url).pipe(
+    return this.http.delete(url, {withCredentials: true}).pipe(
       catchError(this.handleError)
     );
   }

@@ -22,14 +22,14 @@ export class JurisdictionService {
 
   getAll(): Observable<any> {
     const url = `${this.base}api/jurisdiction/collect`;
-    return this.http.get(url).pipe(
+    return this.http.get(url, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   getStation(stationId: number): Observable<any> {
     const url = `${this.base}api/jurisdiction/retrieve/${stationId}`;
-    return this.http.get(url).pipe(
+    return this.http.get(url, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }

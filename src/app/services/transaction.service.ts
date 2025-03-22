@@ -21,28 +21,28 @@ export class TransactionService {
 
   // Collect all nationwide transaction records
   collectNationWideRecords(): Observable<any> {
-    return this.http.get(`${this.transactionUrl}api/transaction/collect/nationwide`, {withCredentials: true}).pipe(
+    return this.http.get(`${this.transactionUrl}api/transaction/collect/nationwide`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   // Collect transactions for a specific citizen
   collectTheirRecords(id: number): Observable<any> {
-    return this.http.get(`${this.transactionUrl}api/transaction/collect/citizen/${id}`, {withCredentials: true}).pipe(
+    return this.http.get(`${this.transactionUrl}api/transaction/collect/citizen/${id}`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   // Collect a specific report receipt
   collectReportReceipt(id: number): Observable<any> {
-    return this.http.get(`${this.transactionUrl}api/transaction/collect/report/${id}`, {withCredentials: true}).pipe(
+    return this.http.get(`${this.transactionUrl}api/transaction/collect/report/${id}`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   // Process a transaction
   transactBlotter(transaction: any): Observable<any> {
-    return this.http.post(`${this.transactionUrl}api/transaction/pay`, transaction, {withCredentials: true}).pipe(
+    return this.http.post(`${this.transactionUrl}api/transaction/pay`, transaction, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }

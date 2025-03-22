@@ -36,7 +36,7 @@ export class CrimeService {
   }
 
   loadIncidentTypes(): Observable<IncidentType[]> {
-    return this.http.get<IncidentType[]>(`${this.crimeUrl}api/case/load/incidenttypes`, {headers: this.auth})
+    return this.http.get<IncidentType[]>(`${this.crimeUrl}api/case/load/incidenttypes`, { headers: this.auth})
       .pipe(
         catchError(this.handleError)
       );

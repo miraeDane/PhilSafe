@@ -20,19 +20,19 @@ export class RelationshipService {
 
 
   getConnection(id: number): Observable<any> {
-    return this.http.get(`${this.relUrl}api/relationship/single/${id}`).pipe(
+    return this.http.get(`${this.relUrl}api/relationship/single/${id}`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   getConnections(personId: number): Observable<any> {
-    return this.http.get(`${this.relUrl}api/relationship/multiple/${personId}`).pipe(
+    return this.http.get(`${this.relUrl}api/relationship/multiple/${personId}`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   establishConnection(relDto: any): Observable<any> {
-    return this.http.post(`${this.relUrl}api/relationship`, relDto).pipe(
+    return this.http.post(`${this.relUrl}api/relationship`, relDto, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
@@ -45,7 +45,7 @@ export class RelationshipService {
   }
 
   cutConnection(id: number): Observable<any> {
-    return this.http.delete(`${this.relUrl}api/relationship/delete/${id}`).pipe(
+    return this.http.delete(`${this.relUrl}api/relationship/delete/${id}`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }

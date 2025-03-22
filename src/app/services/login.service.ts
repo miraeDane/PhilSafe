@@ -45,7 +45,11 @@ export class LoginService {
    loginByEmail(data: any): Observable<any> {
     this.loggedIn = true;
     const url = `${this.accountURL}api/account/login`;
-    return this.http.post<{ token: string, personId: number }>(url, data, this.options).pipe(
+    return this.http.post<{ token: string, personId: number }>(url, data, 
+      {
+        headers: this.auth
+      }
+    ).pipe(
       catchError(this.handleError),
       map(response => {
         if (response && response.token) {
@@ -61,7 +65,7 @@ export class LoginService {
   loginByContactNumber(data: any): Observable<any> {
     this.loggedIn = true;
     const url = `${this.accountURL}api/account/login`;
-    return this.http.post<{ token: string, personId: number }>(url, data, this.options).pipe(
+    return this.http.post<{ token: string, personId: number }>(url, data, {headers: this.auth}).pipe(
       catchError(this.handleError),
       map(response => {
         if (response && response.token) {
@@ -77,33 +81,70 @@ export class LoginService {
 
   verifyPasswordByEmail(data: any): Observable<any> {
     const url = `${this.accountURL}api/account/verify/email`;
-    return this.http.post(url, data).pipe(
+    return this.http.post(url, data, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   verifyPasswordByContact(data: any): Observable<any> {
     const url = `${this.accountURL}api/account/verify/contact`;
-    return this.http.post(url, data).pipe(
+    return this.http.post(url, data, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
+  // signOut(): Observable<any> {
+  //   this.loggedIn = false; 
+  //   const url = `${this.accountURL}api/account/signout`;
+  //   return this.http.post(url, {}).pipe(
+  //     catchError(this.handleError),
+  //     map(response =>{
+  //       if (response) {
+  //         localStorage.removeItem('sessionData');
+  //         localStorage.removeItem('citizenId');
+  //         console.log('Sign-out response:', response);
+  //       }
+  //       return response;
+  //     })
+  //   );
+  // }
   signOut(): Observable<any> {
     this.loggedIn = false; 
     const url = `${this.accountURL}api/account/signout`;
+  
     return this.http.post(url, {}).pipe(
       catchError(this.handleError),
-      map(response =>{
+      map(response => {
         if (response) {
+          // Clear Local Storage
           localStorage.removeItem('sessionData');
           localStorage.removeItem('citizenId');
+  
+          // Clear IndexedDB (if used)
+          if ('indexedDB' in window) {
+            let databases = indexedDB.databases ? indexedDB.databases() : Promise.resolve([]);
+            databases.then((dbs) => {
+              dbs.forEach((db) => indexedDB.deleteDatabase(db.name!));
+            });
+          }
+  
+          // Clear Service Worker Cache (If applicable)
+          if ('caches' in window) {
+            caches.keys().then((names) => {
+              names.forEach((name) => caches.delete(name));
+            });
+          }
+  
+          // Clear session storage
+          sessionStorage.clear();
+          window.location.reload();
           console.log('Sign-out response:', response);
         }
         return response;
       })
     );
   }
+  
 
   private storeSession(token: string) {
     const expirationTime = new Date().getTime() + 30 * 60 * 1000;

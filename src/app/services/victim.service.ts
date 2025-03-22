@@ -20,21 +20,21 @@ export class VictimService {
   constructor(private http: HttpClient) {}
 
   collectVictims(): Observable<any> {
-    return this.http.get(`${this.victimUrl}api/victim/retrieve/all`, {withCredentials: true}).pipe(
+    return this.http.get(`${this.victimUrl}api/victim/retrieve/all`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
  
   ascertainVictim(id: number): Observable<any> {
-    return this.http.get(`${this.victimUrl}api/victim/retrieve/${id}`, {withCredentials: true}).pipe(
+    return this.http.get(`${this.victimUrl}api/victim/retrieve/${id}`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
  
   collectAffectedCases(id: number): Observable<any> {
-    return this.http.get(`${this.victimUrl}api/victim/retrieve/cases/${id}`, {withCredentials: true}).pipe(
+    return this.http.get(`${this.victimUrl}api/victim/retrieve/cases/${id}`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
@@ -42,7 +42,7 @@ export class VictimService {
 
   postVictim(victim: any): Observable<any> {
     const fullUrl = `${this.victimUrl}api/victim`
-    console.log('Full URL', fullUrl, {withCredentials: true});
+    console.log('Full URL', fullUrl, {headers: this.auth});
     return this.http.post(fullUrl, victim).pipe(
       catchError(this.handleError)
     );
@@ -51,21 +51,21 @@ export class VictimService {
   establishVictim(victim: any, reportId: number): Observable<any> {
     const fullUrl = `${this.victimUrl}api/victim/fromreport/${reportId}`
     console.log('Full URL', fullUrl);
-    return this.http.post(fullUrl, victim, {withCredentials: true}).pipe(
+    return this.http.post(fullUrl, victim, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
 
   editVictim(id: number, victim: any): Observable<any> {
-    return this.http.put(`${this.victimUrl}api/victim/edit/${id}`, victim, {withCredentials: true}).pipe(
+    return this.http.put(`${this.victimUrl}api/victim/edit/${id}`, victim, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
 
   discardVictim(id: number): Observable<any> {
-    return this.http.delete(`${this.victimUrl}api/victim/discard/${id}`, {withCredentials: true}).pipe(
+    return this.http.delete(`${this.victimUrl}api/victim/discard/${id}`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }

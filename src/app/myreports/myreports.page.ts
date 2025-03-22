@@ -85,7 +85,7 @@ export class MyreportsPage implements OnInit {
 
   loadCitizenReports() {
     if (this.citizenId) {
-      this.reportService.getReports(this.citizenId).subscribe(
+      this.reportService.getReports().subscribe(
         (reports) => {
           this.reports = reports; 
           console.log('CitizenID in reports', this.citizenId)

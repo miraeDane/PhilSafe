@@ -36,7 +36,7 @@ export class SmtpService {
   retrieveReceipt(reportId: number, citizenId: number): Observable<any> {
     //const headers = { 'Content-Type': 'application/json' };
     
-    return this.http.get(`${this.smtpUrl}/send/details/${reportId}/${citizenId}`, this.pdf).pipe(
+    return this.http.get(`${this.smtpUrl}/send/details/${reportId}/${citizenId}`, {headers: this.auth}).pipe(
       catchError((error) => {
         console.error('Error sending OTP:', error);
         return throwError(() => error); 
@@ -47,7 +47,7 @@ export class SmtpService {
   sendOtpCode(email: string): Observable<any> {
     //const headers = { 'Content-Type': 'application/json' };
     
-    return this.http.post(`${this.smtpUrl}/send/otp`, JSON.stringify(email), this.options ).pipe(
+    return this.http.post(`${this.smtpUrl}/send/otp`, JSON.stringify(email), {headers: this.auth}).pipe(
       catchError((error) => {
         console.error('Error sending OTP:', error);
         return throwError(() => error); 
@@ -57,7 +57,7 @@ export class SmtpService {
   
  
   sendEmailDetails(reportId: number, citizenId: number): Observable<any> {
-    return this.http.get(`${this.smtpUrl}/send/details/${reportId}/${citizenId}`, this.pdf).pipe(
+    return this.http.get(`${this.smtpUrl}/send/details/${reportId}/${citizenId}`, {headers: this.auth}).pipe(
       catchError((error) => {
         
         console.error('Error sending email details:', error);
@@ -68,7 +68,7 @@ export class SmtpService {
 
 
   validateOtpCode(Email: string, Code: string): Observable<any> {
-    return this.http.post(`${this.smtpUrl}/validate`, { Code, Email }, this.options).pipe(
+    return this.http.post(`${this.smtpUrl}/validate`, { Code, Email }, {headers: this.auth}).pipe(
       catchError((error) => {
        
         console.error('Error validating OTP:', error);

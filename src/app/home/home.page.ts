@@ -9,6 +9,8 @@ import { PersonService } from '../services/person.service';
 import { filter } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Geolocation } from '@capacitor/geolocation'
+
 
 @Component({
   selector: 'app-home',
@@ -95,124 +97,108 @@ export class HomePage implements OnInit, AfterViewInit {
       });
   });
   this.getTotalSolvedCrimes();
+  
     
   }
 
  
 
-  // getCurrentLocation() {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => {
-  //         this.latitude = position.coords.latitude;
-  //         this.longitude = position.coords.longitude;
-  //         console.log('Latitude:', this.latitude);
-  //         console.log('Longitude:', this.longitude);
-  //         this.getLocationName(this.latitude, this.longitude).then((name) => {
-  //           this.locationName = name; // Set the location name
-  //         }).catch((error) => {
-  //           console.error(error);
-  //           this.locationName = 'Could not retrieve location name.';
-  //         });
-  //       },
-  //       (error) => {
-  //         console.error('Error getting location:', error);
-  //         this.locationName = this.handleLocationError(error);
-  //       },
-  //       {
-  //         enableHighAccuracy: true,
-  //         timeout: 5000,
-  //         maximumAge: 0,
-  //       }
-  //     );
-  //   } else {
-  //     this.locationName = 'Geolocation is not supported by this browser.';
-  //     console.error(this.locationName);
-  //   }
-  // }
-
-  getCurrentLocation(): Promise<void> {
-    this.isLoadingLocation = true; // Set loading state to true
-    this.loadingMessage = 'Loading your current location...'; // Set loading message
-    return new Promise((resolve, reject) => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    this.latitude = position.coords.latitude;
-                    this.longitude = position.coords.longitude;
-                    console.log('Latitude:', this.latitude);
-                    console.log('Longitude:', this.longitude);
-                    this.getLocationName(this.latitude, this.longitude).then((name) => {
-                        this.locationName = name; // Set the location name
-                        resolve(); // Resolve the promise
-                        this.isLoadingLocation = false; 
-                    }).catch((error) => {
-                        console.error(error);
-                        this.locationName = 'Could not retrieve location name.';
-                        resolve(); // Resolve even on error to avoid blocking
-                    });
-                },
-                (error) => {
-                    console.error('Error getting location:', error);
-                    this.locationName = this.handleLocationError(error);
-                    this.isLoadingLocation = false; 
-                    resolve(); // Resolve even on error to avoid blocking
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 20000,
-                    maximumAge: 0,
-                }
-            );
-        } else {
-            this.locationName = 'Geolocation is not supported by this browser.';
-            console.error(this.locationName);
-            this.isLoadingLocation = false; 
-            resolve(); // Resolve if geolocation is not supported
-        }
-    });
-}
 
 
-//   async getSolvedCrimes(stationId: number): Promise<number> { // Change return type to Promise<number>
-//     this.isLoadingCrimes = true; // Set loading state to true
-//     this.loadingMessage = 'Loading solved crimes in nearby station...'; // Set loading message
-//     const url = `${environment.ipAddUrl}api/case/retrieve/local/${stationId}`;
-//     return this.http.get<any[]>(url).toPromise().then((cases) => {
-//         if (cases) {
-//             const count = cases.filter(c => c.status.trim() === 'Solved').length;
-//             console.log('Total Solved Crimes:', count);
-//             return count; // Return the count
+
+
+
+
+//   getCurrentLocation(): Promise<void> {
+//     this.isLoadingLocation = true; // Set loading state to true
+//     this.loadingMessage = 'Loading your current location...'; // Set loading message
+//     return new Promise((resolve, reject) => {
+//         if (navigator.geolocation) {
+//             navigator.geolocation.getCurrentPosition(
+//                 (position) => {
+//                     this.latitude = position.coords.latitude;
+//                     this.longitude = position.coords.longitude;
+//                     console.log('Latitude:', this.latitude);
+//                     console.log('Longitude:', this.longitude);
+//                     this.getLocationName(this.latitude, this.longitude).then((name) => {
+//                         this.locationName = name; // Set the location name
+//                         resolve(); // Resolve the promise
+//                         this.isLoadingLocation = false; 
+//                     }).catch((error) => {
+//                         console.error(error);
+//                         this.locationName = 'Could not retrieve location name.';
+//                         resolve(); // Resolve even on error to avoid blocking
+//                     });
+//                 },
+//                 (error) => {
+//                     console.error('Error getting location:', error);
+//                     this.locationName = this.handleLocationError(error);
+//                     this.isLoadingLocation = false; 
+//                     resolve(); // Resolve even on error to avoid blocking
+//                 },
+//                 {
+//                     enableHighAccuracy: true,
+//                     timeout: 20000,
+//                     maximumAge: 0,
+//                 }
+//             );
 //         } else {
-//             return 0; // Return 0 if no cases found
+//             this.locationName = 'Geolocation is not supported by this browser.';
+//             console.error(this.locationName);
+//             this.isLoadingLocation = false; 
+//             resolve(); // Resolve if geolocation is not supported
 //         }
-//     }).catch((error) => {
-//         console.error('Error fetching solved crimes:', error);
-//         return 0; // Return 0 on error
 //     });
 // }
 
+
+async getCurrentLocation() {
+  this.isLoadingLocation = true; // Set loading state to true
+  this.loadingMessage = 'Loading your current location...';
+    try {
+      const coordinates = await Geolocation.getCurrentPosition();
+      this.latitude = coordinates.coords.latitude;
+      this.longitude = coordinates.coords.longitude;
+      this.getLocationName(this.latitude, this.longitude).then((name) => {
+        this.locationName = name; // Set the location name
+        this.isLoadingLocation = false;
+      });
+      console.log('Current Location:', this.latitude, this.longitude);
+   
+    } catch (error) {
+      console.error('Error getting location:', error);
+    }
+  }
+
+
+
+
 async getSolvedCrimes(stationId: number): Promise<number> { 
+
+  let token = localStorage.getItem('user_token') ?? '';
+  const headers = new HttpHeaders({
+    'Authorization': token
+  });
   this.isLoadingCrimes = true; 
   this.loadingMessage = 'Loading solved crimes in nearby station...';
   
   const url = `${environment.ipAddUrl}api/case/retrieve/local/${stationId}`;
-  let token = localStorage.getItem('user_token');
+  // let token = localStorage.getItem('user_token');
 
-  // Ensure the token exists and prepend "Bearer " if it does
-  if (token) {
-      token = `${token}`;
-  }
+  // // Ensure the token exists and prepend "Bearer " if it does
+  // if (token) {
+  //     token = `${token}`;
+  // }
 
-  // Define headers
-  const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      ...(token && { 'Authorization': token }) 
+  // // Define headers
+  // const headers = new HttpHeaders({
+  //     'Content-Type': 'application/json',
+  //     ...(token && { 'Authorization': token }) 
       
-  });
-
+  // });
+  
   try {
-      const cases = await this.http.get<any[]>(url, { withCredentials: true }).toPromise();
+      const cases = await this.http.get<any[]>(url, { headers: headers }).toPromise();
       
       if (cases && cases.length > 0) {
           const count = cases.filter(c => c.status?.trim() === 'Solved').length;
@@ -269,6 +255,7 @@ async getSolvedCrimes(stationId: number): Promise<number> {
                 }
 
                 resolve(barangayName);
+                console.log('Location Name:', barangayName);
             },
             (error: any) => { // Add type annotation here
                 console.error('Error fetching location name:', error);
@@ -298,7 +285,9 @@ loadPoliceStations(): Promise<void> {
 async getSolvedCrimesForLocation() {
   this.isLoadingCrimes = true; // Set loading state to true
     this.loadingMessage = 'Loading nearby station name...';
+    
   const locationName = this.locationName; 
+  console.log('Solved crimes in location', locationName)
   const station = this.policeStations.find(station => 
     station.jurisdiction.includes(locationName),
 

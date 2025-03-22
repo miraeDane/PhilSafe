@@ -19,47 +19,47 @@ export class ReportService {
   constructor(private http: HttpClient) {}
 
   collectAllReports(): Observable<any> {
-    return this.http.get(`${this.reportUrl}api/report/retrieve/nationwide`, {withCredentials: true}).pipe(
+    return this.http.get(`${this.reportUrl}api/report/retrieve/nationwide`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   
   collectLocalReports(): Observable<any> {
-    return this.http.get(`${this.reportUrl}api/report/retrieve/local`, {withCredentials: true}).pipe(
+    return this.http.get(`${this.reportUrl}api/report/retrieve/local`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
  
-  getReports(citizenId: any): Observable<any> {
-    return this.http.get(`${this.reportUrl}api/report/retrieve/citizen/${citizenId}`, {withCredentials: true}).pipe(
+  getReports(): Observable<any> {
+    return this.http.get(`${this.reportUrl}api/report/retrieve/citizen`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   
   collectCategorizedReports(subcategoryId: number): Observable<any> {
-    return this.http.get(`${this.reportUrl}api/report/retrieve/category/${subcategoryId}`, {withCredentials: true}).pipe(
+    return this.http.get(`${this.reportUrl}api/report/retrieve/category/${subcategoryId}`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   collectCrimeReports(crimeId: number): Observable<any> {
-    return this.http.get(`${this.reportUrl}api/report/retrieve/case/${crimeId}`, {withCredentials: true}).pipe(
+    return this.http.get(`${this.reportUrl}api/report/retrieve/case/${crimeId}`, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   establishReport(reportDto: any): Observable<any> {
   
-    return this.http.post(`${this.reportUrl}api/report`, reportDto, {withCredentials: true}).pipe(
+    return this.http.post(`${this.reportUrl}api/report`, reportDto, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   updateReport(id: number, reportDto: any): Observable<any> {
-    return this.http.put(`${this.reportUrl}api/report/up/${id}`, reportDto, {withCredentials: true}).pipe(
+    return this.http.put(`${this.reportUrl}api/report/up/${id}`, reportDto, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }

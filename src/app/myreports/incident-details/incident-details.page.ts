@@ -86,7 +86,7 @@ export class IncidentDetailsPage implements OnInit, OnDestroy {
 
   loadCitizenReports() {
     if (this.citizenId) {
-      this.reportService.getReports(this.citizenId).subscribe(
+      this.reportService.getReports().subscribe(
         (reports) => {
           const reportId = this.route.snapshot.queryParamMap.get('reportId');
           if (reportId) {
