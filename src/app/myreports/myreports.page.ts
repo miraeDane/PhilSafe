@@ -1,17 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostBinding, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ReportService } from '../services/report.service';
 import { CitizenService } from '../services/citizen.service';
 import { Report } from '../models/report';
 import { Subscription } from 'rxjs';
 import { LoadingService } from '../services/loading.service';
+import { flipAnimation } from 'src/app/animations/flipinout';
 
 @Component({
   selector: 'app-myreports',
   templateUrl: './myreports.page.html',
   styleUrls: ['./myreports.page.scss'],
+  animations: [flipAnimation]
 })
 export class MyreportsPage implements OnInit {
+
+  @HostBinding('@flipAnimation') pageTransitions = true;
 
   incidents: any[] = []; 
   citizenId: string | null = null; 
@@ -20,6 +24,7 @@ export class MyreportsPage implements OnInit {
   status: string = 'Report Accepted';
   progress: any;
   statusLabel: string = '';
+  selectedReportId: number | null = null;
   private refreshSubscription: Subscription | undefined;
   
 

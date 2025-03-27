@@ -13,7 +13,7 @@ export class MediumService {
   private token = localStorage.getItem('user_token') ?? '';
 
   private auth = new HttpHeaders({
-      'Content-Type': 'application/json',
+
       'Authorization': this.token
     });
 
@@ -44,20 +44,37 @@ export class MediumService {
   }
 
   uploadItemWithDetails(formData: FormData, reportId: number): Observable<any> {
+
+    const header = new HttpHeaders({
+      'Content-Type': 'multipart/form-data; boundary=' + this.generateBoundary(),
+      'Authorization': this.token
+    })
+
     return this.http.post(`${this.mediaUrl}api/media/upload/item/citizen/${reportId}`, formData, {headers: this.auth}).pipe(
       catchError(this.handleError)
     );
   }
 
   uploadItems(formData: FormData, reportId: number): Observable<any> {
-    return this.http.post(`${this.mediaUrl}api/media/upload/items/citizen/${reportId}`, formData, {headers: this.auth}).pipe(
+
+    const header = new HttpHeaders({
+      'Content-Type': 'multipart/form-data; boundary=' + this.generateBoundary(),
+      'Authorization': this.token
+    })
+
+    return this.http.post(`${this.mediaUrl}api/media/upload/items/citizen/${reportId}`, formData, {headers: header}).pipe(
       catchError(this.handleError)
     );
   }
  
   uploadItemsWithDetails(data: any, reportId: number, crimeId: any): Observable<any> {
-    const formData = new FormData();
-    return this.http.post(`${this.mediaUrl}api/media/upload/items/${reportId}/${crimeId}`, data, {headers: this.auth}).pipe(
+    
+    const header = new HttpHeaders({
+      'Content-Type': 'multipart/form-data; boundary=' + this.generateBoundary(),
+      'Authorization': this.token
+    })
+    
+    return this.http.post(`${this.mediaUrl}api/media/upload/items/${reportId}/${crimeId}`, data, {headers: header}).pipe(
       catchError(this.handleError)
     );
   }
@@ -69,6 +86,9 @@ export class MediumService {
     );
   }
 
+  generateBoundary() {
+    return '----WebKitFormBoundary' + Math.random().toString(36).substring(2);
+  }
  
   private handleError(error: any): Observable<never> {
   let errorMessage = 'An unknown error occurred!';

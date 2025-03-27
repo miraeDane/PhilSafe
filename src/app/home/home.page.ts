@@ -56,6 +56,7 @@ export class HomePage implements OnInit, AfterViewInit {
   isLoadingLocation: boolean = true; 
   isLoadingCrimes: boolean = true; 
   loadingMessage: string = '';
+  
 
 
 
@@ -92,9 +93,7 @@ export class HomePage implements OnInit, AfterViewInit {
     this.loadUserProfile();
     this.cdr.detectChanges();
     this.getCurrentLocation().then(() => {
-      this.loadPoliceStations().then(() => {
-          this.getSolvedCrimesForLocation(); // Call this only after police stations are loaded
-      });
+      this.loadPoliceStations()
   });
   this.getTotalSolvedCrimes();
   
@@ -159,11 +158,9 @@ async getCurrentLocation() {
       const coordinates = await Geolocation.getCurrentPosition();
       this.latitude = coordinates.coords.latitude;
       this.longitude = coordinates.coords.longitude;
-      this.getLocationName(this.latitude, this.longitude).then((name) => {
-        this.locationName = name; // Set the location name
-        this.isLoadingLocation = false;
-      });
+      this.getLocationName(this.latitude, this.longitude)
       console.log('Current Location:', this.latitude, this.longitude);
+      
    
     } catch (error) {
       console.error('Error getting location:', error);
@@ -183,19 +180,7 @@ async getSolvedCrimes(stationId: number): Promise<number> {
   this.loadingMessage = 'Loading solved crimes in nearby station...';
   
   const url = `${environment.ipAddUrl}api/case/retrieve/local/${stationId}`;
-  // let token = localStorage.getItem('user_token');
-
-  // // Ensure the token exists and prepend "Bearer " if it does
-  // if (token) {
-  //     token = `${token}`;
-  // }
-
-  // // Define headers
-  // const headers = new HttpHeaders({
-  //     'Content-Type': 'application/json',
-  //     ...(token && { 'Authorization': token }) 
-      
-  // });
+ 
   
   try {
       const cases = await this.http.get<any[]>(url, { headers: headers }).toPromise();
@@ -217,8 +202,8 @@ async getSolvedCrimes(stationId: number): Promise<number> {
 
 
   async getTotalSolvedCrimes() {
-    this.isLoadingCrimes = true; // Set loading state to true
-    this.loadingMessage = 'Loading solved crimes in your region...'; // Set loading message
+    this.isLoadingCrimes = true; 
+    this.loadingMessage = 'Loading solved crimes in your region...'; 
     try {
         const totalSolvedCrimes = await Promise.all(
             Array.from({ length: 11 }, (_, i) => this.getSolvedCrimes(i + 1))
@@ -241,7 +226,7 @@ async getSolvedCrimes(stationId: number): Promise<number> {
   
   
 
-  getLocationName(latitude: number, longitude: number): Promise<string> {
+  async getLocationName(latitude: number, longitude: number): Promise<string> {
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${environment.mapboxKey}&types=locality,neighborhood&limit=1`;
 
     return new Promise((resolve, reject) => {
@@ -256,6 +241,9 @@ async getSolvedCrimes(stationId: number): Promise<number> {
 
                 resolve(barangayName);
                 console.log('Location Name:', barangayName);
+                this.locationName = barangayName;
+                this.getSolvedCrimesForLocation(barangayName); 
+                
             },
             (error: any) => { // Add type annotation here
                 console.error('Error fetching location name:', error);
@@ -282,32 +270,33 @@ loadPoliceStations(): Promise<void> {
   });
 
 }
-async getSolvedCrimesForLocation() {
+async getSolvedCrimesForLocation(locationName: string) {
   this.isLoadingCrimes = true; // Set loading state to true
-    this.loadingMessage = 'Loading nearby station name...';
-    
-  const locationName = this.locationName; 
+  this.loadingMessage = 'Loading nearby station name...';
+  
   console.log('Solved crimes in location', locationName)
-  const station = this.policeStations.find(station => 
-    station.jurisdiction.includes(locationName),
-
-    console.log('Location Name hereee', locationName)
+  const station = this.policeStations.find(station =>
+  station.jurisdiction.includes(locationName),
+  
+  console.log('Location Name hereee', locationName)
   );
   console.log("Station: ", station)
-
+  
   if (station) {
-    console.log(`Found station: ${station.stationName} with ID: ${station.stationId}`);
-    const totalSolvedCrimes = await this.getSolvedCrimes(station.stationId);
-    this.solvedCrimesPerStation = totalSolvedCrimes;
-    this.stationName = station.stationName;
-    console.log(`Total solved crimes for ${station.stationName}: ${totalSolvedCrimes}`);
+  console.log(`Found station: ${station.stationName} with ID: ${station.stationId}`);
+  const totalSolvedCrimes = await this.getSolvedCrimes(station.stationId);
+  this.solvedCrimesPerStation = totalSolvedCrimes;
+  this.stationName = station.stationName;
+  console.log(`Total solved crimes for ${station.stationName}: ${totalSolvedCrimes}`);
   } else {
-    console.log('No station found for the current location.');
-    this.stationName = 'Unknown Station';
+  console.log('No station found for the current location.');
+  this.stationName = 'Unknown Station';
+  }
+  
+  this.isLoadingCrimes = false;
   }
 
-  this.isLoadingCrimes = false;
-}
+
 
   handleLocationError(error: GeolocationPositionError): string {
     switch (error.code) {

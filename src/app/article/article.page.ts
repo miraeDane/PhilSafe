@@ -5,7 +5,7 @@ import { flipAnimation } from 'src/app/animations/flipinout';
 @Component({
   selector: 'app-article',
   templateUrl: './article.page.html',
-  styleUrls: ['./article.page.scss'],
+  styleUrls: ['./article.page.scss'], 
   animations: [flipAnimation]
 })
 export class ArticlePage implements OnInit {

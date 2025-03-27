@@ -13,7 +13,6 @@ export class CitizenService {
   private token = localStorage.getItem('user_token') ?? '';
 
   private auth = new HttpHeaders({
-      'Content-Type': 'application/json',
       'Authorization': this.token
     });
 
@@ -44,11 +43,21 @@ export class CitizenService {
   }
 
   updateCitizen(data: any, citizenId: number): Observable<any> {
-    const url = `${this.citizenUrl}api/citizen/submit/proof/${citizenId}`;
-    return this.http.put(url, data, {headers: this.auth}).pipe(
+
+    const header = new HttpHeaders({
+      'Content-Type': 'multipart/form-data; boundary=' + this.generateBoundary(),
+      'Authorization': this.token
+    })
+    const url = `${this.citizenUrl}api/citizen/submit/proof`;
+    return this.http.put(url, data, {headers: header}).pipe(
       catchError(this.handleError)
     );
   }
+
+  generateBoundary() {
+    return '----WebKitFormBoundary' + Math.random().toString(36).substring(2);
+  }
+
 
 
   certifyCitizen(personId: number, accountId: number): Observable<any> {

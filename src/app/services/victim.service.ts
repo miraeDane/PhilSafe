@@ -13,7 +13,7 @@ export class VictimService {
   private token = localStorage.getItem('user_token') ?? '';
 
   private auth = new HttpHeaders({
-      'Content-Type': 'application/json',
+     
       'Authorization': this.token
     });
 

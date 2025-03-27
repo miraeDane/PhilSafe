@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostBinding, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import SignaturePad from 'signature_pad';
@@ -37,6 +37,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Citizen } from '../models/citizen';
 import { NameGeneratorService } from '../services/name-generator.service';
+import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
+import { slideUpDown } from 'src/app/animations/verticalslide';
 
 
 
@@ -44,9 +46,10 @@ import { NameGeneratorService } from '../services/name-generator.service';
   selector: 'app-report',
   templateUrl: './report.page.html',
   styleUrls: ['./report.page.scss'],
+  animations: [slideUpDown]
 })
 export class ReportPage implements OnInit {
-
+  @HostBinding('@slideUpDown') pageTransitions = true;
   @ViewChild('datePicker', { static: false }) datePicker: any;
   @ViewChild('canvas', { static: true }) signaturePadElement: any;
 
@@ -181,6 +184,11 @@ export class ReportPage implements OnInit {
   }
 
 
+  multi_suspect: any[]  = [];
+  multi_victim: any[] = [];
+
+
+
   isSamePerson: boolean = false;
   height: string = '';
   weight: string = '';
@@ -283,6 +291,8 @@ export class ReportPage implements OnInit {
   suspectDateOfBirth: string = '';
   victimDateOfBirth: string = '';
   victim_isUnidentified: boolean = false;
+  visibleSuspectIndex: number = -1;
+
 
 
 
@@ -442,6 +452,9 @@ export class ReportPage implements OnInit {
     console.log(`Province: ${target.province}`);
     console.log(`Municipality: ${target.municipality}`);
     console.log(`Barangay: ${target.barangay}`);
+    console.log(`Street: ${target.province}`);
+    console.log(`Block: ${target.block}`);
+    console.log(`Zip Code: ${target.zipCode}`);
   }
   
   resetAddress(address: Location) {
@@ -581,9 +594,9 @@ export class ReportPage implements OnInit {
   /*****************************************PERSON**************************************************/
   /**************************************************************************************************/
 
-  addSuspect(newSuspect: SuspectCommon) {
-    this.suspects.push(newSuspect);
-  }
+  // addSuspect(newSuspect: SuspectCommon) {
+  //   this.suspects.push(newSuspect);
+  // }
 
   onSuspectIdentificationChange() {
     alert('Please select Gender to generate names');
@@ -596,9 +609,9 @@ export class ReportPage implements OnInit {
   }
   
   onSusGenderChange(gender: string) {
-    if (this.suspect.isUnidentified ) {
+  
       this.generateSusRandomName(gender);
-    }
+    
   }
 
   onVicGenderChange(gender: string) {
@@ -641,21 +654,61 @@ export class ReportPage implements OnInit {
   }
 
 
-  async generateSusRandomName(gender: string) {
-    try {
-      const name = await this.nameGeneratorService.generateRandomName(gender);
-      const [firstName, middleName, lastName] = name.split(' ');
-      this.suspect.firstname = firstName;
-      this.suspect.middlename = middleName;
-      this.suspect.lastname = lastName;
+  // async generateSusRandomName(gender: string) {
+  //   try {
+  //     const name = await this.nameGeneratorService.generateRandomName(gender);
+  //     const [firstName, middleName, lastName] = name.split(' ');
+  //     this.suspect.firstname = firstName;
+  //     this.suspect.middlename = middleName;
+  //     this.suspect.lastname = lastName;
 
-      console.log('Generated First Name', this.suspect.firstname)
-      console.log('Generated Middle Name', this.suspect.middlename)
-      console.log('Generated Last Name', this.suspect.lastname)
-    } catch (error) {
-      console.error('Error generating name:', error);
+  //     console.log('Generated First Name', this.suspect.firstname)
+  //     console.log('Generated Middle Name', this.suspect.middlename)
+  //     console.log('Generated Last Name', this.suspect.lastname)
+  //   } catch (error) {
+  //     console.error('Error generating name:', error);
+  //   }
+  // }
+
+  
+async generateSusRandomName(gender: string) {
+  try {
+    // Use visibleSuspectIndex to find the current suspect
+    if (this.visibleSuspectIndex !== -1 && this.suspects[this.visibleSuspectIndex]) {
+      const currentSuspect = this.suspects[this.visibleSuspectIndex];
+      
+      const name = await this.nameGeneratorService.generateRandomName(gender);
+      const nameParts = name.split(' ');
+      
+      // Robust name part handling
+      if (nameParts.length === 3) {
+        currentSuspect.firstname = nameParts[0];
+        currentSuspect.middlename = nameParts[1];
+        currentSuspect.lastname = nameParts[2];
+      } else if (nameParts.length === 2) {
+        currentSuspect.firstname = nameParts[0];
+        currentSuspect.middlename = '';
+        currentSuspect.lastname = nameParts[1];
+      } else if (nameParts.length === 1) {
+        currentSuspect.firstname = nameParts[0];
+        currentSuspect.middlename = '';
+        currentSuspect.lastname = '';
+      } else {
+        console.error('Unexpected name format');
+        return;
+      }
+
+      console.log('Generated First Name', currentSuspect.firstname);
+      console.log('Generated Middle Name', currentSuspect.middlename);
+      console.log('Generated Last Name', currentSuspect.lastname);
+    } else {
+      console.error('No suspect currently selected');
     }
+  } catch (error) {
+    console.error('Error generating name:', error);
   }
+}
+
 
 
   async generateVicRandomName(gender: string) {
@@ -675,19 +728,19 @@ export class ReportPage implements OnInit {
   }
 
 
-  async navigateToAddSuspect() {
-    const modal = await this.modalController.create({
-      component: AddSuspectPage, 
-    });
+  // async navigateToAddSuspect() {
+  //   const modal = await this.modalController.create({
+  //     component: AddSuspectPage, 
+  //   });
 
-    modal.onDidDismiss().then((result) => {
-      if (result.data) {
-        this.addSuspect(result.data); 
-      }
-    });
+  //   modal.onDidDismiss().then((result) => {
+  //     if (result.data) {
+  //       this.addSuspect(result.data); 
+  //     }
+  //   });
 
-    return await modal.present();
-  }
+  //   return await modal.present();
+  // }
 
   loadNationalities() {
     this.nationalityService.getNationalities().subscribe(
@@ -1028,11 +1081,21 @@ extractZipCode(locationId: number): number {
     this.dateOfBirth = event.detail.value;
   }
 
+
+  onDateSelected(event: any) {
+    const selectedDate = event.detail.value;
+    console.log('Selected Date:', selectedDate);
+  
+    // Optionally format or process the date here
+    this.suspect.birthdate = selectedDate;
+  }
+
   updateBirthdate(entity: 'witness' | 'suspect' | 'victim') {
     if (entity === 'witness') {
       this.witness.birthdate = this.witnessDateOfBirth;
     } else if (entity === 'suspect') {
       this.suspect.birthdate = this.suspectDateOfBirth;
+      console.log('Suspect Birthday', this.suspect.birthdate)
     } else if (entity === 'victim') {
       this.victim.birthdate = this.victimDateOfBirth;
     }
@@ -1380,7 +1443,96 @@ goBack() {
       }
     });
   }
+
+
+
+
+
+  addSuspect() {
+
+    this.suspects.push({
+      firstname: '',
+      middlename: '',
+      lastname: '',
+      sex: '',
+      birthdate: '',
+      civilStatus: '',
+      bioStatus: true,
+      homeAddress: {
+        locationId: 0,
+        province: '',
+        municipality: '',
+        street: '',
+        region: '',
+        barangay: '',
+        zipCode: 0
+      },
+      workAddress: {
+        locationId: 0,
+        province: '',
+        municipality: '',
+        street: '',
+        region: '',
+        barangay: '',
+        zipCode: 0
+      },
+      description: {
+        height: 0,
+        weight: 0,
+        alcohol: false,
+        drug: false,
+        eyeColor: '',
+        hairColor: '',
+        distinguishingMark: '',
+        ethnicity: '',
+        descriptionId: 0,
+      },
+      suspect: {
+        suspectId: 0,
+        isCaught: false,
+      },
+      isUnidentified: false
+    });
+
+    this.visibleSuspectIndex = this.suspects.length - 1;
+  }
+
+  removeSuspect(index: number) {
+    this.suspects.splice(index, 1);
+  }
+
+  showFirstSuspect() {
+    this.visibleSuspectIndex = 0;
+  }
+
+  showSuspect(index: number) {
+ 
+    this.visibleSuspectIndex = index;
+  }
+
+
+
+
+  async submitAllSuspects(reportId: number) {
+    try {
   
+      for (let i = 0; i < this.suspects.length; i++) {
+        const suspect = this.suspects[i];
+        console.log(`Submitting suspect ${i + 1}/${this.suspects.length}:`, suspect);
+        this.suspect = suspect;
+        await this.saveSuspect(reportId);
+      }
+
+      console.log('All suspects submitted successfully!');
+    } catch (error) {
+      console.error('Error submitting suspects:', error);
+    }
+  }
+
+  
+
+
+
 
    async saveSuspect(reportId: number){
 
@@ -1399,230 +1551,92 @@ goBack() {
   };
 
  
-  if (this.suspect.isUnidentified) {
-    const descriptionData = {
-      descriptionId: 0,
-      ethnicity: this.suspect.description.ethnicity,
-      height: this.suspect.description.height,
-      weight: this.suspect.description.weight,
-      eyeColor: this.suspect.description.eyeColor,
-      hairColor: this.suspect.description.hairColor,
-      drug: this.suspect.description.drug,
-      alcohol: this.suspect.description.alcohol,
-      distinguishingMark: this.suspect.description.distinguishingMark,
-      personId: null,
-     
-    };
-  
 
-    if (!this.validateObject(this.suspect)) {
-      console.error('Suspect validation failed.');
-      return;
-    }
-    this.descriptionService.establishDescription(descriptionData).pipe(
-      switchMap((descriptionResponse: any) => {
-        console.log('Description saved successfully for unidentified person:', descriptionResponse);
-  
-        const suspectData: SuspectCommon = {
-          ...this.suspect
-        };
-  
-        return this.suspectService.establishSuspect(suspectData);
-      })
-    ).subscribe(
-      (suspectResponse: any) => {
-        console.log('Suspect saved successfully', suspectResponse);
-      },
-      (error) => {
-        console.error('Failed to save suspect for unidentified person:', error);
-      }
-    );
-  } else {
-  
-    this.personService.createPerson(suspectPerson).pipe(
-      switchMap((personResponse: any) => {
-        console.log('Suspect Person saved successfully', personResponse);
-        const personId = personResponse.id;
-  
-        const hasHomeAddress = this.suspect.homeAddress && this.suspect.homeAddress.zipCode;
-        const hasWorkAddress = this.suspect.workAddress && this.suspect.workAddress.zipCode;
-  
-        const homeLocation$ = hasHomeAddress
-          ? this.locationService.createOrRetrieveLocation(this.suspect.homeAddress, this.suspect.homeAddress.zipCode).pipe(
-              tap((homeLocationResponse) => {
-                console.log('Suspect Home location saved successfully:', homeLocationResponse);
-              }),
-              catchError((error) => {
-                console.error('Failed to save suspect home location:', error);
-                return EMPTY;
-              })
-            )
-          : of(null);
-  
-        const workLocation$ = hasWorkAddress
-          ? this.locationService.createOrRetrieveLocation(this.suspect.workAddress, this.suspect.workAddress.zipCode).pipe(
-              tap((workLocationResponse) => {
-                console.log('Suspect Work location saved successfully:', workLocationResponse);
-              }),
-              catchError((error) => {
-                console.error('Failed to save suspect work location:', error);
-                return EMPTY;
-              })
-            )
-          : of(null);
-  
-        return homeLocation$.pipe(
-          switchMap(() => workLocation$),
-          switchMap(() => {
-            const descriptionData = {
-              descriptionId: 0,
-              ethnicity: this.suspect.description.ethnicity,
-              height: this.suspect.description.height,
-              weight: this.suspect.description.weight,
-              eyeColor: this.suspect.description.eyeColor,
-              hairColor: this.suspect.description.hairColor,
-              drug: this.suspect.description?.drug,
-              alcohol: this.suspect.description?.alcohol,
-              distinguishingMark: this.suspect.description.distinguishingMark,
-              personId: personId,  
-            
-            };
-  
-            return this.descriptionService.establishDescription(descriptionData).pipe(
-              switchMap((descriptionResponse: any) => {
-                console.log('Description saved successfully:', descriptionResponse);
-  
-                
-                const suspect: Suspect = {
-                  suspectId: this.suspect.suspect.suspectId,
-                  personId: personId,
-                  isCaught: this.suspect.suspect.isCaught,
-                  
-                };
-  
-                return this.suspectService.establishCriminal(reportId, suspect);
-              })
-            );
-          })
-        );
-      })
-    ).subscribe(
-      (suspectResponse: any) => {
-        console.log('Suspect saved successfully', suspectResponse);
-      },
-      (error) => {
-        console.error('Failed to save suspect:', error);
-      }
-    );
-  }
-
-  }
-
-  // async saveVictim(reportId: number) {
-  //   const victimPerson = {
-  //     personId: this.victim.personId,
-  //     firstname: this.victim.firstname,
-  //     middlename: this.victim.middlename,
-  //     lastname: this.victim.lastname,
-  //     sex: this.genderToLetter(this.victim.sex),
-  //     birthdate: this.victim.birthdate,
-  //     civilStatus: this.victim.civilStatus,
-  //     bioStatus: this.victim.bioStatus,
-  //   };
-  
-  //   if (!this.validateObject(this.victim)) {
-  //     console.error('Victim validation failed.');
-  //     return;
-  //   }
-
-  //   if(this.reporterType === 'witness'){
-
-  //     this.personService.createPerson(victimPerson).pipe(
-  //       switchMap((personResponse: any) => {
-  //         console.log('Victim Person saved successfully', personResponse);
-  //         const personId = personResponse.id || this.victim.personId; 
-    
-  //         // Add the personId to victim's description
-  //         // this.victim.description.personId = personId;
-    
-  //         const hasHomeAddress = this.victim.homeAddress && this.victim.homeAddress.zipCode;
-  //         const hasWorkAddress = this.victim.workAddress && this.victim.workAddress.zipCode;
-    
-  //         const homeLocation$ = hasHomeAddress
-  //           ? this.locationService.createOrRetrieveLocation(this.victim.homeAddress, this.victim.homeAddress.zipCode).pipe(
-  //               tap((homeLocationResponse) => {
-  //                 console.log('Victim Home location saved successfully:', homeLocationResponse);
-  //               }),
-  //               catchError((error) => {
-  //                 console.error('Failed to save victim home location:', error);
-  //                 return EMPTY;
-  //               })
-  //             )
-  //           : of(null);
-    
-  //         const workLocation$ = hasWorkAddress
-  //           ? this.locationService.createOrRetrieveLocation(this.victim.workAddress, this.victim.workAddress.zipCode).pipe(
-  //               tap((workLocationResponse) => {
-  //                 console.log('Victim Work location saved successfully:', workLocationResponse);
-  //               }),
-  //               catchError((error) => {
-  //                 console.error('Failed to save victim work location:', error);
-  //                 return EMPTY;
-  //               })
-  //             )
-  //           : of(null);
-    
-  //         return forkJoin({
-  //           homeLocation: homeLocation$,
-  //           workLocation: workLocation$
-  //         }).pipe(
-  //           switchMap((results) => {
-  //             console.log('Additional data saved successfully:', results);
-    
-  //             const victim: Victim = {
-  //               victimId: this.victim.victim.victimId,
-  //               personId: personId,
-  //               vicMethodId: this.selectedmodus.vicmethod_id, 
-  //               vicMethod: {
-  //                 vicMethodId: this.selectedmodus.vicmethod_id, 
-  //                 methodName: this.selectedmodus.method_name
-  //               }
-  //             };
-    
-  //             return this.victimService.establishVictim(victim, reportId).pipe(
-  //               switchMap((victimResponse: any) => {
-  //                 console.log('Victim saved successfully', victimResponse);
-    
-  //                 // After saving victim, save the description
-  //                 return this.descriptionService.establishDescription(this.victim.description).pipe(
-  //                   tap((descriptionResponse) => {
-  //                     console.log('Victim Description saved successfully', descriptionResponse);
-  //                   }),
-  //                   catchError((error) => {
-  //                     console.error('Failed to save victim description:', error);
-  //                     return EMPTY;
-  //                   })
-  //                 );
-  //               })
-  //             );
-  //           })
-  //         );
-  //       })
-  //     ).subscribe({
-  //       next: () => {
-  //         console.log('All data saved successfully');
-  //       },
-  //       error: (error) => {
-  //         console.error('Error occurred during save process:', error);
-  //       }
-  //     });
-
-  //   } else if (this.reporterType === 'victim') {
+  this.personService.createPerson(suspectPerson).pipe(
+    switchMap((personResponse: any) => {
+      console.log('Suspect Person saved successfully', personResponse);
+      const personId = personResponse.id;
       
-  //   }
-  
-   
-  // }
+      console.log('Suspect Person ID:', personId)
+      const hasHomeAddress = this.suspect.homeAddress && this.suspect.homeAddress.zipCode;
+      const hasWorkAddress = this.suspect.workAddress && this.suspect.workAddress.zipCode;
+
+      const homeLocation$ = hasHomeAddress
+        ? this.locationService.createOrRetrieveLocation(this.suspect.homeAddress, this.suspect.homeAddress.zipCode).pipe(
+            tap((homeLocationResponse) => {
+              console.log('Suspect Home location saved successfully:', homeLocationResponse);
+            }),
+            catchError((error) => {
+              console.error('Failed to save suspect home location:', error);
+              return EMPTY;
+            })
+          )
+        : of(null);
+
+      const workLocation$ = hasWorkAddress
+        ? this.locationService.createOrRetrieveLocation(this.suspect.workAddress, this.suspect.workAddress.zipCode).pipe(
+            tap((workLocationResponse) => {
+              console.log('Suspect Work location saved successfully:', workLocationResponse);
+            }),
+            catchError((error) => {
+              console.error('Failed to save suspect work location:', error);
+              return EMPTY;
+            })
+          )
+        : of(null);
+
+      return homeLocation$.pipe(
+        switchMap(() => workLocation$),
+        switchMap(() => {
+          const descriptionData = {
+            descriptionId: 0,
+            ethnicity: this.suspect.description.ethnicity,
+            height: this.suspect.description.height,
+            weight: this.suspect.description.weight,
+            eyeColor: this.suspect.description.eyeColor,
+            hairColor: this.suspect.description.hairColor,
+            drug: this.suspect.description?.drug,
+            alcohol: this.suspect.description?.alcohol,
+            distinguishingMark: this.suspect.description.distinguishingMark,
+            personId: personId,  
+          
+          };
+
+          return this.descriptionService.establishDescription(descriptionData).pipe(
+            switchMap((descriptionResponse: any) => {
+              console.log('Description saved successfully:', descriptionResponse);
+
+              
+              const suspect: Suspect = {
+                suspectId: this.suspect.suspect.suspectId,
+                personId: personId,
+                isCaught: this.suspect.suspect.isCaught,
+                
+              };
+
+              return this.suspectService.establishCriminal(reportId, suspect);
+            })
+          );
+        })
+      );
+    })
+  ).subscribe(
+    (suspectResponse: any) => {
+      console.log('Suspect saved successfully', suspectResponse);
+    },
+    (error) => {
+      console.error('Failed to save suspect:', error);
+    }
+  );
+
+  }
+
+
+
+
+
+
+
 
   async saveVictim(reportId: number) {
     const victimPerson = {
@@ -1636,10 +1650,10 @@ goBack() {
       bioStatus: this.victim.bioStatus,
     };
   
-    if (!this.validateObject(this.victim)) {
-      console.error('Victim validation failed.');
-      return;
-    }
+    // if (!this.validateObject(this.victim)) {
+    //   console.error('Victim validation failed.');
+    //   return;
+    // }
   
     if (this.reporterType === 'witness') {
       this.personService.createPerson(victimPerson).pipe(
@@ -1819,9 +1833,46 @@ goBack() {
   
   
 
-  async prepareFormData(formData: FormData){
+  // async prepareFormData(formData: FormData){
 
-    // const formData = new FormData();
+  //   // const formData = new FormData();
+  //   formData.append('reportId', this.reportData.reportId.toString());
+  //   formData.append('reportBody', this.reportData.reportBody);
+  //   formData.append('citizenId', this.reportData.citizenId.toString());
+  //   formData.append('stationId', this.reportData.stationId.toString());
+  //   formData.append('incidentDate', this.incidentDate);
+  //   formData.append('blotterNum', this.reportData.blotterNum);
+  //   formData.append('hasAccount', this.reportData.hasAccount.toString());
+  //   formData.append(
+  //       'reportSubCategoryId',
+  //       this.reportData.reportSubCategory?.reportCategoryId.toString() || ''
+  //   );
+
+  //   if (this.reportData.locationId !== undefined) {
+  //     formData.append('locationId', this.reportData.locationId.toString());
+  // } else {
+  //     console.error('Error: locationId is undefined.');
+  //     throw new Error('locationId is required but is undefined.');
+  // }
+
+  // if (this.reportData.eSignature instanceof Uint8Array || Array.isArray(this.reportData.eSignature)) {
+  //   try {
+  //     const blob = new Blob([new Uint8Array(this.reportData.eSignature)], { type: `image/${this.reportData.signatureExt}` });
+  //     formData.append('ESignature', blob, `signature.${this.reportData.signatureExt}`);
+  //     console.log(`ESignature added successfully as a blob with extension: ${this.reportData.signatureExt}`);
+  //   } catch (error) {
+  //     console.error('Failed to append ESignature to the form data:', error);
+  //   }
+  // } else {
+  //   console.error('Invalid eSignature format. It must be an instance of Uint8Array or an array.');
+  // }
+  
+
+  //   return formData;
+
+  // }
+
+  async prepareFormData(formData: FormData) {
     formData.append('reportId', this.reportData.reportId.toString());
     formData.append('reportBody', this.reportData.reportBody);
     formData.append('citizenId', this.reportData.citizenId.toString());
@@ -1830,32 +1881,47 @@ goBack() {
     formData.append('blotterNum', this.reportData.blotterNum);
     formData.append('hasAccount', this.reportData.hasAccount.toString());
     formData.append(
-        'reportSubCategoryId',
-        this.reportData.reportSubCategory?.reportCategoryId.toString() || ''
+      'reportSubCategoryId',
+      this.reportData.reportSubCategory?.reportCategoryId.toString() || ''
     );
-
+  
     if (this.reportData.locationId !== undefined) {
       formData.append('locationId', this.reportData.locationId.toString());
-  } else {
+    } else {
       console.error('Error: locationId is undefined.');
       throw new Error('locationId is required but is undefined.');
-  }
-
-  if (this.reportData.eSignature instanceof Uint8Array || Array.isArray(this.reportData.eSignature)) {
-    try {
-      const blob = new Blob([new Uint8Array(this.reportData.eSignature)], { type: `image/${this.reportData.signatureExt}` });
-      formData.append('ESignature', blob, `signature.${this.reportData.signatureExt}`);
-      console.log(`ESignature added successfully as a blob with extension: ${this.reportData.signatureExt}`);
-    } catch (error) {
-      console.error('Failed to append ESignature to the form data:', error);
     }
-  } else {
-    console.error('Invalid eSignature format. It must be an instance of Uint8Array or an array.');
-  }
   
-
+    // Handle ESignature
+    if (
+      this.reportData.eSignature instanceof Uint8Array ||
+      Array.isArray(this.reportData.eSignature)
+    ) {
+      try {
+        const blob = new Blob([new Uint8Array(this.reportData.eSignature)], {
+          type: `image/${this.reportData.signatureExt}`,
+        });
+        formData.append('ESignature', blob, `signature.${this.reportData.signatureExt}`);
+        console.log(`ESignature added successfully as a blob with extension: ${this.reportData.signatureExt}`);
+      } catch (error) {
+        console.error('Failed to append ESignature to the form data:', error);
+      }
+    } else {
+      console.error('Invalid eSignature format. It must be an instance of Uint8Array or an array.');
+    }
+  
+    // Handle Proof (if it's a content:// URI)
+    if (this.idData.file && typeof this.idData.file === 'string') {
+      try {
+        const blob = await this.resolveContentUri(this.idData.file);
+        formData.append('Proof', blob, 'proof.png');
+      } catch (error) {
+        console.error('Error resolving file:', error);
+        throw error;
+      }
+    }
+  
     return formData;
-
   }
 
   async saveProof() {
@@ -1884,6 +1950,116 @@ goBack() {
       }
     );
   }
+
+ 
+  // async saveProof() {
+  //   const citizenID = this.reportData.citizenId;
+  
+  //   // Ensure `Proof` is a valid file
+  //   if (!this.idData.file || !(this.idData.file instanceof File)) {
+  //     console.error('No valid file object found in idData.file');
+  //     return;
+  //   }
+  
+  //   try {
+  //     // Convert File to Base64
+  //     const base64Data = await this.convertFileToBase64(this.idData.file);
+  //     if (!base64Data) {
+  //       console.error('Failed to convert file to Base64');
+  //       return;
+  //     }
+  
+  //     // Define file path
+  //     const filePath = `proofs/${this.idData.filename}`;
+  
+  //     // Save file using Capacitor Filesystem
+  //     await Filesystem.writeFile({
+  //       path: filePath,
+  //       data: base64Data,
+  //       directory: Directory.Data, // Stored in app's internal storage
+  //     });
+  
+  //     console.log('File saved locally:', filePath);
+  
+  //     // Retrieve the file as a Blob
+  //     const proofBlob = await this.convertBase64ToBlob(base64Data, this.idData.file.type);
+  
+  //     // Prepare FormData
+  //     const formDataMedium = new FormData();
+  //     formDataMedium.append('CitizenId', citizenID.toString());
+  //     formDataMedium.append('Proof', proofBlob, this.idData.filename);
+  //     formDataMedium.append('Description', this.idData.description || '');
+  //     formDataMedium.append('ProofExt', this.idData.extension || '');
+  
+  //     // Send file to backend
+  //     this.citizenService.updateCitizen(formDataMedium, citizenID).subscribe(
+  //       (mediaResponse) => {
+  //         console.log('Media uploaded successfully:', mediaResponse);
+  //       },
+  //       (mediaError) => {
+  //         console.error('Error uploading media:', mediaError);
+  //       }
+  //     );
+  
+  //   } catch (error) {
+  //     console.error('Error saving and uploading proof:', error);
+  //   }
+  // }
+  
+  // Convert File to Base64
+  async convertFileToBase64(file: File): Promise<string | null> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          resolve(reader.result.split(',')[1]); // Remove the "data:image/png;base64," part
+        } else {
+          resolve(null);
+
+        }
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  }
+  
+  // Convert Base64 to Blob
+  convertBase64ToBlob(base64: string, mimeType: string): Blob {
+    const binaryData = atob(base64);
+    const arrayBuffer = new ArrayBuffer(binaryData.length);
+    const uint8Array = new Uint8Array(arrayBuffer);
+  
+    for (let i = 0; i < binaryData.length; i++) {
+      uint8Array[i] = binaryData.charCodeAt(i);
+    }
+  
+    return new Blob([uint8Array], { type: mimeType });
+  }
+
+
+  async resolveContentUri(uri: string): Promise<Blob> {
+    try {
+      // Read the file from the URI
+      const fileData = await Filesystem.readFile({
+        path: uri,
+        directory: Directory.External, 
+      });
+  
+      // Convert the base64 data into a Blob
+      const binaryData = atob(fileData.data as string); // Decode base64
+      const arrayBuffer = new ArrayBuffer(binaryData.length);
+      const uint8Array = new Uint8Array(arrayBuffer);
+  
+      for (let i = 0; i < binaryData.length; i++) {
+        uint8Array[i] = binaryData.charCodeAt(i);
+      }
+  
+      return new Blob([arrayBuffer], { type: 'image/png' }); // Adjust MIME type as needed
+    } catch (error) {
+      console.error('Failed to resolve content URI:', error);
+      throw error;
+    }
+  }
   
 
 
@@ -1897,14 +2073,14 @@ goBack() {
     );
     this.reportData.stationId = 7;
   
-  //   if (station) {
-  //     console.log(`Found station: ${station.stationName} with ID: ${station.stationId}`);
-  //     //this.reportData.stationId = station.stationId;
-  //     this.reportData.stationId = 7
-  //   } else {
-  //     console.error('No station found for the current location.');
-  //     return;
-  //   }   
+    if (station) {
+      console.log(`Found station: ${station.stationName} with ID: ${station.stationId}`);
+      //this.reportData.stationId = station.stationId;
+      this.reportData.stationId = 7
+    } else {
+      console.error('No station found for the current location.');
+      return;
+    }   
    }
 
   async confirmMessage(){
@@ -2024,7 +2200,7 @@ goBack() {
         return;
       }
   
-      await this.saveSuspect(reportId);
+      await this.submitAllSuspects(reportId);
       await this.saveReporter(reportId);
       await this.saveVictim(reportId); 
   

@@ -12,7 +12,7 @@ export class ReportService {
   private token = localStorage.getItem('user_token') ?? '';
 
   private auth = new HttpHeaders({
-      'Content-Type': 'application/json',
+      
       'Authorization': this.token
     });
 
@@ -52,8 +52,11 @@ export class ReportService {
   }
 
   establishReport(reportDto: any): Observable<any> {
-  
-    return this.http.post(`${this.reportUrl}api/report`, reportDto, {headers: this.auth}).pipe(
+    const header = new HttpHeaders({
+      'Content-Type': 'multipart/form-data; boundary=' + this.generateBoundary(),
+      'Authorization': this.token
+    })
+    return this.http.post(`${this.reportUrl}api/report`, reportDto, {headers: header}).pipe(
       catchError(this.handleError)
     );
   }
@@ -64,9 +67,15 @@ export class ReportService {
     );
   }
 
+  generateBoundary() {
+    return '----WebKitFormBoundary' + Math.random().toString(36).substring(2);
+  }
+
  
   private handleError(error: any): Observable<never> {
     console.error('An error occurred', error);
     return throwError(error.message || error);
   }
 }
+
+
