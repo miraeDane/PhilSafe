@@ -1,5 +1,5 @@
 {
-    "male": [
+    "Male": [
       "Aaron", "Adrian", "Aldrin", "Alfonso", "Alfred", "Alvin", "Andrew", "Anthony", "Arnold", "Benjamin",
       "Bernard", "Calvin", "Carl", "Carlos", "Cedric", "Charles", "Christian", "Christopher", "Daniel", "David",
       "Dennis", "Dominic", "Edgar", "Edward", "Elijah", "Emmanuel", "Eric", "Ernest", "Ethan", "Felix",
@@ -10,7 +10,7 @@
       "Peter", "Philip", "Rafael", "Raymond", "Richard", "Robert", "Rodney", "Roger", "Ronald", "Samuel",
       "Sebastian", "Simon", "Stephen", "Terrence", "Theodore", "Timothy", "Vincent", "Victor", "William", "Zachary"
     ],
-    "female": [
+    "Female": [
       "Abigail", "Adriana", "Agnes", "Aimee", "Alana", "Alexa", "Alice", "Alyssa", "Amanda", "Amelia",
       "Angela", "Angelica", "Anna", "Annabelle", "Ariana", "Ashley", "Aubrey", "Bea", "Bella", "Bernadette",
       "Bianca", "Camille", "Carla", "Carmen", "Catherine", "Cecilia", "Celeste", "Charlene", "Charlotte", "Christine",

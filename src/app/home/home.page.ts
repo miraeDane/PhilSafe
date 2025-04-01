@@ -226,31 +226,52 @@ async getSolvedCrimes(stationId: number): Promise<number> {
   
   
 
-  async getLocationName(latitude: number, longitude: number): Promise<string> {
-    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${environment.mapboxKey}&types=locality,neighborhood&limit=1`;
+//   async getLocationName(latitude: number, longitude: number): Promise<string> {
+//     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${environment.mapboxKey}&types=locality,neighborhood&limit=1`;
 
-    return new Promise((resolve, reject) => {
-        this.http.get<any>(url).subscribe(
-            (response: { features: { text: string }[] }) => { // Add type annotation here
-                const features = response?.features || [];
-                let barangayName = 'Unknown location';
+//     return new Promise((resolve, reject) => {
+//         this.http.get<any>(url).subscribe(
+//             (response: { features: { text: string }[] }) => { // Add type annotation here
+//                 const features = response?.features || [];
+//                 let barangayName = 'Unknown location';
 
-                if (features.length > 0) {
-                    barangayName = features[0].text || 'Unknown location';
-                }
+//                 if (features.length > 0) {
+//                     barangayName = features[0].text || 'Unknown location';
+//                 }
 
-                resolve(barangayName);
-                console.log('Location Name:', barangayName);
-                this.locationName = barangayName;
-                this.getSolvedCrimesForLocation(barangayName); 
-                
-            },
-            (error: any) => { // Add type annotation here
-                console.error('Error fetching location name:', error);
-                reject('Unknown location');
-            }
-        );
-    });
+//                 resolve(barangayName);
+//                 console.log('Location Name:', barangayName);
+//                 this.locationName = barangayName;
+//                 this.getSolvedCrimesForLocation(barangayName); 
+           
+//             },
+//             (error: any) => { // Add type annotation here
+//                 console.error('Error fetching location name:', error);
+//                 reject('Unknown location');
+//             }
+//         );
+//     });
+// }
+
+async getLocationName(latitude: number, longitude: number): Promise<string> {
+  const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${environment.mapboxKey}&types=locality,neighborhood&limit=1`;
+
+  try {
+    const response: { features: { text: string }[] } = await this.http.get<any>(url).toPromise();
+    const features = response?.features || [];
+    let barangayName = features.length > 0 ? features[0].text || 'Unknown location' : 'Unknown location';
+
+    console.log('Location Name:', barangayName);
+    this.locationName = barangayName;
+
+    // Await the getSolvedCrimesForLocation method
+    await this.getSolvedCrimesForLocation(barangayName);
+
+    return barangayName;
+  } catch (error) {
+    console.error('Error fetching location name:', error);
+    return 'Unknown location';
+  }
 }
 
 
@@ -270,7 +291,7 @@ loadPoliceStations(): Promise<void> {
   });
 
 }
-async getSolvedCrimesForLocation(locationName: string) {
+async getSolvedCrimesForLocation(locationName: string): Promise<void> {
   this.isLoadingCrimes = true; // Set loading state to true
   this.loadingMessage = 'Loading nearby station name...';
   

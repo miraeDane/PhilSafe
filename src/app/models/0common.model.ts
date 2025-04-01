@@ -28,7 +28,7 @@ export interface BasePerson {
   
   export interface Description {
     descriptionId: number;
-    ethnicity: string;
+    ethnicity?: string;
     height?: number;
     weight?: number;
     hairColor?: string;

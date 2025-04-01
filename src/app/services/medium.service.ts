@@ -70,7 +70,7 @@ export class MediumService {
   uploadItemsWithDetails(data: any, reportId: number, crimeId: any): Observable<any> {
     
     const header = new HttpHeaders({
-      'Content-Type': 'multipart/form-data; boundary=' + this.generateBoundary(),
+      // 'Content-Type': 'multipart/form-data; boundary=' + this.generateBoundary(),
       'Authorization': this.token
     })
     

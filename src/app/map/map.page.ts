@@ -623,7 +623,7 @@ async generateCrimeProfile() {
   const mostFrequentCrimeCount = this.topCounts[0];
 
   // Create the profiling statement
-  this.crimeProfileStatement = `${highestCrimeLocation} has the highest crime rate, with the peak occurring at ${mostFrequentCrimeHour}. This hour sees ${mostFrequentCrimeCount} incidents of crime.`;
+  this.crimeProfileStatement = `${highestCrimeLocation} has the highest crime rate. Crimes' peak time occurring at ${mostFrequentCrimeHour}. This hour sees ${mostFrequentCrimeCount} incidents of crime.`;
 
   // Log or display the result in the UI
   console.log(this.crimeProfileStatement);

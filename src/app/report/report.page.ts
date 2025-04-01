@@ -79,7 +79,7 @@ export class ReportPage implements OnInit {
     //contactDetails: { email: '',  mobileNum: '' },
     homeAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', zipCode: 0 },
     workAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '',block:'', zipCode: 0 },
-    description: { descriptionId: 0, ethnicity: '', height: 0, weight: 0, eyeColor: '', hairColor: '', drug: false, alcohol: false, distinguishingMark:'', personId: 0
+    description: { descriptionId: 0, ethnicity: '', height: 0, weight: 0, eyeColor: '', hairColor: '', drug: false, alcohol: false, distinguishingMark:'', personId: 0, suspectId: 0
      },
     isUnidentified: false, 
     suspect: {suspectId: 0, personId: 0, isCaught: false}
@@ -94,7 +94,8 @@ export class ReportPage implements OnInit {
     birthdate: '',
     civilStatus: '',
     bioStatus: true,
-    // description: {descriptionId: 0, ethnicity: '', personId: 0},
+    // description: {descriptionId: 0, ethnicity: '', personId: 0, victimId: 0},
+    description: null,
     //contactDetails: { email: '',  mobileNum: '' },
     homeAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '',block:'', zipCode: 0 },
     workAddress: { locationId: 0, province: '', municipality: '', street: '', region: '', barangay: '', block:'', zipCode: 0 },
@@ -292,6 +293,8 @@ export class ReportPage implements OnInit {
   victimDateOfBirth: string = '';
   victim_isUnidentified: boolean = false;
   visibleSuspectIndex: number = -1;
+  private readonly charPool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
 
 
 
@@ -378,6 +381,15 @@ export class ReportPage implements OnInit {
       this.loadPoliceStations().then(() => {
       });
   });
+
+
+  if (!this.victim.description) {
+    this.victim.description = {
+      descriptionId: 0,
+      ethnicity: 'Unknown',
+      personId: this.victim.personId
+    };
+  }
 
   // if (!this.reportData.location) {
   //   this.reportData.location = {
@@ -598,20 +610,68 @@ export class ReportPage implements OnInit {
   //   this.suspects.push(newSuspect);
   // }
 
+  generateRandomString(length: number): string {
+    let result = '';
+    const poolLength = this.charPool.length;
+
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * poolLength);
+      result += this.charPool[randomIndex];
+    }
+
+    return result;
+  }
+
+  
+  generateRandomName(): { firstName: string; middleName: string; lastName: string } {
+    const firstName = this.generateRandomString(8); 
+    const middleName = this.generateRandomString(8); 
+    const lastName = this.generateRandomString(8);  
+
+    return { firstName, middleName, lastName };
+  }
+
   onSuspectIdentificationChange() {
-    alert('Please select Gender to generate names');
+    
+    const currentSuspect = this.suspects[this.visibleSuspectIndex];
+    if(currentSuspect)
+    console.log('Checkbox state changed:', currentSuspect);
+    this.generateSusRandomName();
+    alert('Generating Random String for unidentified suspect');
    
   }
 
   onVictimIdentificationChange() {
     alert('Please select Gender to generate names');
+    this.generateSusRandomName();
+    alert('Generating Random String for unidentified victim');
    
   }
   
   onSusGenderChange(gender: string) {
   
-      this.generateSusRandomName(gender);
+      // this.generateSusRandomName(gender);
+      console.log('Selected Gender', gender)
     
+  }
+
+
+  get currentSuspect() {
+    return this.suspects[this.visibleSuspectIndex];
+  }
+
+  
+  onDescriptionChange(field: string, value: any) {
+    if (!this.currentSuspect || !this.currentSuspect.description) {
+      return;
+    }
+    this.currentSuspect.description = { ...this.currentSuspect.description, [field]: value };
+    console.log(`Description '${field}: '`, this.currentSuspect.description)
+  }
+  
+
+  onStatusChanged(status?: string | undefined){
+    console.log('Status', status)
   }
 
   onVicGenderChange(gender: string) {
@@ -619,93 +679,74 @@ export class ReportPage implements OnInit {
       this.generateVicRandomName(gender);
     }
   }
-  
 
-  clearSuspectPersonalInfo() {
-    // this.suspect.firstname = '';
-    // this.suspect.middlename = '';
-    // this.suspect.lastname = '';
-    this.suspect.description.ethnicity = '';
-    this.suspect.sex = '';
-    this.suspect.civilStatus = '';
-    this.suspect.homeAddress = {
-      region: '',
-      province: '',
-      municipality: '',
-      barangay: '',
-      street: '',
-      block: '',
-      locationId: 0,
-      zipCode: 0
-    };
-    this.suspect.workAddress = {
-      region: '',
-      province: '',
-      municipality: '',
-      barangay: '',
-      street: '',
-      block: '',
-      locationId: 0,
-      zipCode: 0
-    };
-    
-    this.sus_home_zip_code = '';
-    this.sus_work_zip_code = '';
+  updateEthnicity(ethnicity: string) {
+    if (this.victim.description)
+    this.victim.description.ethnicity = ethnicity;
   }
+  
 
-
-  // async generateSusRandomName(gender: string) {
-  //   try {
-  //     const name = await this.nameGeneratorService.generateRandomName(gender);
-  //     const [firstName, middleName, lastName] = name.split(' ');
-  //     this.suspect.firstname = firstName;
-  //     this.suspect.middlename = middleName;
-  //     this.suspect.lastname = lastName;
-
-  //     console.log('Generated First Name', this.suspect.firstname)
-  //     console.log('Generated Middle Name', this.suspect.middlename)
-  //     console.log('Generated Last Name', this.suspect.lastname)
-  //   } catch (error) {
-  //     console.error('Error generating name:', error);
-  //   }
-  // }
 
   
-async generateSusRandomName(gender: string) {
+// async generateSusRandomName(gender: string) {
+//   try {
+//     // Use visibleSuspectIndex to find the current suspect
+//     if (this.visibleSuspectIndex !== -1 && this.suspects[this.visibleSuspectIndex]) {
+//       const currentSuspect = this.suspects[this.visibleSuspectIndex];
+      
+//       const name = await this.nameGeneratorService.generateRandomName(gender);
+//       const nameParts = name.split(' ');
+      
+//       // Robust name part handling
+//       if (nameParts.length === 3) {
+//         currentSuspect.firstname = nameParts[0];
+//         currentSuspect.middlename = nameParts[1];
+//         currentSuspect.lastname = nameParts[2];
+//       } else if (nameParts.length === 2) {
+//         currentSuspect.firstname = nameParts[0];
+//         currentSuspect.middlename = '';
+//         currentSuspect.lastname = nameParts[1];
+//       } else if (nameParts.length === 1) {
+//         currentSuspect.firstname = nameParts[0];
+//         currentSuspect.middlename = '';
+//         currentSuspect.lastname = '';
+//       } else {
+//         console.error('Unexpected name format');
+//         return;
+//       }
+
+//       console.log('Generated First Name', currentSuspect.firstname);
+//       console.log('Generated Middle Name', currentSuspect.middlename);
+//       console.log('Generated Last Name', currentSuspect.lastname);
+//     } else {
+//       console.error('No suspect currently selected');
+//     }
+//   } catch (error) {
+//     console.error('Error generating name:', error);
+//   }
+// }
+
+async generateSusRandomName() {
   try {
-    // Use visibleSuspectIndex to find the current suspect
+   
     if (this.visibleSuspectIndex !== -1 && this.suspects[this.visibleSuspectIndex]) {
       const currentSuspect = this.suspects[this.visibleSuspectIndex];
-      
-      const name = await this.nameGeneratorService.generateRandomName(gender);
-      const nameParts = name.split(' ');
-      
-      // Robust name part handling
-      if (nameParts.length === 3) {
-        currentSuspect.firstname = nameParts[0];
-        currentSuspect.middlename = nameParts[1];
-        currentSuspect.lastname = nameParts[2];
-      } else if (nameParts.length === 2) {
-        currentSuspect.firstname = nameParts[0];
-        currentSuspect.middlename = '';
-        currentSuspect.lastname = nameParts[1];
-      } else if (nameParts.length === 1) {
-        currentSuspect.firstname = nameParts[0];
-        currentSuspect.middlename = '';
-        currentSuspect.lastname = '';
-      } else {
-        console.error('Unexpected name format');
-        return;
-      }
 
-      console.log('Generated First Name', currentSuspect.firstname);
-      console.log('Generated Middle Name', currentSuspect.middlename);
-      console.log('Generated Last Name', currentSuspect.lastname);
+     
+      const randomName = this.generateRandomName();
+
+      currentSuspect.firstname = randomName.firstName;
+      currentSuspect.middlename = randomName.middleName;
+      currentSuspect.lastname = randomName.lastName;
+
+      console.log('Generated First Name:', currentSuspect.firstname);
+      console.log('Generated Middle Name:', currentSuspect.middlename);
+      console.log('Generated Last Name:', currentSuspect.lastname);
     } else {
       console.error('No suspect currently selected');
     }
   } catch (error) {
-    console.error('Error generating name:', error);
+    console.error('Error generating random name:', error);
   }
 }
 
@@ -1520,7 +1561,7 @@ goBack() {
         const suspect = this.suspects[i];
         console.log(`Submitting suspect ${i + 1}/${this.suspects.length}:`, suspect);
         this.suspect = suspect;
-        await this.saveSuspect(reportId);
+        await this.saveSuspect(suspect, reportId);
       }
 
       console.log('All suspects submitted successfully!');
@@ -1534,35 +1575,41 @@ goBack() {
 
 
 
-   async saveSuspect(reportId: number){
+   async saveSuspect(suspect:any, reportId: number){
 
-      this.suspect.homeAddress.zipCode = Number(this.sus_home_zip_code);
-      this.suspect.workAddress.zipCode = Number(this.sus_work_zip_code);
+      suspect.homeAddress.zipCode = Number(this.sus_home_zip_code);
+      suspect.workAddress.zipCode = Number(this.sus_work_zip_code);
 
-    const suspectPerson =  {
-    personId: this.suspect.personId,
-    firstname: this.suspect.firstname,
-    middlename: this.suspect.middlename,
-    lastname: this.suspect.lastname,
-    sex: this.genderToLetter(this.suspect.sex),
-    birthdate: this.suspect.birthdate,
-    civilStatus: this.suspect.civilStatus,
-    bioStatus: this.suspect.bioStatus
-  };
+  //   const suspectPerson =  {
+  //   personId: this.suspect.personId,
+  //   firstname: this.suspect.firstname,
+  //   middlename: this.suspect.middlename,
+  //   lastname: this.suspect.lastname,
+  //   sex: this.genderToLetter(this.suspect.sex),
+  //   birthdate: this.suspect.birthdate,
+  //   civilStatus: this.suspect.civilStatus,
+  //   bioStatus: this.suspect.bioStatus
+  // };
+
+  console.log('Suspect Data', suspect);
+  suspect.sex = this.genderToLetter(suspect.sex);
 
  
 
-  this.personService.createPerson(suspectPerson).pipe(
+  this.personService.createPerson(suspect).pipe(
     switchMap((personResponse: any) => {
       console.log('Suspect Person saved successfully', personResponse);
       const personId = personResponse.id;
+  
       
-      console.log('Suspect Person ID:', personId)
-      const hasHomeAddress = this.suspect.homeAddress && this.suspect.homeAddress.zipCode;
-      const hasWorkAddress = this.suspect.workAddress && this.suspect.workAddress.zipCode;
-
+      suspect.personId = personId;
+      console.log('Suspect Person ID:', suspect.personId);
+      const hasHomeAddress = suspect.homeAddress && suspect.homeAddress.zipCode;
+      const hasWorkAddress = suspect.workAddress && suspect.workAddress.zipCode;
+  
+      // Step 1: Handle home and work addresses
       const homeLocation$ = hasHomeAddress
-        ? this.locationService.createOrRetrieveLocation(this.suspect.homeAddress, this.suspect.homeAddress.zipCode).pipe(
+        ? this.locationService.createOrRetrieveLocation(suspect.homeAddress, suspect.homeAddress.zipCode).pipe(
             tap((homeLocationResponse) => {
               console.log('Suspect Home location saved successfully:', homeLocationResponse);
             }),
@@ -1572,9 +1619,9 @@ goBack() {
             })
           )
         : of(null);
-
+  
       const workLocation$ = hasWorkAddress
-        ? this.locationService.createOrRetrieveLocation(this.suspect.workAddress, this.suspect.workAddress.zipCode).pipe(
+        ? this.locationService.createOrRetrieveLocation(suspect.workAddress, suspect.workAddress.zipCode).pipe(
             tap((workLocationResponse) => {
               console.log('Suspect Work location saved successfully:', workLocationResponse);
             }),
@@ -1584,41 +1631,61 @@ goBack() {
             })
           )
         : of(null);
-
+  
+      // Step 2: Save home and work locations
       return homeLocation$.pipe(
         switchMap(() => workLocation$),
         switchMap(() => {
-          const descriptionData = {
-            descriptionId: 0,
-            ethnicity: this.suspect.description.ethnicity,
-            height: this.suspect.description.height,
-            weight: this.suspect.description.weight,
-            eyeColor: this.suspect.description.eyeColor,
-            hairColor: this.suspect.description.hairColor,
-            drug: this.suspect.description?.drug,
-            alcohol: this.suspect.description?.alcohol,
-            distinguishingMark: this.suspect.description.distinguishingMark,
-            personId: personId,  
           
-          };
+          // const suspect: Suspect = {
+          //   suspectId: 0, 
+          //   personId: personId,
+          //   isCaught: this.suspect.suspect.isCaught,
+          // };
+  
+          return this.suspectService.establishCriminal(reportId, suspect).pipe(
+            switchMap((criminalResponse: any) => {
+              console.log('Criminal established successfully:', criminalResponse);
+              const suspectId = criminalResponse.id; // Retrieve the suspectId from the response
+  
+              // Step 4: Establish the description using the suspectId
+              // const descriptionData = {
+              //   descriptionId: 0,
+              //   ethnicity: this.suspect.description.ethnicity,
+              //   height: this.suspect.description.height,
+              //   weight: this.suspect.description.weight,
+              //   eyeColor: this.suspect.description.eyeColor,
+              //   hairColor: this.suspect.description.hairColor,
+              //   drug: this.suspect.description?.drug,
+              //   alcohol: this.suspect.description?.alcohol,
+              //   distinguishingMark: this.suspect.description.distinguishingMark,
+              //   suspectId: suspectId, // Use the retrieved suspectId here
+              // };
 
-          return this.descriptionService.establishDescription(descriptionData).pipe(
-            switchMap((descriptionResponse: any) => {
-              console.log('Description saved successfully:', descriptionResponse);
-
-              
-              const suspect: Suspect = {
-                suspectId: this.suspect.suspect.suspectId,
-                personId: personId,
-                isCaught: this.suspect.suspect.isCaught,
-                
-              };
-
-              return this.suspectService.establishCriminal(reportId, suspect);
+              suspect.suspect.suspectId = suspectId;
+              suspect.description.suspectId = suspectId;
+              suspect.description.personId = personId;
+              return this.descriptionService.establishDescription(suspect.description).pipe(
+                tap((descriptionResponse: any) => {
+                  console.log('Description saved successfully:', descriptionResponse);
+                }),
+                catchError((error) => {
+                  console.error('Failed to save description:', error);
+                  return EMPTY;
+                })
+              );
+            }),
+            catchError((error) => {
+              console.error('Failed to establish criminal:', error);
+              return EMPTY;
             })
           );
         })
       );
+    }),
+    catchError((error) => {
+      console.error('Failed to save suspect person:', error);
+      return EMPTY;
     })
   ).subscribe(
     (suspectResponse: any) => {
@@ -1709,6 +1776,7 @@ goBack() {
                 switchMap((victimResponse: any) => {
                   console.log('Victim saved successfully', victimResponse);
   
+                  this
                   return this.descriptionService.establishDescription(this.victim.description).pipe(
                     tap((descriptionResponse) => {
                       console.log('Victim Description saved successfully', descriptionResponse);
@@ -1763,8 +1831,11 @@ goBack() {
         this.victimService.establishVictim(victim, reportId).pipe(
           switchMap((victimResponse: any) => {
             console.log('Victim saved successfully:', victimResponse);
-  
-            // Save victim description
+
+            if (this.victim.description) {
+              this.victim.description.victimId = victimResponse.victim_id
+            }
+            
             return this.descriptionService.establishDescription(this.victim.description).pipe(
               tap((descriptionResponse) => {
                 console.log('Victim Description saved successfully:', descriptionResponse);
@@ -2146,49 +2217,52 @@ goBack() {
     let isValidReporter: boolean = false;
     let isValidSuspect: boolean = false;
   
-    // if (this.reporterType === 'witness') {
+    if (this.reporterType === 'witness') {
      
-    //   isValidReporter = this.validateObject(this.witness);
-    //   if (!isValidReporter) {
-    //     console.error('Invalid witness data');
-    //     return;
-    //   }
-    // } else if (this.reporterType === 'victim') {
+      isValidReporter = this.validateObject(this.witness);
+      if (!isValidReporter) {
+        alert('Lacking data in witness');
+        return;
+      }
+    } else if (this.reporterType === 'victim') {
    
-    //   isValidReporter = this.validateObject(this.victim);
-    //   if (!isValidReporter) {
-    //     console.error('Invalid victim data');
-    //     return;
-    //   }
-    // }
+      isValidReporter = this.validateObject(this.victim);
+      if (!isValidReporter) {
+        alert('Lacking data in victim');
+        return;
+      }
+    }
+
+
+    const currentSuspect = this.suspects[this.visibleSuspectIndex];
     
-    // if (this.suspect.isUnidentified) {
-    //   console.log('Suspect is unidentified, validation skipped.');
-    //   isValidSuspect = true;
+    if (currentSuspect) {
+      console.log('Suspect is unidentified, validation skipped.');
+      isValidSuspect = true;
     
-    // } else {
-    //   isValidSuspect = this.validateObject(this.suspect);
-    //   if (!isValidSuspect) {
-    //     console.error('Suspect validation failed:', this.suspect);
-    //   }
-    // }
+    } else {
+      isValidSuspect = this.validateObject(this.suspects);
+      if (!isValidSuspect) {
+        alert('Lacking data in suspect');
+      }
+    }
     
-    // const isValidReport = this.validateObject(this.reportData);
+    const isValidReport = this.validateObject(this.reportData);
   
  
-    // if (!isValidReporter || !isValidSuspect || !isValidReport) {
-    //   this.showValidationMessages = true;
-    //   console.error('Validation Errors:', {
-    //     reporter: !isValidReporter,
-    //     suspect: !isValidSuspect,
-    //     report: !isValidReport,
-    //   });
-    //   return; 
-    // }
+    if (!isValidReporter || !isValidSuspect || !isValidReport) {
+      this.showValidationMessages = true;
+      console.error('Validation Errors:', {
+        reporter: !isValidReporter,
+        suspect: !isValidSuspect,
+        report: !isValidReport,
+      });
+      return; 
+    }
   
-    // this.showValidationMessages = false;
+    this.showValidationMessages = false;
 
-  
+    
    
     try {
       const response = await this.reportService.establishReport(await this.prepareFormData(form)).toPromise();
@@ -2199,7 +2273,6 @@ goBack() {
         console.error('Report ID is undefined in the response.');
         return;
       }
-  
       await this.submitAllSuspects(reportId);
       await this.saveReporter(reportId);
       await this.saveVictim(reportId); 

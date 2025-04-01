@@ -177,9 +177,9 @@
               placeholder="Gender"
               [disabled]="isDataLoaded"
             >
-              <ion-select-option>Male</ion-select-option>
-              <ion-select-option>Female</ion-select-option>
-              <ion-select-option>Prefer not to say</ion-select-option>
+              <ion-select-option value="Male">Male</ion-select-option>
+              <ion-select-option value="Female">Female</ion-select-option>
+              <ion-select-option value="X">Prefer not to say</ion-select-option>
             </ion-select>
           </ion-item>
           <ion-label
@@ -196,12 +196,13 @@
           <ion-select
             [(ngModel)]="witness.civilStatus"
             placeholder="Civil Status"
+            (ionChange)="onStatusChanged(witness.civilStatus)"
           >
-            <ion-select-option>Single</ion-select-option>
-            <ion-select-option>Married</ion-select-option>
-            <ion-select-option>Separated</ion-select-option>
-            <ion-select-option>Divorced</ion-select-option>
-            <ion-select-option>Widowed</ion-select-option>
+          <ion-select-option value="Single">Single</ion-select-option>
+          <ion-select-option value="Married">Married</ion-select-option>
+          <ion-select-option value="Separated">Separated</ion-select-option>
+          <ion-select-option value="Divorced">Divorced</ion-select-option>
+          <ion-select-option value="Widowed">Widowed</ion-select-option>
           </ion-select>
         </ion-item>
         <ion-label
@@ -752,12 +753,12 @@
       <div *ngIf="1 > 0 || visibleSuspectIndex">
       
         <div class="item-b">
-
+         
           <div *ngIf="visibleSuspectIndex === i">
-            <div class="checkbox-container">
+            <div class="checkbox-container  ">
               <ion-checkbox
                 labelPlacement="end"
-                [(ngModel)]="suspect.isUnidentified"
+                [(ngModel)]="suspects[visibleSuspectIndex].isUnidentified"
                 (ionChange)="onSuspectIdentificationChange()"
               ></ion-checkbox>
               <ion-label class="checkbox-label"
@@ -856,13 +857,13 @@
           
                       <ion-item [class.shake]="showValidationMessages && !suspect.sex">
                         <ion-select
-                          [(ngModel)]="suspect.sex"
+                          [(ngModel)]="currentSuspect.sex"
                           id="gender"
                           placeholder="Gender"
-                          (ionChange)="onSusGenderChange(suspect.sex)"
+                          (ionChange)="onSusGenderChange($event.detail.value)"
                         >
-                          <ion-select-option value="male">Male</ion-select-option>
-                          <ion-select-option value="female">Female</ion-select-option>
+                          <ion-select-option value="Male">Male</ion-select-option>
+                          <ion-select-option value="Female">Female</ion-select-option>
                           <!-- <ion-select-option>Prefer not to say</ion-select-option> -->
                         </ion-select>
                       </ion-item>
@@ -916,12 +917,13 @@
                       <ion-select
                         [(ngModel)]="suspect.civilStatus"
                         placeholder="Civil Status"
+                        (ionChange)="onStatusChanged(suspect.civilStatus)"
                       >
-                        <ion-select-option>Single</ion-select-option>
-                        <ion-select-option>Married</ion-select-option>
-                        <ion-select-option>Separated</ion-select-option>
-                        <ion-select-option>Divorced</ion-select-option>
-                        <ion-select-option>Widowed</ion-select-option>
+                        <ion-select-option value="Single">Single</ion-select-option>
+                        <ion-select-option value="Married">Married</ion-select-option>
+                        <ion-select-option value="Separated">Separated</ion-select-option>
+                        <ion-select-option value="Divorced">Divorced</ion-select-option>
+                        <ion-select-option value="Widowed">Widowed</ion-select-option>
                       </ion-select>
                     </ion-item>
                     <ion-label
@@ -1311,9 +1313,10 @@
                 <ion-list class="info" lines="none">
                   <ion-item [class.shake]="showValidationMessages && !sus_height">
                     <ion-input
-                      [(ngModel)]="suspects[visibleSuspectIndex].description.height"
+                      [(ngModel)]="currentSuspect.description.height"
                       id="height"
                       placeholder="Height"
+                      (ionChange)="onDescriptionChange('height', $event.detail.value)"
                     ></ion-input>
                     <ion-label slot="end">ft, in</ion-label>
                   </ion-item>
@@ -1326,9 +1329,10 @@
           
                   <ion-item [class.shake]="showValidationMessages && !sus_weight">
                     <ion-input
-                      [(ngModel)]="suspects[visibleSuspectIndex].description.weight"
+                      [(ngModel)]="currentSuspect.description.weight"
                       id="weight"
                       placeholder="Weight"
+                      (ionChange)="onDescriptionChange('weight', $event.detail.value)"
                     ></ion-input>
                     <ion-label slot="end">kg</ion-label>
                   </ion-item>
@@ -1541,8 +1545,13 @@
           >Please fill out this item</ion-label
         >
 
-        <!-- <ion-item [class.shake]="showValidationMessages && !victim.description.ethnicity">
-          <ion-select id="citizenship" placeholder="Citizenship" [(ngModel)]="victim.description.ethnicity" >
+        <!-- <ion-item [class.shake]="showValidationMessages && !victim?.description?.ethnicity">
+          <ion-select 
+          *ngIf="victim?.description?.ethnicity !== undefined"
+          id="citizenship" 
+          placeholder="Citizenship" 
+          [(ngModel)]="victim.description.ethnicity" 
+          >
             <ion-select-option *ngFor="let nationality of nationalities" [value]="nationality" >
               {{ nationality }}
             </ion-select-option> 
@@ -1565,8 +1574,8 @@
               [disabled]="isSamePerson"
               (ionChange)="onVicGenderChange(victim.sex)"
             >
-              <ion-select-option value="male">Male</ion-select-option>
-              <ion-select-option value="female">Female</ion-select-option>
+              <ion-select-option value="Male">Male</ion-select-option>
+              <ion-select-option value="Female">Female</ion-select-option>
               
             </ion-select>
           </ion-item>
@@ -1619,12 +1628,13 @@
             [(ngModel)]="victim.civilStatus"
             placeholder="Civil Status"
             [disabled]="isSamePerson"
+            (ionChange)="onStatusChanged(victim.civilStatus)"
           >
-            <ion-select-option>Single</ion-select-option>
-            <ion-select-option>Married</ion-select-option>
-            <ion-select-option>Separated</ion-select-option>
-            <ion-select-option>Divorced</ion-select-option>
-            <ion-select-option>Widowed</ion-select-option>
+          <ion-select-option value="Single">Single</ion-select-option>
+          <ion-select-option value="Married">Married</ion-select-option>
+          <ion-select-option value="Separated">Separated</ion-select-option>
+          <ion-select-option value="Divorced">Divorced</ion-select-option>
+          <ion-select-option value="Widowed">Widowed</ion-select-option>
           </ion-select>
         </ion-item>
         <ion-label
